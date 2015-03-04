@@ -1,0 +1,33 @@
+#!/bin/bash
+# Is this supposed to be the aplay process ID?
+# The idea here is to sleep a half second less than the length of the file.
+# We get the time from sox and use dc to calculate the number of usecs to
+# sleep (because bash only has integer arithmetic).
+echo -n `date` >> /tmp/adeplay.log
+echo ": adeplay is now executing..." >> /tmp/adeplay.log
+echo "playing $1" >> /tmp/adeplay.log
+cp $1 /tmp/adeplay.wav
+early=0.25
+len=`sox $1 -e stat 2>&1 | grep seconds | awk '{ print $3 }'`
+let len=`dc -e "$len d [0pq]sa $early >a $early - 1000000 * d p" | cut -f 1 -d .`
+# PWS: Adding this lock keep spoken text from overlapping, but I don't know if
+# flock enforces the order of play...
+#flock /tmp/adeplay.log /usr/bin/aplay -M $* >> /tmp/adeplay.log 2>&1 &
+(
+  flock -x 1
+  rvol=`amixer -c 0 sget PCM,0 | grep Right: | awk '{ print $4 }'`
+  lvol=`amixer -c 0 sget PCM,0 | grep Left: | awk '{ print $4 }'`
+  amixer -c 0 sset PCM,0 $lvol,0
+  /usr/bin/aplay -M $* >> /tmp/adeplay.log 2>&1
+  amixer -c 0 sset PCM,0 $lvol,$rvol
+) 1>>/tmp/adeplay.log &
+let PID=$!
+echo $PID > /tmp/fdonePID
+usleep $len
+rm /tmp/fdonePID
+#scp $1 172.30.1.95:$1
+#ssh 172.30.1.95 "aplay -D hw:1,0 $1"
+rm /tmp/fdone
+touch /tmp/fdone
+echo -n `date` >> /tmp/adeplay.log
+echo ": adeplay is now done..." >> /tmp/adeplay.log

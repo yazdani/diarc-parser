@@ -1,0 +1,7 @@
+Running player standalone:
+
+player ./com/player/worlds/rudy-amcl.cfg
+
+then:
+
+playerv --laser:0

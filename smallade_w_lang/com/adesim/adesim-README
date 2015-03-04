@@ -1,0 +1,211 @@
+===============================================
+=============== ADESim Overview ===============
+=============================================== 
+
+* ADESim is a package (located under com.adesim) that contains a number of
+components for running 2D single- or multi- robot simulations.
+
+* Each simulation must begin with launching the ENVIRONMENT component.
+	** The Environment is responsible for loading the "map"
+	** To specify a particular map, enter -cfg <filename> when launching the
+	Environment component.
+	** It is also responsible for maintaining consistency amongst robot's
+	internal representation of the environment, allowing robots to interact 
+	with objects (if two robots both grabbed a box at the same time, who got 
+	it?), and maintaining a common time amongst multiple robots running in 
+	different processes (and potentially on multiple hosts!)
+
+* A simulation can have one or more robots participate in it. (Or zero, I 
+suppose; but that can hardly count as an interesting simulation!). The system
+was created in a way that many different types of robots can be created.
+Launching the Environment component by itself can still make sense for
+inspecting or manipulating Environment map files (see #Manipulating objects
+via the Map GUI.)
+
+* Robots can be controlled via the GUI, but, more importantly, can be controlled
+by other components, in particular by the ActionManager. A sample action
+architecture can be found at com.adesim.sample.SampleActionComponentImpl.java
+
+======================================================
+=============== Running the simulation ===============
+======================================================
+
+A quick demo of launching an environment and robot can be done by:
+	$ ./ant run-registry -Df=config/adesim-demo.config
+
+This launches a registry, adesim environment (with default map) and a 
+simulated pioneer robot. Feel free to use config/adesim-demo.config as a starting
+template for creating your own simulation! A more detailed description of
+individual components can be found below. 
+
+==== Environment (all you need is a SINGLE environment!) ====
+
+It's important that you have an ADE registry running before trying to run 
+any of the components mentioned below, otherwise things will not run. So,
+be sure to start a registry with:
+	$ ./ant run-registry
+
+* The environment can be launched via: 
+	$ ./ant run-adesimenvironmentcomponent
+
+*The two most useful options are -g to display the GUI, and -cfg <filename> to
+specify a particular config (map) file. For other options (including helpful
+view flags for the GUI), just run the component with the -help flag. To run with
+non-default options:
+	$ ./ant run-adesimenvironmentcomponent -Darg="-g -cfg <filename>"
+
+==== Individual robots (you can launch as many of those into an environment as you'd like) ====
+
+Once you have an environment running, you can populate it with robots! As of
+Spring 2011, there are 2 different types of robots, listed below. Several
+general things to note:
+	
+* To see various command-line options, run the component with -help. Some are 
+discussed below.
+
+* Use -initpose for initializing the robot's initial position within the 
+environment. It takes in three arguments, x, y, and theta.
+
+* Both the Pioneer and the Videre Era support three different visualizations
+(via the -g or --gui) flag. You can show all of the GUIs, or specify a
+particular one by appending its name(s) (space separated) after the -g flag:
+
+	** "Lasers": will show a detailed laser panel.
+	** "Camera": will show a 3D view, from the robot's perspective. For large
+	environments (e.g, Eigenmann), this will be quite processor-intensive.
+	** "Environment": will show the robot's environment, FROM THE ROBOT'S 
+	PERSPECTIVE. Thus, you'll only be able to control the individual robot
+	and see ITS laser readings, etc. The rest of the robots will show up as
+	blobs. Thus, unless you have a particular reason to be doing what you're
+	doing, it's probably best to leave the environment visualization to the 
+	environment component.
+
+* Specifications for where the camera and lasers are placed can be found in the
+SimPioneerComponentImpl and SimEraComponentImpl.
+
+* As of Spring 2011, laser choices include SICK (180 degrees, long-range), and
+URG (240 degrees, 5m max range). To override the default laser type for each
+robot, enter -urg or -sick on the command line.
+
+
+== Available robots ==
+
+* Pioneer (equipped with a SICK laser by default).
+	$ ./ant run-simpioneercomponent
+
+* Videre Era (equipped with an URG laser by default).
+	$ ./ant run-simeracomponent
+
+
+==== Action Components (probably want to have as many as there are robots floating about) ====
+
+* A sample action component (for inspiration and testing) can be launched via:
+	$ ./ant run-sampleactioncomponent -Dargs="-simpio"
+
+* More generically, instead of "-simpio", it is also possible to run
+	$ ./ant run-sampleactioncomponent -Dargs="-component com.adesim.SimPioneerComponent"
+
+* If you want the action component to be specific to a PARTICULAR robot (that 
+is, if you have more than one robot, and want to establish a one-for-one
+connection between action managers and the robots that they're supposed to
+control), specify the name of the robot's component (NOT the impl) after the
+component specification. For example:
+	$ ./ant run-sampleactioncomponent -Dargs="-simpio SimPioneerComponent3"
+or
+	$ ./ant run-sampleactioncomponent -Dargs="-component com.adesim.SimPioneerComponent SimPioneerComponent3"
+
+*Finally, note that if the action component goes down, the robot will continue 
+to do whatever it was told to do (this is the same in real robots, too). So, if
+it was moving, it will run into something!
+
+
+====================================================================
+=============== Manipulating objects via the Map GUI ===============
+====================================================================
+
+==== Controlling robots ====
+
+* The Environment GUI contains visualizations for all of the robots, and allows
+you to control any of them; the individual actor GUIs only allow the control of
+a single robot.
+
+* To move a robot, drag it to its new location, or use up-down-left-right to
+drive it from the keyboard. In case of the Environment GUI, the currently
+activated robot's name can be found in a dropdown on the bottom right of the screen.
+
+==== Manipulating existing objects ====
+
+* To prevent accidental modifications to the environment, editing permissions
+(assuming no "-edit" command-line flags to the contrary) are controlled via the
+"Edit" menu in the simulator. Before you try editing a particular object, ensure
+that its type (block, wall, etc) is checked.
+
+* To modify and existing object, press on it with the mouse. Then:
+	** To move the object, simply drag it with the mouse. If the object is a
+	block, moved into a container (e.g., box), it will automatically be
+	placed in the center of the container.
+	** To stretch the object, hold Shift while dragging.
+	** To rotate the object, press the right arrow or left arrow on the keyboard.
+	** To delete the object, press Delete or Backspace.
+	** To change the object's name, keep holding it with the mouse and press Enter.
+
+* To DUPLICATE the object, hold Alt BEFORE clicking on the object. Once you
+click on the object, what you'll actually be holding is the copy.
+
+==== Creating new objects ====
+
+* To create new objects, click on the object type from the "New" menu. A wizard
+will appear. Read its instructions carefully, and press on the question mark
+icons for more information.
+
+* Almost all options can be declared directly from the GUI. For some advanced
+settings (like setting a door's opening fraction to be randomized on startup, or
+specifying custom actions on the robot's intersection with an object), you'll
+probably need to dive into XML, see the #Maps section below.
+
+==== Modifying and saving new environemnts ====
+
+* To save the existing environment (whether modified by manipulating existing
+objects, creating new ones, or having the robot manipulate objects), select
+"Save current state" from the Sim menu.
+
+* To create a brand new environment altogether, select "Create new environment"
+from the sim menu. Then populate it with objects and save it, as per instructions above.
+
+
+====================================
+=============== Maps ===============
+====================================
+
+* ADEsim utilizes as XML-based format for its maps.
+*For simple to moderate map building, the GUI should provide a MUCH SIMPLER way
+of specifying things. Only dive into the XML if you have a very complex task,
+and only after you've built most of the map from the GUI.
+
+*Within maps, everything is in meters and radians. The coordinate system is
+Eucledean. NOTE THAT THIS IS DIFFERENT FROM THE SCREEN COORDINATE SYSTEM, WHERE
+Y grows DOWN, not up! all numbers can be doubles.
+
+*Prebuilt maps can be found at com/adesim/config.
+	**For a VERY BASIC map, see assignment1.xml; for a COMPLEX one, see eigenmann8.xml.
+
+* If you have an older map (from the pre-2010 adesim, or from simbad), you can
+use the com.adesim.config.OldSimbadFileFormatConverter.java to (hopefully)
+convert it for you. This is what I did with the Eigenmann map, and it did a fine job!
+
+==== World size dimensions ====
+
+* The map must specify world dimensions.
+
+* It is also a good idea to surround the edges of the world with walls -- that 
+way, the robot won't drive out of sight!
+
+==== Map objects ====
+
+* Currently, the simulation supports the following objects:
+	** Walls
+	** Doors. (Can be opened and closed from the GUI at the moment by
+	right-clicking on them, but cannot be opened and closed by the robots, yet)
+	** Blocks (Can be picked up but not dropped off by the robots, not
+	synchronized yet amongst multiple robots)
+	** Landmarks (Essentially unused at the moment)

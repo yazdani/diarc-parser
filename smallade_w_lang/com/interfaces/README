@@ -1,0 +1,6 @@
+This directory is meant to contain only interfaces, so that
+all servers implementing them remain consistent. The methods
+in each interface should match those given in the
+agent.sensors.* and agent.effectors.* files. The interfaces
+are separate because the agent interfaces extend the
+agent.Sensor class, whereas these extend Remote.

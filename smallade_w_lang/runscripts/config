@@ -1,0 +1,8 @@
+-modelName com/discourse/models/parserdevel/training2.arff 
+-dictName com/discourse/models/julyDemo/follow/dictwithoutfollow3 
+-tagclass com/discourse/models/julyDemo/follow/input_data.trigram.arff 
+-mode INCREMENTAL 
+-printDeps 
+-tagmode DICTIONARY 
+-labels 
+-lookahead

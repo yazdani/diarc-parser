@@ -1,0 +1,76 @@
+body
+{
+    /*ackground-image: url("bg.gif");*/
+    color: Black;
+    background: White
+}
+
+a:link
+{
+    color:#436976
+}
+
+a:visited
+{
+    color:#436976
+}
+
+a:active
+{
+    color:#FFA500
+}
+
+a:hover
+{
+    color:#FFA500
+}
+
+h1
+{
+    margin: 0;
+    /*color: #004080*/
+    color: #004080
+}
+
+.header
+{
+    border: 1 solid #8CACBB;
+    background-color: #DEE7EC;
+}
+
+.menu
+{
+    border: 1 solid #8CACBB;
+    background-color: #DEE7EC;
+    padding: 5 0 5 5;
+    vertical-align: text-top;
+    width: 16%
+}
+
+.body
+{
+    border: 1 solid #8CACBB;
+    padding: 5 5 5 5;
+    vertical-align: top;
+    width: 84%
+}
+
+.main
+{
+    width: 100%;
+}
+
+.div_bullet
+{
+    width: 20px;
+    height: 20px;
+    background-image: url(../icons/ball.ocean.gif);
+}
+
+.div_bullet2
+{
+    width: 20px;
+    height: 20px;
+    background-image: url(../icons/ball.gray.gif);
+}
+

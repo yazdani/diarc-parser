@@ -1,0 +1,67 @@
+# auto-generated hosts file
+STARTHOST
+ip 127.0.0.1
+os Linux
+adehome /u/pr2admin/ade-svn/ade/
+sshlogin pr2admin
+ENDHOST
+STARTHOST
+ip 192.168.0.2
+os Linux
+adehome /home/hrilab/ade-svn/ade/
+sshlogin hrilab
+ENDHOST
+STARTHOST
+ip 10.69.0.11
+os Linux
+adehome /u/pr2admin/ade-svn/ade/
+sshlogin pr2admin
+ENDHOST
+STARTHOST
+ip 10.69.0.12
+os Linux
+adehome /u/pr2admin/ade-svn/ade/
+sshlogin pr2admin
+ENDHOST
+STARTHOST
+ip 10.68.0.1
+os Linux
+adehome /u/pr2admin/ade-svn/ade/
+sshlogin pr2admin
+ENDHOST
+STARTHOST
+ip 10.68.0.2
+os Linux
+adehome /u/pr2admin/ade-svn/ade/
+sshlogin pr2admin
+ENDHOST
+STARTHOST
+ip 10.68.0.117
+os Linux
+adehome /home/hrilab/ade-svn/ade/
+sshlogin hrilab
+ENDHOST
+STARTHOST
+ip 10.68.0.107
+os Linux
+adehome /home/hrilab/ade-svn/ade/
+sshlogin hrilab
+ENDHOST
+STARTHOST
+ip 192.168.0.148
+os Linux
+adehome /u/pr2admin/ade-svn/ade/
+sshlogin pr2admin
+ENDHOST
+STARTHOST
+ip 192.168.0.147
+os Linux
+adehome /u/pr2admin/ade-svn/ade/
+sshlogin pr2admin
+ENDHOST
+STARTHOST
+ip 192.168.0.160
+os Linux
+adehome /home/hrilab/ade
+sshlogin hrilab
+ENDHOST

@@ -1,0 +1,14 @@
+#!/bin/sh
+if [ $# -lt 1 ] ; then
+  echo "Usage: indentxml <infile>"
+  echo "       indentxml <infile> <outfile>"
+  exit
+elif [ $# -eq 1 ] ; then
+  INFILE=$1~
+  OUTFILE=$1
+  mv $OUTFILE $INFILE
+else
+  INFILE=$1
+  OUTFILE=$2
+fi
+./xmli $INFILE > $OUTFILE

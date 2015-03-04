@@ -1,0 +1,101 @@
+ADE 1.0beta Installation
+Copyright 2006 Airolab
+========================
+
+These are instructions for installing the ADE framework. For convenience,
+it has been divided into the following sections:
+1. Installation requirements
+2. Automated installation of pre-compiled ADE packages
+3. Installation of support software packages
+
+Note that ADE is still a beta release. While it is currently being used
+on a daily basis as a research platform, it is possible that some of the
+API will change without notice. Additionally, ADE is generally executed
+on Linux boxen (Debian etch and Fedora Core 4); while it should work without
+modification on other operating systems, testing has not been as extensive.
+
+1. Installation Requirements
+============================
+
+Sun recommends at least a 300MHZ processor with 256MB RAM as the minumum
+configuration to run Java. Other supporting software may require better. We
+have run the ADE system (comprised of an ADERegistry and at least three
+ADEServers) on a robot with an on-board PC with a 850MHz PIII processor and
+128MB RAM (256MB swap) using Linux (2.6.x kernel) with no problems.
+
+ADE is available from http://ade.sourceforge.net/ in the following forms:
+1. A tar archive of pre-compiled java classes and source code
+2. A zip archive of pre-compiled java classes and source code
+
+ADE requires the following supporting software to enable certain functionality
+(* indicates basic requirement; note that precompiled versions of supporting
+software are often available to ease installation):
+
+Functionality      | Supporting software
+-------------------+--------------------------------------------------------------------------
+ADE base system    | * Java(c) 1.5 (or later), http://java.sun.com
+Distribution       | ssh Secure shell client/server (e.g., http://www.openssh.org)
+Hardware interface | RXTX(c) Java serial communications, http://www.rxtx.org
+                   | Sun Java Communications API, http://java.sun.com/products/javacomm/index.jsp
+Simulation         | Player/Stage(c) 1.6.5, http://playerstage.sourceforge.net
+Speech Production  | Festival(c), http://www.cstr.ed.ac.uk/projects/festival
+Speech Recognition | Sphinx(c), http://cmusphinx.sourceforge.net
+                   | Sonic(c), http://cslr.colorado.edu/beginweb/speech_recognition/sonic.html
+
+Some additional packages that are in the process of being streamlined, but
+are not yet included in the release:
+
+Functionality      | Supporting software
+-------------------+--------------------------------------------------------------------------
+Vision             | OpenCV(c), http://opencvlibrary.sourceforge.net
+                   | SIFT keypoint detector, http://www.cs.ubc.ca/~lowe/keypoints
+Prolog             | SWI(c), http://www.swi-prolog.org
+Conversation       | WordNet(c), 
+                   | VerbNet(c),
+                   | Ainebot chatbot, http://neodave.civ.pl/aine/
+Cognitive model    | ThoughtTreasure(tm), http://www.signiform.com/tt/htm/tt.htm
+
+2. Installation from pre-compiled packages:
+===========================================
+
+Download the precompiled archive in the desired format. If you are using a UNIX
+system, the "install" script found on the ADE sourceforge page
+(http://ade.sourceforge.net) will automatically download and install the latest
+version.
+
+3. Installation of supporting software:
+=======================================
+
+Java(c) 1.5 (or later):
+- Download and install the Java JDK, making note of its location
+
+Secure shell client/server:
+- To use ADE's distribution mechanisms, a secure shell client and server
+  must be installed and passwordless login must be enabled. See the SSH
+  documentation in the "docs/SSH" file for additional details.
+  
+RXTX Java serial port communication:
+- We have tested and use RXTX v2.1-7pre17; newer versions may be available,
+  but we cannot guarantee compatibility. Sun supplies a communications
+  package also that serves the same purpose, but we have not used it.
+- The following files need to be copied to your Java home directory:
+  jre/lib/ext/RXTXcomm.jar
+  lib/ext/comm.jar
+  jre/lib/i386/librxtxI2C.so
+  jre/lib/i386/librxtxParallel.so
+  jre/lib/i386/librxtxRS485.so
+  jre/lib/i386/librxtxRaw.so
+  jre/lib/i386/librxtxSerial.so
+- The following line must be added to the lib/javax.comm.properties file:
+  Driver=javax.io.RXTXCommDriver
+
+Player/Stage:
+- Download and compile the Player/Stage programs, v.1.6.5 and 1.6.2 from
+  http://playerstage.sourceforge.net
+
+Festival speech production:
+- Download and install the latest version of Festival from:
+  http://www.cstr.ed.ac.uk/projects/festival
+
+Sphinx speech recognition:
+- Download and install Sphinx4 from http://cmusphinx.sourceforge.net

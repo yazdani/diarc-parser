@@ -1,0 +1,1 @@
+java -cp com/discourse/jar:com/discourse/jar/weka.jar:. com/discourse/mink/MinkParser -config $1 -classifier $2 -goldfile $3 -infile $4

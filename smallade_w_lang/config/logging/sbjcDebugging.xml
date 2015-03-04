@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration advertiser="multicastdns">
+  <properties>
+    <!-- pulling this filename into a property since its used twice -->
+    <property name="sbjc.filename">logs/sbjc.log</property>
+  </properties>
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %m%n"/>
+    </Console>
+    <File name="sbjcLog" fileName="${sbjc.filename}" bufferedIO="true" advertiseURI="file://${sys:user.dir}/${sbjc.filename}" advertise="true">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %m%n"/>
+    </File>
+  </appenders>
+  <loggers>
+    <logger name="com.mds.SimBasedJointControl" level="DEBUG">
+      <appender-ref ref="Console"/>
+    </logger>
+    <logger name="com.mds.MDSComponentImpl" level="DEBUG">
+      <appender-ref ref="Console"/>
+    </logger>
+    <root level="INFO">
+      <appender-ref ref="Console"/>
+    </root>
+  </loggers>
+</configuration>

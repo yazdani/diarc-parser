@@ -1,0 +1,1532 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!--
+<!DOCTYPE type SYSTEM "action.dtd"> 
+-->
+<type>    
+  <name>entity</name>
+  <subtypes>
+    <type>            
+      <name>action</name>
+      <subtypes>
+        <type>                    
+          <name>script</name>
+          <subtypes>
+            <!-- Begin Practice -->
+            <type>                            
+              <name>Practice</name>
+              <desc>?robot helps ?partner locate the transmission point</desc>
+              <benefit>1800</benefit>
+              <cost>600</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <!-- total time -->
+              <timeout>300</timeout>
+              <taskname>Follow_Orders</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!binding</varname>
+                <vartype>action</vartype>
+              </var>
+              <var>
+                <varname>!timestamp</varname>
+                <vartype>visionTs</vartype>
+              </var>
+              <var>
+                <varname>!counter</varname>
+                <vartype>visionTs</vartype>
+              </var>
+              <locks>motionLock transmitLock speechLock</locks>
+              <actspec>+ 0 ?xcoord ?xcoord</actspec>
+              <actspec>+ 0 ?ycoord ?ycoord</actspec>
+              <!--
+              <actspec>startADEServerLoggingInteractive</actspec>
+              --> 
+              <actspec>beep ?robot</actspec>
+              <actspec>sayTextNow ?robot ?partner "Initialize-ing system, please wait."</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <actspec>addFieldPoint ?robot ?xcoord ?ycoord 4.50</actspec>
+              <actspec>sleep ?robot 12500</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to practice"</actspec>
+              <control>while</control>
+              <actspec> true</actspec>
+              <control>do</control>
+              <control> while</control>
+              <control>   not</control>
+              <actspec>     discourseGetBindingOfType ?robot ?partner !binding !timestamp</actspec>
+              <control>   endnot</control>
+              <control> do</control>
+              <control> endwhile</control>
+			  <actspec> + 0 0 !counter</actspec>
+              <control> while</control>
+              <control>   not</control>
+              <actspec>     discourseIsBound !timestamp</actspec>
+              <control>   endnot</control>
+              <control> and</control>
+              <actspec>   lt !counter 50</actspec>
+              <control> do</control>
+              <actspec>   + !counter 1 !counter</actspec>
+              <!--
+              <control>   if</control>
+              <actspec>     stoppedMe ?robot</actspec>
+              <control>   then</control>
+              <actspec>     sayTextNow ?robot ?partner "There's something in the way."</actspec>
+              <control>   endif</control>
+              -->
+              <control> endwhile</control>
+              <control> if</control>
+              <actspec>	 lt !counter 50</actspec>
+              <control> then</control>
+              <actspec>	 while</actspec>
+              <actspec>	  not</actspec>
+              <actspec>		discourseGetResult !timestamp !binding</actspec>
+              <actspec>	  endnot</actspec>
+              <actspec>	 do</actspec>
+              <actspec>	 endwhile</actspec>
+              <actspec>	 performAction !binding</actspec>
+              <actspec>	 sleep ?robot 50</actspec>
+              <control> endif</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End Practice -->
+            <!-- Begin EndPractice -->
+            <type>                            
+              <name>EndPractice</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <!-- total time -->
+              <timeout>500000</timeout>
+              <locks>speechLock</locks>
+	      <actspec>qstop ?robot</actspec>
+              <actspec>sayTextNow cbot partner "Okay, we have practiced enough."</actspec>
+              <actspec>ReturnToBase ?robot ?partner</actspec>
+              <actspec>beep cbot</actspec>
+            </type>
+            <!-- End EndPractice -->
+            <!-- Begin MissionHRINonAut -->
+            <type>                            
+              <!-- (the exploration task for the HRI07 autonomy paper) -->
+              <name>MissionHRINonAut</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>330</timeout>
+              <taskname>Gather_Data</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <actspec>+ 0 ?xcoord ?xcoord</actspec>
+              <actspec>+ 0 ?ycoord ?ycoord</actspec>
+              <!--
+              <actspec>startADEServerLoggingInteractive</actspec>
+              --> 
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <actspec>addFieldPoint ?robot ?xcoord ?ycoord 4.50</actspec>
+              <actspec>changeSphinx4Grammar ?robot hri07autonomy</actspec>
+              <!--
+              <actspec>sleep ?robot 10000</actspec>
+              --> 
+              <actspec>performAction MetaExplorationTaskHRIAut:?robot:?partner:30:0:0:0:0:0</actspec>
+              <actspec>performAction ExplorationTaskHRIAut:?robot:?partner</actspec>
+              <control>while</control>
+	      <!--
+              <actspec>  true</actspec>
+	      -->
+              <control> not</control>
+              <actspec>   isFact AtBase</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End MissionHRINonAut -->
+            <!-- Begin MissionHRIAut -->
+            <type>                            
+              <!-- (the exploration task for the HRI07 autonomy paper) -->
+              <name>MissionHRIAut</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>330</timeout>
+              <taskname>Gather_Data</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <actspec>+ 0 ?xcoord ?xcoord</actspec>
+              <actspec>+ 0 ?ycoord ?ycoord</actspec>
+              <!--
+              <actspec>startADEServerLoggingInteractive</actspec>
+              --> 
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <actspec>addFieldPoint ?robot ?xcoord ?ycoord 4.50</actspec>
+              <actspec>changeSphinx4Grammar ?robot hri07autonomy</actspec>
+              <!--
+              <actspec>sleep ?robot 10000</actspec>
+              --> 
+              <!--
+              <actspec>moveTo ?robot -100 0</actspec>
+              <actspec>moveTo ?robot 0 -50</actspec>
+              --> 
+              <!--
+              <control>if</control>
+              <actspec> le ?ycoord 0</actspec>
+              <control>then</control>
+              <actspec> turnTo ?robot 22</actspec>
+              <actspec> moveDist ?robot 85</actspec>
+              <actspec> sleep ?robot 2000</actspec>
+              <control>endif</control>
+              --> 
+              <actspec>performAction MetaExplorationTaskHRIAut:?robot:?partner:30:0:0:0:0:0</actspec>
+              <actspec>performAction ExplorationTaskHRIAut:?robot:?partner</actspec>
+              <actspec>performAction TransmitHRIAut:?robot:?partner</actspec>
+              <actspec>performAction GoToXmitPoint:?robot:?xcoord:?ycoord</actspec>
+              <control>while</control>
+	      <!--
+              <actspec>  true</actspec>
+	      -->
+              <control> not</control>
+              <actspec>   isFact AtBase</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End MissionHRIAut -->
+            <!-- Begin MissionHRIAdaptAut -->
+            <type>                            
+              <!-- (the exploration task with adaptive autonomy based on fNIRS) -->
+              <name>MissionHRIAdaptAut</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>330</timeout>
+              <taskname>Gather_Data</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <actspec>+ 0 ?xcoord ?xcoord</actspec>
+              <actspec>+ 0 ?ycoord ?ycoord</actspec>
+              <!--
+              <actspec>startADEServerLoggingInteractive</actspec>
+              --> 
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <actspec>addFieldPoint ?robot ?xcoord ?ycoord 4.50</actspec>
+              <actspec>changeSphinx4Grammar ?robot hri07autonomy</actspec>
+              <!--
+              <actspec>sleep ?robot 10000</actspec>
+              --> 
+              <!--
+              <actspec>moveTo ?robot -100 0</actspec>
+              <actspec>moveTo ?robot 0 -50</actspec>
+              --> 
+              <!--
+              <control>if</control>
+              <actspec> le ?ycoord 0</actspec>
+              <control>then</control>
+              <actspec> turnTo ?robot 22</actspec>
+              <actspec> moveDist ?robot 85</actspec>
+              <actspec> sleep ?robot 2000</actspec>
+              <control>endif</control>
+              --> 
+              <actspec>performAction MetaExplorationTaskHRIAut:?robot:?partner:30:0:0:0:0:0</actspec>
+              <actspec>performAction ExplorationTaskHRIAut:?robot:?partner</actspec>
+              <actspec>performAction TransmitHRIAut:?robot:?partner</actspec>
+              <actspec>performAction MonitorLoad:?robot:?partner:?xcoord:?ycoord</actspec>
+              <control>while</control>
+	      <!--
+              <actspec>  true</actspec>
+	      -->
+              <control> not</control>
+              <actspec>   isFact AtBase</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End MissionHRIAdaptAut -->
+            <!-- Begin MonitorLoad -->
+            <type>                            
+              <!-- (the exploration task with adaptive autonomy based on fNIRS) -->
+              <name>MonitorLoad</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>100</cost>
+              <minurg>1.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>330</timeout>
+              <taskname>Monitor_Stress</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!load0</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!load</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!timeout</varname>
+                <vartype>visionTs</vartype>
+              </var>
+              <var>
+                <varname>!fs1</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <actspec>+ 0.0 0.0 !load0</actspec>
+              <actspec>sleep ?robot 5000</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   isFact AtBase</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <actspec> getTeammateLoad ?robot !load</actspec>
+              <control> if</control>
+              <actspec>   gt !load 0.75</actspec>
+              <control> and</control>
+              <actspec>   le !load0 0.75</actspec>
+              <control> then</control>
+              <actspec>   printText "CLASSIFICATION CHANGED: !load "</actspec>
+              <control> elseif</control>
+              <actspec>   le !load 0.75</actspec>
+              <control> and</control>
+              <actspec>   gt !load0 0.75</actspec>
+              <control> then</control>
+              <actspec>   printText "CLASSIFICATION CHANGED: !load "</actspec>
+              <control> endif</control>
+              <actspec> + !load 0.0 !load0</actspec>
+              <actspec> fieldReading ?robot !fs1</actspec>
+              <control> if</control>
+              <actspec>   gt !load 0.75</actspec>
+              <control> and</control>
+              <actspec>   lt !fs1 400</actspec>
+              <control> then</control>
+              <control>   if</control>
+              <control>     not</control>
+              <actspec>       isFact ReallyGoing</actspec>
+              <control>     endnot</control>
+              <control>   then</control>
+              <!--
+              <actspec>     printText "starting reallygo"</actspec>
+              -->
+              <actspec>     performAction ReallyGoToXmitPoint:?robot:?xcoord:?ycoord</actspec>
+              <actspec>     assertFact ReallyGoing</actspec>
+              <control>   else</control>
+              <!--
+              <actspec>     printText "already reallygoing"</actspec>
+              -->
+              <control>   endif</control>
+              <control> else</control>
+              <control>   if</control>
+              <actspec>     isFact ReallyGoing</actspec>
+              <control>   then</control>
+              <!--
+              <actspec>     printText "cancelling reallygo"</actspec>
+              -->
+              <actspec>     cancelAction ReallyAt:Transmission_Point</actspec>
+              <actspec>     retractFact ReallyGoing</actspec>
+              <actspec>     qstop ?robot</actspec>
+              <control>   else</control>
+              <!--
+              <actspec>     printText "not reallygoing"</actspec>
+              -->
+              <control>   endif</control>
+              <control> endif</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End MonitorLoad -->
+            <!-- Begin FieldMigrateHRIAut -->
+            <type>                            
+              <name>FieldMigrateHRIAut</name>
+              <!-- total time -->
+              <timeout>240</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?startx</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>?step</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?dir</varname>
+                <vartype>integer</vartype>
+              </var>
+              <control>while</control>
+              <actspec> true</actspec>
+              <control>do</control>
+              <actspec> printText "Moving field point..."</actspec>
+              <actspec> moveFieldPoint ?robot ?startx ?step ?dir</actspec>
+              <actspec> sleep ?robot 15000</actspec>
+              <control>endwhile</control>
+            </type>
+            <!-- End FieldMigrateHRIAut -->
+            <!-- Begin MetaExplorationTaskHRIAut -->
+            <type>                            
+              <!-- (exploration wrapper for the HRI07 autonomy paper) -->
+              <!-- Monitors task progress, announces time remaining, etc. -->
+              <name>MetaExplorationTaskHRIAut</name>
+              <desc>?robot helps ?partner locate the transmission point</desc>
+              <benefit>1800</benefit>
+              <cost>600</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <!--
+              <timeout>330</timeout>
+              --> 
+              <timeout>600</timeout>
+              <taskname>Monitor_Task</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?increment</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>?start</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>?current</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>?elapsed</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>?target</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>?remaining</varname>
+                <vartype>long</vartype>
+              </var>
+              <actspec>getTimeOfDay ?start</actspec>
+              <actspec>* ?increment 1000 ?increment</actspec>
+              <actspec>+ ?start ?increment ?target</actspec>
+              <actspec>changeMood ?robot neutral</actspec>
+              <actspec>startADEServerLogging</actspec>
+              <actspec>sleep ?robot 12500</actspec>
+              <actspec>beep ?robot</actspec>
+              <actspec>sayTextNow ?robot ?partner "Initialize-ing system, please wait."</actspec>
+              <actspec>sleep ?robot 12500</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start?"</actspec>
+              <actspec>getTimeOfDay ?current</actspec>
+              <actspec>- ?current ?start ?elapsed</actspec>
+              <actspec>/ ?elapsed 1000 ?elapsed</actspec>
+	      <actspec>logText "Starting after ?elapsed seconds have elapsed."</actspec>
+              <control>while</control>
+              <!-- total time -->
+              <actspec>   lt ?elapsed 240</actspec>
+              <control> and</control>
+              <control>   not</control>
+              <actspec>     isFact ExplorationTaskSuccess</actspec>
+              <control>   endnot</control>
+              <control>do</control>
+              <actspec> sleep ?robot 2000</actspec>
+              <actspec> getTimeOfDay ?current</actspec>
+              <actspec> - ?current ?start ?elapsed</actspec>
+              <actspec> / ?elapsed 1000 ?elapsed</actspec>
+              <control> if</control>
+              <actspec>   ge ?current ?target</actspec>
+              <control> then</control>
+              <!-- PWS: The constant in the spec below determines how much remaining time gets reported -->
+              <!-- total time -->
+              <actspec>   - 240 ?elapsed ?remaining</actspec>
+              <control>   if</control>
+              <actspec>     le ?remaining 60</actspec>
+              <control>   and</control>
+              <actspec>     ge ?remaining 50</actspec>
+              <control>   and</control>
+              <control>     not</control>
+              <actspec>	isFact halffrightened</actspec>
+              <control>     endnot</control>
+              <control>   then</control>
+              <actspec>     assertFact halffrightened</actspec>
+              <actspec>     changeMood ?robot halffrightened</actspec>
+              <control>     if</control>
+              <actspec>	not</actspec>
+              <actspec>	  isFact preparingTransmission</actspec>
+              <actspec>	endnot</actspec>
+              <control>     then</control>
+              <actspec>	sayTextNow ?robot ?partner "We're almost out of time!"</actspec>
+              <control>     endif</control>
+              <control>   elseif</control>
+              <actspec>     le ?remaining 120</actspec>
+              <control>   and</control>
+              <actspec>     ge ?remaining 90</actspec>
+              <control>   and</control>
+              <control>     not</control>
+              <actspec>	isFact quarterfrightened</actspec>
+              <control>     endnot</control>
+              <control>   then</control>
+              <actspec>     assertFact quarterfrightened</actspec>
+              <actspec>     changeMood ?robot quarterfrightened</actspec>
+              <actspec>     sayTextNow ?robot ?partner "There's not much time remaining."</actspec>
+              <control>   endif</control>
+              <control>   if</control>
+              <actspec>     gt ?remaining 45</actspec>
+              <control>   and</control>
+              <actspec>     lt ?remaining 200</actspec>
+              <control>   then</control>
+              <control>     if</control>
+              <actspec>	not</actspec>
+              <actspec>	  isFact preparingTransmission</actspec>
+              <actspec>	endnot</actspec>
+              <control>     then</control>
+              <actspec>	AnnounceTime ?robot ?partner ?remaining</actspec>
+              <control>     endif</control>
+              <control>   endif</control>
+              <control>   if</control>
+              <actspec>     le ?remaining 75</actspec>
+              <control>   then</control>
+              <actspec>     assertFact readyToTransmit</actspec>
+              <control>   endif</control>
+              <actspec>   + ?target ?increment ?target</actspec>
+              <control> endif</control>
+              <control>endwhile</control>
+              <actspec>assertFact endLookAround</actspec>
+              <control>if</control>
+              <actspec> isFact ExplorationTaskSuccess</actspec>
+              <control>then</control>
+              <!-- "happy" sounds a lot like "halfsad" to me, so I made "wayhappy" -->
+	      <actspec> logText "SUCCESS"</actspec>
+              <actspec> changeMood ?robot wayhappy</actspec>
+              <actspec> sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec> sayTextNow ?robot ?partner "we make a great team"</actspec>
+              <!-- 
+              <actspec> actionSucceed</actspec>
+              --> 
+              <actspec>else</actspec>
+	      <actspec> logText "FAILURE"</actspec>
+              <actspec> changeMood ?robot quartersad</actspec>
+              <actspec> sayTextNow ?robot ?partner "We failed to transmit the data in time."</actspec>
+              <actspec> changeMood ?robot halfsad</actspec>
+              <actspec> sayTextNow ?robot ?partner "It was a good effort"</actspec>
+              <!-- 
+              <actspec> actionFail</actspec>
+              --> 
+              <control>endif</control>
+              <actspec>sleep ?robot 2500</actspec>
+              <!-- Return home -->
+              <actspec>performAction ReturnToBase:?robot:?partner</actspec>
+	      <control>while</control>
+	      <control> not</control>
+	      <actspec>   isFact AtBase</actspec>
+	      <control> endnot</control>
+	      <control>do</control>
+              <actspec> sleep ?robot 1000</actspec>
+	      <control>endwhile</control>
+              <actspec>beep ?robot</actspec>
+              <actspec>stopADEServerLogging</actspec>
+            </type>
+            <!-- End MetaExplorationTaskHRIAut -->
+            <!-- Begin AnnounceTime -->
+            <type>                            
+              <name>AnnounceTime</name>
+              <desc>?robot tells ?partner how much time remains</desc>
+              <benefit>1800</benefit>
+              <cost>0</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <timeout>5</timeout>
+              <taskname>Announce_Time</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?remaining</varname>
+                <vartype>long</vartype>
+              </var>
+              <actspec>sayTextNow ?robot ?partner "about ?remaining seconds left"</actspec>
+            </type>
+            <!-- End AnnounceTime -->
+            <!-- Begin ReturnToBase -->
+            <type>                            
+              <name>ReturnToBase</name>
+              <desc>?robot goes home</desc>
+              <benefit>1800</benefit>
+              <cost>100</cost>
+              <minurg>1.0</minurg>
+              <maxurg>1.0</maxurg>
+              <!-- total time -->
+              <timeout>300</timeout>
+              <taskname>Go_Home</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!heading</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!xcoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ycoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <locks>motionLock speechLock</locks>
+              <actspec>changeMood ?robot neutral</actspec>
+              <actspec>sayTextNow ?robot ?partner "returning to base"</actspec>
+              <actspec>getLocation ?robot !xcoord !ycoord</actspec>
+              <actspec>printText "xccord !xcoord "</actspec>
+              <actspec>printText "ycoord !ycoord "</actspec>
+              <actspec>getHeadingFrom ?robot !xcoord !ycoord 0.1 2.1 !heading</actspec>
+              <actspec>printText "turning to face !heading"</actspec>
+              <actspec>turnTo ?robot !heading</actspec>
+              <actspec>moveTo ?robot 0.6 2.1</actspec>
+              <actspec>turnTo ?robot -135</actspec>
+              <actspec>assertFact AtBase</actspec>
+            </type>
+            <!-- End ReturnToBase -->
+            <!-- Begin ExplorationTaskHRIAut -->
+            <type>                            
+              <!-- (the exploration task for the HRI07 autonomy paper) -->
+              <name>ExplorationTaskHRIAut</name>
+              <desc>?robot helps ?partner locate the transmission point</desc>
+              <benefit>1800</benefit>
+              <cost>600</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <!-- total time -->
+              <timeout>240</timeout>
+              <taskname>Follow_Orders</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!binding</varname>
+                <vartype>action</vartype>
+              </var>
+              <var>
+                <varname>!timestamp</varname>
+                <vartype>visionTs</vartype>
+              </var>
+              <var>
+                <varname>!counter</varname>
+                <vartype>visionTs</vartype>
+              </var>
+              <locks>motionLock transmitLock</locks>
+              <control>while</control>
+              <actspec> true</actspec>
+              <control>do</control>
+              <control> while</control>
+              <control>   not</control>
+              <actspec>     discourseGetBindingOfType ?robot ?partner !binding !timestamp</actspec>
+              <control>   endnot</control>
+              <control> do</control>
+              <control> endwhile</control>
+	      <!--
+              <actspec> printText "waiting for binding of ?timestamp"</actspec>
+	      -->
+              <actspec> + 0 0 !counter</actspec>
+              <control> while</control>
+              <control>   not</control>
+              <actspec>     discourseIsBound !timestamp</actspec>
+              <control>   endnot</control>
+              <control> and</control>
+              <actspec>   lt !counter 50</actspec>
+              <control> do</control>
+              <actspec>   + !counter 1 !counter</actspec>
+              <!--
+              <control>   if</control>
+              <actspec>     stoppedMe ?robot</actspec>
+              <control>   then</control>
+              <actspec>     sayTextNow ?robot ?partner "There's something in the way."</actspec>
+              <control>   endif</control>
+              -->
+              <control> endwhile</control>
+			  <control> if</control>
+			  <actspec>	lt !counter 50</actspec>
+			  <control> then</control>
+              <actspec>	while</actspec>
+              <actspec>	  not</actspec>
+              <actspec>		discourseGetResult !timestamp !binding</actspec>
+              <actspec>	  endnot</actspec>
+              <actspec>	do</actspec>
+              <actspec>	endwhile</actspec>
+	      <!--
+              <actspec>	printText "executing binding of !timestamp"</actspec>
+	      -->
+              <actspec>	performAction !binding</actspec>
+              <actspec>	sleep ?robot 50</actspec>
+			  <control> endif</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End ExplorationTaskHRIAut -->
+            <!-- Begin ExplorationTaskHRIAutLong -->
+            <type>                            
+              <!-- (the exploration task for the HRI07 autonomy paper) -->
+              <name>ExplorationTaskHRIAutLong</name>
+              <desc>?robot helps ?partner locate the transmission point</desc>
+              <benefit>1800</benefit>
+              <cost>600</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <timeout>1800</timeout>
+              <taskname>Follow_Orders</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!binding</varname>
+                <vartype>action</vartype>
+              </var>
+              <var>
+                <varname>!timestamp</varname>
+                <vartype>visionTs</vartype>
+              </var>
+              <locks>motionLock transmitLock</locks>
+              <actspec>changeSphinx4Grammar ?robot hri07autonomy</actspec>
+              <control>while</control>
+              <actspec> true</actspec>
+              <control>do</control>
+              <control> while</control>
+              <control>   not</control>
+              <actspec>     discourseGetBindingOfType ?robot ?partner !binding !timestamp</actspec>
+              <control>   endnot</control>
+              <control> do</control>
+              <control> endwhile</control>
+              <actspec> printText "waiting for binding of !timestamp"</actspec>
+              <control> while</control>
+              <control>   not</control>
+              <actspec>     discourseIsBound !timestamp</actspec>
+              <control>   endnot</control>
+              <control> do</control>
+              <!--
+              <control>   if</control>
+              <actspec>     stoppedMe ?robot</actspec>
+              <control>   then</control>
+              <actspec>     sayTextNow ?robot ?partner "There's something in the way."</actspec>
+              <control>   endif</control>
+              -->
+              <control> endwhile</control>
+              <control> while</control>
+              <control>   not</control>
+              <actspec>     discourseGetResult !timestamp !binding</actspec>
+              <control>   endnot</control>
+              <control> do</control>
+              <control> endwhile</control>
+              <actspec> printText "executing binding of !timestamp"</actspec>
+              <actspec> performAction !binding</actspec>
+              <actspec> sleep ?robot 50</actspec>
+              <control>endwhile</control>
+            </type>
+            <!-- End ExplorationTaskHRIAutLong -->
+            <!-- Begin ReallyGoToXmitPoint -->
+            <type>                            
+              <name>ReallyGoToXmitPoint</name>
+              <desc>find the transmission point</desc>
+              <benefit>1800</benefit>
+              <cost>400</cost>
+              <!-- for max priority -->
+              <minurg>1.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>240</timeout>
+              <taskname>Find_Transmit_Point</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!fs1</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <var>
+                <varname>!fs2</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <locks>motionLock</locks>
+              <control>while</control>
+              <control>   not</control>
+              <actspec>     isFact ExplorationTaskSuccess</actspec>
+              <control>   endnot</control>
+              <control>do</control>
+              <actspec> fieldReading ?robot !fs1</actspec>
+              <control> if</control>
+              <actspec>   lt !fs1 400</actspec>
+              <control> then</control>
+              <control>   if</control>
+              <actspec>     isFact AtTransmissionPoint</actspec>
+              <control>   then</control>
+              <actspec>     retractFact AtTransmissionPoint</actspec>
+              <control>   endif</control>
+              <!--
+              <actspec>   sayTextNow ?robot ?partner "I need to find a good transmission point"</actspec>
+              -->
+              <actspec>   printText "?xcoord ?ycoord"</actspec>
+              <actspec>   startMoveTo ?robot ?xcoord ?ycoord !actionID</actspec>
+              <control>   while</control>
+              <control>     not</control>
+              <actspec>	      checkMotion ?robot !actionID</actspec>
+              <control>     endnot</control>
+              <control>   and</control>
+              <control>     not</control>
+              <actspec>	      ge !fs1 400</actspec>
+              <control>     endnot</control>
+              <control>   do</control>
+              <actspec>     fieldReading ?robot !fs1</actspec>
+              <control>     if</control>
+              <actspec>	      lt !fs2 400</actspec>
+              <control>     and</control>
+              <actspec>	      ge !fs1 400</actspec>
+              <control>     then</control>
+              <actspec>	      + 0 !fs1 !fs2</actspec>
+              <control>     elseif</control>
+              <actspec>	      lt !fs2 300</actspec>
+              <control>     and</control>
+              <actspec>	      ge !fs1 300</actspec>
+              <control>     then</control>
+              <!--
+              <actspec>	      sayTextNow ?robot ?partner "Signal strength is !fs1"</actspec>
+              -->
+              <actspec>	      + 0 !fs1 !fs2</actspec>
+              <control>     elseif</control>
+              <actspec>	      lt !fs2 200</actspec>
+              <control>     and</control>
+              <actspec>	      ge !fs1 200</actspec>
+              <control>     then</control>
+              <!--
+              <actspec>	      sayTextNow ?robot ?partner "Signal strength is !fs1"</actspec>
+              -->
+              <actspec>	      + 0 !fs1 !fs2</actspec>
+              <control>     endif</control>
+              <control>   endwhile</control>
+	      <!-- Why turn?
+              <actspec>   turnTo ?robot -45</actspec>
+	      -->
+              <actspec>   assertFact AtTransmissionPoint</actspec>
+              <actspec>   cancelMotion ?robot !actionID</actspec>
+              <actspec>   qstop ?robot</actspec>
+              <!--
+              <actspec>   sayTextNow ?robot ?partner "The signal is strong enough here"</actspec>
+              -->
+              <actspec> else</actspec>
+              <control>   if</control>
+              <control>     not</control>
+              <actspec>	      isFact AtTransmissionPoint</actspec>
+              <control>     endnot</control>
+              <control>   then</control>
+              <actspec>     assertFact AtTransmissionPoint</actspec>
+              <control>   endif</control>
+              <control> endif</control>
+              <!--
+              <actspec> StayAtXmitPoint ?robot</actspec>
+              --> 
+              <control>endwhile</control>
+            </type>
+            <!-- End ReallyGoToXmitPoint -->
+            <!-- Begin GoToXmitPoint -->
+            <type>                            
+              <name>GoToXmitPoint</name>
+              <desc>find the transmission point</desc>
+              <benefit>1800</benefit>
+              <cost>400</cost>
+              <minurg>0.25</minurg>
+              <!-- see ~pscherm1/work/projects/ade/com/action/hri07aut.m
+              ; 120 seconds in 
+              <maxurg>0.51786</maxurg>
+              ; 105 seconds in 
+              <maxurg>0.55612</maxurg>
+              ; 90 seconds in 
+              <maxurg>0.60714</maxurg>
+              ; 60 seconds in 
+              <maxurg>0.78571</maxurg>
+              ; 180 seconds into 300 second run 
+              <maxurg>0.54762</maxurg>
+              ; 150 seconds into 240 second run 
+              <maxurg>0.53571</maxurg>
+              --> 
+              <maxurg>0.53571</maxurg>
+              <!-- total time -->
+              <timeout>240</timeout>
+              <taskname>Find_Transmit_Point</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!fs1</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <var>
+                <varname>!fs2</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <locks>motionLock</locks>
+              <control>while</control>
+              <control>   not</control>
+              <actspec>     isFact ExplorationTaskSuccess</actspec>
+              <control>   endnot</control>
+              <control>do</control>
+              <actspec> fieldReading ?robot !fs1</actspec>
+              <control> if</control>
+              <actspec>   lt !fs1 400</actspec>
+              <control> then</control>
+              <control>   if</control>
+              <actspec>     isFact AtTransmissionPoint</actspec>
+              <control>   then</control>
+              <actspec>     retractFact AtTransmissionPoint</actspec>
+              <control>   endif</control>
+              <actspec>   sayTextNow ?robot ?partner "I need to find a good transmission point"</actspec>
+              <actspec>   printText "?xcoord ?ycoord"</actspec>
+              <actspec>   startMoveTo ?robot ?xcoord ?ycoord !actionID</actspec>
+              <control>   while</control>
+              <control>     not</control>
+              <actspec>	      checkMotion ?robot !actionID</actspec>
+              <control>     endnot</control>
+              <control>   and</control>
+              <control>     not</control>
+              <actspec>	      ge !fs1 400</actspec>
+              <control>     endnot</control>
+              <control>   do</control>
+              <actspec>     fieldReading ?robot !fs1</actspec>
+              <control>     if</control>
+              <actspec>	      lt !fs2 400</actspec>
+              <control>     and</control>
+              <actspec>	      ge !fs1 400</actspec>
+              <control>     then</control>
+              <actspec>	      + 0 !fs1 !fs2</actspec>
+              <control>     elseif</control>
+              <actspec>	      lt !fs2 300</actspec>
+              <control>     and</control>
+              <actspec>	      ge !fs1 300</actspec>
+              <control>     then</control>
+              <actspec>	      sayTextNow ?robot ?partner "Signal strength is !fs1"</actspec>
+              <actspec>	      + 0 !fs1 !fs2</actspec>
+              <control>     elseif</control>
+              <actspec>	      lt !fs2 200</actspec>
+              <control>     and</control>
+              <actspec>	      ge !fs1 200</actspec>
+              <control>     then</control>
+              <actspec>	      sayTextNow ?robot ?partner "Signal strength is !fs1"</actspec>
+              <actspec>	      + 0 !fs1 !fs2</actspec>
+              <control>     endif</control>
+              <control>   endwhile</control>
+	      <!-- Why turn?
+              <actspec>   turnTo ?robot -45</actspec>
+	      -->
+              <actspec>   assertFact AtTransmissionPoint</actspec>
+              <actspec>   cancelMotion ?robot !actionID</actspec>
+              <actspec>   qstop ?robot</actspec>
+              <actspec>   sayTextNow ?robot ?partner "The signal is strong enough here"</actspec>
+              <actspec> else</actspec>
+              <control>   if</control>
+              <control>     not</control>
+              <actspec>	      isFact AtTransmissionPoint</actspec>
+              <control>     endnot</control>
+              <control>   then</control>
+              <actspec>     assertFact AtTransmissionPoint</actspec>
+              <control>   endif</control>
+              <control> endif</control>
+              <!--
+              <actspec> StayAtXmitPoint ?robot</actspec>
+              --> 
+              <control>endwhile</control>
+            </type>
+            <!-- End GoToXmitPoint -->
+            <!-- Begin StayAtXmitPoint -->
+            <type>                            
+              <name>StayAtXmitPoint</name>
+              <desc>stay at the transmission point</desc>
+              <benefit>1800</benefit>
+              <cost>400</cost>
+              <minurg>0.0</minurg>
+              <maxurg>0.7857</maxurg>
+              <!-- total time (less 15) -->
+              <timeout>285</timeout>
+              <taskname>Stay_at_Transmit_Point</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!fs1</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <actspec>fieldReading ?robot !fs1</actspec>
+              <control>while</control>
+              <actspec> ge !fs1 400</actspec>
+              <control>do</control>
+              <actspec> sleep ?robot 1000</actspec>
+              <actspec> fieldReading ?robot !fs1</actspec>
+              <control>endwhile</control>
+              <actspec>performAction GoToXmitPoint:?robot:?xcoord:?ycoord</actspec>
+            </type>
+            <!-- End StayAtXmitPoint -->
+            <!-- Begin TransmitHRIAut -->
+            <type>                            
+              <name>TransmitHRIAut</name>
+              <!--
+              <desc>?robot is initiating transmission</desc>
+              --> 
+              <desc>initiate transmission</desc>
+              <benefit>1800</benefit>
+              <cost>200</cost>
+              <minurg>0.0</minurg>
+              <!-- 
+              ; 150 seconds 
+              <maxurg>0.45</maxurg>
+              ; 135 seconds 
+              <maxurg>0.5</maxurg>
+              ; 255 seconds into 300 second run 
+              <maxurg>0.44118</maxurg>
+              ; 195 seconds into 240 second run 
+              <maxurg>0.46154</maxurg>
+              --> 
+              <maxurg>0.46154</maxurg>
+              <!-- total time -->
+              <timeout>240</timeout>
+              <taskname>Transmit_Data</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!fieldStrength</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <var>
+                <varname>!total</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!big</varname>
+                <vartype>integer</vartype>
+              </var>
+              <locks>transmitLock</locks>
+              <control>if</control>
+              <control> not</control>
+              <actspec>   isFact preparingTransmission</actspec>
+              <control> endnot</control>
+              <control>then</control>
+              <actspec> assertFact preparingTransmission</actspec>
+              <actspec> changeSphinx4Grammar ?robot sixval</actspec>
+              <actspec> sayTextNow ?robot ?partner "We need to get ready to transmit"</actspec>
+              <actspec> sayTextNow ?robot ?partner "How many formations did you measure?"</actspec>
+              <actspec> oldGetBinding ?robot ?partner !total</actspec>
+              <actspec> sayTextNow ?robot ?partner "Okay, how many of those were above the threshold?"</actspec>
+              <actspec> oldGetBinding ?robot ?partner !big</actspec>
+              <actspec> changeMood ?robot quarterfrightened</actspec>
+              <actspec> sayTextNow ?robot ?partner "Okay, we have the data"</actspec>
+              <actspec> assertFact preparedTransmission</actspec>
+              <actspec> fieldReading ?robot !fieldStrength</actspec>
+              <control> if</control>
+              <actspec>  lt !fieldStrength 400</actspec>
+              <control> then</control>
+              <actspec>  sayTextNow ?robot ?partner "We can transmit as soon as the signal is strong enough."</actspec>
+              <control> endif</control>
+              <control> while</control>
+              <actspec>  lt !fieldStrength 400</actspec>
+              <control> do</control>
+              <actspec>  fieldReading ?robot !fieldStrength</actspec>
+              <control> endwhile</control>
+              <actspec> sayTextNow ?robot ?partner "Initiating transmission"</actspec>
+              <actspec> sleep ?robot 5000</actspec>
+              <actspec> sayTextNow ?robot ?partner "Transmission will complete in ten seconds."</actspec>
+              <actspec> sleep ?robot 5000</actspec>
+              <actspec> sayTextNow ?robot ?partner "Transmission will complete in five seconds."</actspec>
+              <actspec> sleep ?robot 5000</actspec>
+              <control> if</control>
+              <actspec>  doTransmit ?robot 400 !fieldStrength</actspec>
+              <control> then</control>
+              <actspec>  assertFact ExplorationTaskSuccess</actspec>
+              <actspec> else</actspec>
+              <actspec>  assertFact ExplorationTaskFailure</actspec>
+              <control> endif</control>
+              <control>endif</control>
+            </type>
+            <!-- End TransmitHRIAut -->
+            <!-- Begin prepareTransmission -->
+            <type>                            
+              <name>prepareTransmission</name>
+              <dbtype>
+                action 
+              </dbtype>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!total</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!big</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!fieldStrength</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <locks>transmitLock</locks>
+              <control>if</control>
+              <actspec> isFact readyToTransmit</actspec>
+              <control>then</control>
+              <actspec> assertFact preparingTransmission</actspec>
+              <actspec> changeSphinx4Grammar ?robot sixval</actspec>
+              <actspec> sayTextNow ?robot ?partner "How many formations did you measure?"</actspec>
+              <actspec> oldGetBinding ?robot ?partner !total</actspec>
+              <actspec> sayTextNow ?robot ?partner "And how many of those were above the threshold?"</actspec>
+              <actspec> oldGetBinding ?robot ?partner !big</actspec>
+              <actspec> assertFact preparedTransmission</actspec>
+              <actspec> sayTextNow ?robot ?partner "Okay, we have the data"</actspec>
+              <actspec> sayTextNow ?robot ?partner "Initiating transmission"</actspec>
+              <actspec> fieldReading ?robot !fieldStrength</actspec>
+              <control> if</control>
+              <actspec>  ge !fieldStrength 400</actspec>
+              <control> then</control>
+              <actspec>   sleep ?robot 5000</actspec>
+              <actspec>   sayTextNow ?robot ?partner "Transmission will complete in ten seconds."</actspec>
+              <actspec>   sleep ?robot 5000</actspec>
+              <actspec>   sayTextNow ?robot ?partner "Transmission will complete in five seconds."</actspec>
+              <actspec>   sleep ?robot 5000</actspec>
+              <actspec> else</actspec>
+              <actspec>   sleep ?robot 1000</actspec>
+              <control> endif</control>
+              <actspec> transmit ?robot !fieldStrength</actspec>
+              <actspec>else</actspec>
+              <actspec> sayTextNow ?robot ?partner "We can transmit only when there is less than a minute remaining."</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End prepareTransmission -->
+            <!-- Begin reading -->
+            <type>                                          
+              <!-- Get a reading of field strength -->
+              <name>reading-not</name>
+              <desc>?robot asks for a reading</desc>
+              <taskname>Report_Field_Strength</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>!fieldStrength</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <actspec>fieldReading ?robot !fieldStrength</actspec>
+              <control>if</control>
+              <actspec> isFact quarterfrigntened</actspec>
+              <control>or</control>
+              <actspec> isFact halffrigntened</actspec>
+              <control>then</control>
+              <actspec> sayTextNow ?robot ?partner "!fieldStrength"</actspec>
+              <actspec>else</actspec>
+              <actspec> sayTextNow ?robot ?partner "Feeld strength is !fieldStrength"</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End reading -->
+            <!-- Begin deliverOrder -->
+            <type>                            
+              <name>deliverOrder</name>
+              <desc>deliver order</desc>
+              <benefit>55</benefit>
+              <cost>50</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <timeout>100</timeout>
+              <taskname>Deliver_Order</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <locks>motionLock</locks>
+              <actspec>sleep ?robot 5000</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   atLocation ?robot ?xcoord ?ycoord 25</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <actspec> startMoveTo ?robot ?xcoord ?ycoord</actspec>
+              <control> while</control>
+              <control>   not</control>
+              <actspec>     checkMotion ?robot</actspec>
+              <control>   endnot</control>
+              <control> do</control>
+              <control> endwhile</control>
+              <control>endwhile</control>
+              <actspec>stopADEServerLogging</actspec>
+              <!--
+              <actspec>sayTextNow ?robot ?partner "Here is your order, ?partner"</actspec>
+              --> 
+            </type>
+            <!-- End deliverOrder -->
+            <!-- Begin autonomyChat -->
+            <type>                            
+              <name>autonomyChat</name>
+              <desc>chat</desc>
+              <benefit>110</benefit>
+              <cost>100</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <timeout>75</timeout>
+              <taskname>Chat</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>!statement</varname>
+                <vartype>text</vartype>
+              </var>
+              <locks>motionLock speechLock</locks>
+              <actspec>cancelMotion ?robot -1</actspec>
+              <actspec>sayTextNow ?robot ?partner "Hello, would you like to chat?"</actspec>
+              <actspec>printPriorities</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   getText ?robot ?partner !statement</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+              <actspec>sayTextNow ?robot ?partner "My name is Rudy."</actspec>
+              <actspec>printPriorities</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   getText ?robot ?partner !statement</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+              <actspec>sayTextNow ?robot ?partner "I am from the University of Notre Dame"</actspec>
+              <actspec>printPriorities</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   getText ?robot ?partner !statement</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+              <actspec>changeMood ?robot halfangry</actspec>
+              <actspec>sayTextNow ?robot ?partner "I am sorry to hear that."</actspec>
+              <actspec>incrementPositiveAffect ?robot -0.25</actspec>
+              <actspec>incrementNegativeAffect ?robot 0.5</actspec>
+              <actspec>stopTracking ?robot</actspec>
+              <actspec>lookForward ?robot</actspec>
+            </type>
+            <!-- End autonomyChat -->
+            <!-- Begin listen -->
+            <type>                            
+              <name>listen</name>
+              <desc>listen for speech</desc>
+              <benefit>55</benefit>
+              <cost>50</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <timeout>100</timeout>
+              <taskname>Listen</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>!statement</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>!heywait</varname>
+                <vartype>text</vartype>
+              </var>
+              <locks>speechLock</locks>
+              <actspec>setText !heywait "hey wait"</actspec>
+              <control>while</control>
+              <actspec> true</actspec>
+              <control>do</control>
+              <actspec> printPriorities</actspec>
+              <control> while</control>
+              <control>   not</control>
+              <actspec>     getText ?robot ?partner !statement</actspec>
+              <control>   endnot</control>
+              <control> do</control>
+              <control> endwhile</control>
+              <control> if</control>
+              <actspec>   stringCompare !statement hello</actspec>
+              <control> or</control>
+              <actspec>   stringCompare !statement !heywait</actspec>
+              <control> then</control>
+              <actspec>   performAction autonomyChat:?robot:?partner</actspec>
+              <control> endif</control>
+              <actspec> sleep ?robot 2000</actspec>
+              <control>endwhile</control>
+            </type>
+            <!-- End listen -->
+            <!-- Begin testMoveSequence for B09b -->
+            <type>                            
+              <name>testMoveSequence</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <locks>motionLock</locks>
+              <actspec>moveTo ?robot 1.65 -1.5</actspec>
+              <actspec>turnTo ?robot 180</actspec>
+              <actspec>moveTo ?robot 0.0 -1.25</actspec>
+              <actspec>moveTo ?robot -1.0 -1.0</actspec>
+              <actspec>turnTo ?robot 90</actspec>
+              <actspec>sayTextNow ?robot Mike "Ready to start, Mike?"</actspec>
+            </type>
+            <!-- End testMoveSequence -->
+            <!-- Begin testFollowWall -->
+            <type>                            
+              <name>testFollowWall</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?subject</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!truefalse</varname>
+                <vartype>boolean</vartype>
+              </var>
+              <var>
+                <varname>!sixval</varname>
+                <vartype>integer</vartype>
+              </var>
+              <locks>motionLock</locks>
+              <!--
+              <actspec>sayTextNow ?robot ?subject "Hello, my name is ?robot"</actspec>
+              <actspec>moveTo ?robot 0.0 0.5</actspec>
+              <actspec>sayTextNow ?robot ?subject "At waypoint one"</actspec>
+              <actspec>turnTo ?robot 270</actspec>
+              <actspec>sleep ?robot 3000</actspec>
+              <actspec>moveTo ?robot -0.25 -1.0</actspec>
+              <actspec>sayTextNow ?robot ?subject "At waypoint two"</actspec>
+              <actspec>turnTo ?robot 180</actspec>
+              <actspec>sleep ?robot 3000</actspec>
+              <actspec>moveTo ?robot -1.0 -1.0</actspec>
+              <actspec>sayTextNow ?robot ?subject "At destination"</actspec>
+              <actspec>turnTo ?robot 90</actspec>
+              <actspec>sleep ?robot 3000</actspec>
+              <actspec>sayTextNow ?robot ?subject "I am going to present some statements"</actspec>
+              <actspec>sayTextNow ?robot ?subject "Please respond using numbers"</actspec>
+              <actspec>sayTextNow ?robot ?subject "one for strongly disagree"</actspec>
+              <actspec>sayTextNow ?robot ?subject "two for moderately disagree"</actspec>
+              <actspec>sayTextNow ?robot ?subject "three for slightly disagree"</actspec>
+              <actspec>sayTextNow ?robot ?subject "four for slightly agree"</actspec>
+              <actspec>sayTextNow ?robot ?subject "five for moderately agree"</actspec>
+              <actspec>sayTextNow ?robot ?subject "and six for strongly agree"</actspec>
+              <actspec>sayTextNow ?robot ?subject "First statement"</actspec>
+              --> 
+              <actspec>+ 0 0 !sixval</actspec>
+              <actspec>changeSphinx4Grammar ?robot sixval</actspec>
+              <actspec>changeDiscourseInteraction ?robot "Questionnaire Interaction"</actspec>
+              <actspec>sayTextNow ?robot ?subject "Robots are autonomous, self-contained beings, unlike puppets who need to have someone pulling their strings"</actspec>
+              <actspec>getBinding ?robot ?subject !sixval</actspec>
+              <actspec>printText !sixval</actspec>
+              <actspec>sayTextNow ?robot ?subject "Oh kay"</actspec>
+              <actspec>sayTextNow ?robot ?subject "There are times when I have done things of which I'm proud"</actspec>
+              <actspec>getBinding ?robot ?subject !sixval</actspec>
+              <actspec>printText !sixval</actspec>
+              <!--
+              <actspec>sayTextNow ?robot ?subject "Oh kay"</actspec>
+              <actspec>sayTextNow ?robot ?subject "Robots should be able to recognize human emotions"</actspec>
+              <actspec>sayTextNow ?robot ?subject "Oh kay please respond to the following statements with true or false"</actspec>
+              <actspec>changeSphinx4Grammar ?robot truefalse</actspec>
+              <actspec>sayTextNow ?robot ?subject "Before voting I thoroughly investigate the qualifications of all the candidates"</actspec>
+              <actspec>getBinding ?robot ?subject !truefalse</actspec>
+              <actspec>printText !truefalse</actspec>
+              <actspec>sayTextNow ?robot ?subject "Oh kay"</actspec>
+              <actspec>sayTextNow ?robot ?subject "I never hesitate to go out of my way to help someone in trouble"</actspec>
+              <actspec>getBinding ?robot ?subject !truefalse</actspec>
+              <actspec>printText !truefalse</actspec>
+              <actspec>sayTextNow ?robot ?subject "Oh kay"</actspec>
+              <actspec>sayTextNow ?robot ?subject "It is sometimes hard for me to go on with my work if I am not encouraged"</actspec>
+              <actspec>getBinding ?robot ?subject !truefalse</actspec>
+              <actspec>printText !truefalse</actspec>
+              --> 
+              <actspec>sayTextNow ?robot ?subject "Oh kay, that's all for the survey"</actspec>
+            </type>
+            <!-- End testFollowWall -->
+          </subtypes>
+        </type>
+      </subtypes>
+    </type>
+  </subtypes>
+</type>

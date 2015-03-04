@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<config>
+  <world bounded="false">
+    <shape>
+      <rect x="-18.0" y="-9.0" xLength="36.0" yLength="18.0" />
+    </shape>
+  </world>
+  <init-robot-positions>
+    <position x="-1" y ="-2" z="2">
+    </position>
+  </init-robot-positions>
+  <box name="victim">
+    <color name="red"/>
+    <shape zLength="0.2">
+	  <rect x="9" y="0.0" center="True" xLength="0.3" yLength="0.2"/>
+        </shape> 
+  </box>
+  <landmark name="tree5" laserable="false">
+    <shape zLength="0.4">
+      <rect x="6" y="1.0" center="True" xLength="0.5" yLength="0.4"/>
+    </shape>  
+  </landmark>
+  <landmark name="tree6" laserable="false">
+    <shape zLength="0.4">
+      <rect x="10" y="4.0" center="True" xLength="0.5" yLength="0.4"/>
+    </shape>  
+  </landmark>
+  <landmark name="tree7" laserable="false">
+    <shape zLength="0.4">
+      <rect x="10" y="-4.0" center="True" xLength="0.5" yLength="0.4"/>
+    </shape>  
+  </landmark>
+  <landmark name="tree8" laserable="false">
+    <shape zLength="0.4">
+      <rect x="15" y="2.0" center="True" xLength="0.5" yLength="0.4"/>
+    </shape>  
+  </landmark>
+  <landmark name="tree9" laserable="false">
+    <shape zLength="0.4">
+      <rect x="13" y="-6.0" center="True" xLength="0.5" yLength="0.4"/>
+    </shape>  
+  </landmark>
+  <landmark name="tree10" laserable="false">
+    <shape zLength="0.4">
+      <rect x="10" y="-8.0" center="True" xLength="0.5" yLength="0.4"/>
+    </shape>  
+  </landmark>
+  <landmark name="tree12" laserable="false">
+    <shape zLength="0.4">
+	<rect x="4" y="-8.0" center="True" xLength="0.5" yLength="0.4"/>
+      </shape>  
+  </landmark>
+</config>

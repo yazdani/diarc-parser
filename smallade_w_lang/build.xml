@@ -1,0 +1,666 @@
+<?xml version='1.0'?>
+<project name='ADE' default='main' basedir='.' xmlns:cpptasks="antlib:net.sf.antcontrib.cpptasks">
+  <description>
+<!-- This description is intentionally dedented, please leave it that way -->
+This is the primary build file for ADE.  It contains most of the standard build
+targets (all, clean, test, main, etc) as well as one build target for each
+project (com.action, com.discourse, etc).
+
+Usage:  Use the wrapper script ./ant to delegate to the binary ant in anthome/,
+which in turn will read build.xml.  Alternatively you can set the ANT_HOME
+environmental varaible to the anthome/ directory and then use ant (sans ./ ).
+
+For the most part you shouldn't have to edit build.xml.  Obviously if you're
+starting a new project you need to add a target here, please do your part to
+keep the targets in each section alphabetized.
+Otherwise, if you're just adding targets for your own convenience (which is a
+good idea) put them in ./anthome/perUserFiles/YOURUSERNAME.xml and they'll be
+automatically included here.  Similarly, if you just want to save some personal
+presets put them in ./anthome/perUserFiles/YOURUSERNAME.properties.  It's also
+a good idea to check out what other people have in those files to give you some
+ideas for what  you can do to make your life easier.
+
+Usage 2: try passing in the -projecthelp flag, it'll list all the public targets.
+
+Note: Settings in YOURUSERNAME.properties override those in build.properties, this is
+to allow you the most power as a developer.  With great power comes great responsibility.
+When in doubt, leave it out.  The default settings provided in ./build.properties are
+very probably good enough for you. (and as a corallary, don't edit build.properties unless
+you're sure you know what you're doing).
+  </description>
+
+  <!-- Load Environment Variables -->
+  <!-- (order matters here) -->
+  <property environment='env'/>
+  <property name='un' value='${user.name}'/>
+  <property name='l' value='127.0.0.1'/>
+  <property name='r' value='127.0.0.1'/>
+  <property name='args' value=''/>
+  <property name='perUserFiles.dir' location='${ant.home}/perUserFiles'/>
+  <property name='user.userConfig.filebase' location='${perUserFiles.dir}/${un}'/>
+  <property file='${user.userConfig.filebase}.properties'/>
+  <property file='build.properties'/>
+  <property name='k' value='${tmp.dir}/${un}.hosts'/>
+  <property name='hosts.file' value='${k}'/>
+
+  <!-- Load Per-User Build XML -->
+  <!-- Note: The XML imported here will actually be appended to the end.  I'm putting the
+  import here because it is logically grouped with loading the environmental variables. -->
+  <import file='${cfg}' optional='true'/>
+  <import file='${user.userConfig.filebase}.xml' optional='true'/>
+
+  <!-- Custom Task Variables -->
+  <property name='customTasks.src.dir' location='${ant.home}/contrib/com'/>
+  <property name='customTasks.dest.dir' location='${ant.home}/lib'/>
+  <property name='ant.library.dir' location='${ant.home}/lib'/>
+
+  <!-- ADE Classpath Setup (note that the Ant classpath is independent and not managed here) -->
+  <path id='ant.classpath'>
+    <path refid='base.classpath'/>
+    <fileset dir='${ant.library.dir}' includes='**/*.jar'/>
+  </path>
+  <path id='base.classpath'>
+    <pathelement path='${build.dir}'/>
+    <pathelement path='${build.lib.dir}/tools.nrepl-0.2.3.jar'/>
+    <pathelement path='${build.lib.dir}/commons-io-2.0.1.jar'/>
+    <pathelement path='${build.lib.dir}/commons-lang3-3.2-SNAPSHOT.jar'/>
+    <pathelement path='${build.lib.dir}/commons-logging-1.1.2.jar'/>
+    <pathelement path='${build.lib.dir}/commons-math3-3.0.jar'/>
+    <pathelement path='${build.lib.dir}/gson-2.2.4.jar'/>
+    <pathelement path='${build.lib.dir}/guava-14.0.1.jar'/>
+    <pathelement path='${build.lib.dir}/javaclient2.jar'/>
+    <pathelement path='${build.lib.dir}/jcommon-1.0.16.jar'/>
+    <pathelement path='${build.lib.dir}/jena-core-2.11.0.jar'/>
+    <pathelement path='${build.lib.dir}/jena-iri-1.0.0.jar'/>
+    <pathelement path='${build.lib.dir}/jfreechart-1.0.14.jar'/>
+    <!-- <pathelement path='${build.lib.dir}/jmdns.jar'/> -->
+    <pathelement path='${build.lib.dir}/jna.jar'/>
+    <pathelement path='${build.lib.dir}/json.jar'/>
+    <pathelement path='${build.lib.dir}/junit-4.7.jar'/>
+    <pathelement path='${build.lib.dir}/log4j-api-2.0-beta8.jar'/>
+    <pathelement path='${build.lib.dir}/log4j-core-2.0-beta8.jar'/>
+    <pathelement path='${build.lib.dir}/log4j-jcl-2.0-beta8.jar'/>
+    <pathelement path='${build.lib.dir}/MinkParser.jar'/>
+    <pathelement path='${build.lib.dir}/prefuse.jar'/>
+    <pathelement path='${build.lib.dir}/protobuf-java-2.4.1.jar'/>
+    <pathelement path='${build.lib.dir}/protobuf-java-format-1.2.jar'/>
+    <pathelement path='${build.lib.dir}/scala-compiler.jar'/>
+    <pathelement path='${build.lib.dir}/scala-library.jar'/>
+    <pathelement path='${build.lib.dir}/scala-reflect.jar'/>
+    <pathelement path='${build.lib.dir}/tuprolog.jar'/>
+    <pathelement path='${build.lib.dir}/vecmath.jar'/>
+    <pathelement path='${build.lib.dir}/visionJNI.jar'/>
+    <pathelement path='${build.lib.dir}/xercesImpl.jar'/>
+  </path>
+  <path id='discourse.classpath'>
+    <path refid='base.classpath'/>
+    <pathelement path='${build.lib.dir}/MinkParser.jar'/>
+    <pathelement path='${build.lib.dir}/onr.jar'/>
+    <pathelement path='${build.lib.dir}/weka.jar'/>
+  </path>
+  <path id='jactr.classpath'>
+    <path refid='base.classpath'/>
+    <!-- HACK: we shouldn't have jars in our src dir!!! -->
+    <pathelement path='${src.dir}/com/action/jactr/plug-in_deps/commons-cli-1.0.jar'/>
+    <pathelement path='${src.dir}/com/action/jactr/plug-in_deps/commons-logging-1.1.1.jar'/>
+    <pathelement path='${src.dir}/com/action/jactr/plug-in_deps/io.jar'/>
+    <pathelement path='${src.dir}/com/action/jactr/plug-in_deps/org.commonreality_1.2.8.201001062120.jar'/>
+    <pathelement path='${src.dir}/com/action/jactr/plug-in_deps/org.jactr_1.2.15.201001060923.jar'/>
+    <pathelement path='${src.dir}/com/action/jactr/plug-in_deps/tools.jar'/>
+  </path>
+  <path id='pioneer.classpath'>
+    <path refid='serial.classpath'/>
+    <pathelement path='${src.dir}/com/grid/simulations/simworld/dist/Simulator.jar'/>
+  </path>
+  <path id='serial.classpath'>
+    <path refid='base.classpath'/>
+    <pathelement path='${build.rxtx.jar}'/>
+  </path>
+  <path id='scalatest.classpath'>
+    <path refid='base.classpath'/>
+    <pathelement path='${build.lib.dir}/junit-4.7.jar'/>
+    <pathelement path='${build.lib.dir}/scalacheck_2.10-1.10.1.jar'/>
+    <pathelement path='${build.lib.dir}/scalatest.jar'/>
+    <pathelement
+        path='${build.lib.dir}/scalamock-core_2.10-3.0.1.jar'/>
+    <pathelement path='${build.lib.dir}/scalamock-scalatest-support_2.10-3.0.1.jar'/>
+  </path>  
+  <path id='lcm.classpath'>
+    <path refid='serial.classpath'/>
+    <pathelement path='${build.lib.dir}/lcm.jar'/>
+    <pathelement path='${build.lib.dir}/weka.jar'/>
+  </path>
+
+  <path id='omni.classpath'>
+    <path refid="base.classpath"/>
+    <path refid="discourse.classpath"/>
+    <path refid="lcm.classpath"/>
+    <path refid="pioneer.classpath"/>
+    <path refid="serial.classpath"/>
+  </path>
+
+
+  <!-- keep this one last, it is not an ADE classpath but an Ant classpath -->
+  <path id='customTasks.classpath'>
+    <pathelement path='${ant.library.dir}/ant.jar'/>
+  </path>
+
+  <!-- ====================== -->
+  <!-- Private Helper Targets -->
+  <!-- ====================== -->
+
+  <target name="scala-init">
+    <taskdef resource="scala/tools/ant/antlib.xml">
+      <classpath>
+        <path refid='base.classpath'/>
+      </classpath>
+    </taskdef>
+  </target>
+
+ <target name='init'>
+    <mkdir dir='${build.dir}'/>
+    <mkdir dir='${dist.dir}'/>
+    <mkdir dir='${superconfig.dir}'/>
+    <mkdir dir='${tmp.dir}'/>
+  </target>
+
+  <target name='rxtx'>
+    <sequential>
+      <available property='rxtx.available' classname='gnu.io.SerialPort' classpathref='serial.classpath'/>
+      <fail unless='rxtx.available'>
+Could not find RXTXcomm.jar.  Please make sure it is installed and that the
+property "build.rxtx.jar" points to it.  You may need to install librxtx-java.
+      </fail>
+    </sequential>
+  </target>
+
+  <target name='82'>
+    <copy todir='${core.dir}'>
+      <fileset dir='${src.dir}/com/82'/>
+    </copy>
+  </target>
+
+  <target name='customTasks'>
+    <javac srcdir='${customTasks.src.dir}' destdir='${ant.library.dir}' classpathref='customTasks.classpath' failonerror='false'/>
+    <taskdef name='protoc' classname='com.hrilab.Protoc'
+             classpath="${ant.library.dir}"/>
+    <taskdef name="scalatest" classname="org.scalatest.tools.ScalaTestAntTask">
+      <classpath refid="scalatest.classpath"/>
+    </taskdef>  
+  </target>
+
+  <target name='hostsFile' depends='init,hosts-file-check' unless='hosts.file.exists'>
+    <echo file='${hosts.file}'># auto-generated hosts file
+STARTHOST
+ip ${l}
+os ${os.name}
+javadir ${java.home}
+adehome ${basedir}
+sshlogin ${un}
+ENDHOST</echo>
+  </target>
+
+  <extension-point name='java-only'/>
+  <extension-point name='non-java'/>
+
+  <!-- ======================= -->
+  <!-- Standard Public Targets -->
+  <!-- ======================= -->
+
+  <target name='all' depends='java-only,non-java,post-build-cleanup, config' description='Build everything!'/>
+
+  <target name='java' depends='java-only' description='Builds all of the java in ADE'/>
+
+  <target name='clean' depends='' description='Removes all files and directories created by Ant during any build(s).'>
+    <delete dir='${ant.library.dir}/com'/>
+    <delete dir='${build.dir}'/>
+    <delete dir='${dist.dir}'/>
+    <delete dir='${superconfig.dir}'/>
+    <delete dir='${tmp.dir}'/>
+    <delete dir='${core.dir}/configFiles'/>
+    <delete file='${core.dir}/Connection.java'/>
+    <delete file='${core.dir}/InitialSetupCallback.java'/>
+    <delete file='${core.dir}/SuperADEComponent.java'/>
+    <delete file='${core.dir}/SuperADEComponentImpl.java'/>
+    <delete file='${core.dir}/SuperADERegistry.java'/>
+    <delete file='${core.dir}/SuperADERegistryImpl.java'/>
+    <delete file='${core.dir}/gui/SuperADEGuiPanel.java'/>
+  </target>
+
+  <target name='main' depends='java, post-build-cleanup' description='The default build if you simply run ./ant'/>
+
+  <extension-point name='test' depends='' description='Runs all the unit tests...'/>
+
+  <!-- ========================== -->
+  <!-- Individual Project Targets -->
+  <!-- ========================== -->
+  <target name='action' depends='init, base, core' extensionOf='java-only' description='Builds the action component'>
+    <build-java package.dir='com/action' classpath='jactr.classpath'/>
+    <copy todir="${build.dir}/com/action/db">  <!-- copies the various model files into build/ so they'll be in the classpath (so getResource can find them) -->
+      <fileset dir="${src.dir}/com/action/db" excludes="**/*.java"/>
+    </copy>
+  </target>
+  <target name='adeclj' depends='init,base,core' description='Builds the Clojure wrappers around core'>
+      <java classname="clojure.lang.Compile">
+          <classpath>
+              <path refid='base.classpath'/>
+              <path location='./com/adeclj'/>
+              <path location='.'/>
+              <path location='${build.dir}'/>
+          </classpath>
+          <sysproperty key='clojure.compile.path' value='${build.dir}'/>
+          <arg value='com.adeclj.core'/>
+          <arg value='com.adeclj.hw'/>
+      </java>
+  </target>
+  <target name='adesim' depends='init, core' extensionOf='java-only' description='Builds the 2D robot simulator'>
+    <build-java package.dir='com/adesim'/>
+    <copy todir="${build.dir}/com/adesim">  <!-- copies the various model files into build/ so they'll be in the classpath (so getResource can find them) -->
+      <fileset dir="${src.dir}/com/adesim" includes="**/*.png **/*.gif **/*.jpg"/>
+    </copy>
+  </target>
+  <target name='base' depends='init, core, rxtx' extensionOf='java-only' description='Builds the misc files that used to be in com.'>
+    <build-java package.dir='com' classpath='serial.classpath' package.mask='*.java'/>
+  </target>
+  <target name='config' depends='scala-init, java-only, non-java' description='Builds the config files'>
+    <copy file='config/ConfigFile.scala' todir='${superconfig.dir}'/>
+    <delete file='${tmp.dir}/import'/>
+    <echo message='package config; ' file='${tmp.dir}/import'/>
+    <copy todir='${superconfig.dir}'>
+      <fileset dir='${config.dir}'/>
+      <filterchain>
+        <concatfilter prepend='${tmp.dir}/import'/>
+        <replaceregex pattern='^args\s+(.+)$' replace='args ("\1")' flags='gm'/>
+        <replaceregex pattern='^host\s+(.+)$' replace='host ("\1")' flags='gm'/>
+        <replaceregex pattern='^libPath\s+(.+)$' replace='libPath ("\1")' flags='gm'/>
+        <replaceregex pattern='^name\s+(.+)$' replace='name ("\1")' flags='gm'/>
+        <replaceregex pattern='^pause\s+(.+)$' replace='pause (\1)' flags='gm'/>
+        <replaceregex pattern='^registry\s+(.+)$' replace='registry ("\1")' flags='gm'/>
+        <replaceregex pattern='^COMPONENT\s+([\w.]+)$' replace='COMPONENT (classOf[\1])' flags='gm'/>
+      </filterchain>
+      <chainedmapper>
+        <flattenmapper/>
+        <globmapper from='*.superconfig' to='*.scala' casesensitive='no'/>
+      </chainedmapper>
+    </copy>
+    <scalac srcdir='${tmp.dir}' destdir='${build.dir}' includes='config/**/*.scala'
+            deprecation='on' unchecked='on' addparams='-feature'>
+      <classpath>
+        <path refid='ant.classpath' />
+        <path refid='base.classpath' />
+        <path refid='jreality.classpath' />
+        <path refid='jython.classpath' />
+        <path refid='rosade.classpath' />
+      </classpath>
+    </scalac>
+  </target>
+  <target name='core' depends='init, 82, scala-init' extensionOf='java-only' description='Builds the core of ADE.'>
+    <build-scala package.dir='${core.dir}'/>
+    <build-java package.dir='${core.dir}'/>
+  </target>
+  <target name='create' depends='init, core, interfaces, rxtx' extensionOf='java-only' description='Builds the Create component for controlling an iRobot Create'>
+    <build-java package.dir='com/create' classpath='serial.classpath'/>
+  </target>
+  <target name='discourse' depends='init, base, core' extensionOf='java-only' description='Builds the discourse system.'>
+    <build-java package.dir='com/discourse' classpath='discourse.classpath'/>
+  </target>
+  <target name='interfaces' depends='init, core' extensionOf='java-only' description='Builds some widely used interfaces'>
+    <build-java package.dir='com/interfaces'/>
+  </target>
+  <target name='joystick' depends='init, core' extensionOf='java-only' description='Builds the joystick components.'>
+    <build-java package.dir='com/joystick'/>
+  </target>
+  <target name='logger' depends='init, core' extensionOf='java-only' description='Builds some lumberjacks.  TODO: doc me'>
+    <build-java package.dir='com/logger'/>
+  </target>
+  <target name='lrf' depends='init, core, rxtx' extensionOf='java-only' description='Builds the Laser Range Finder code'>
+    <build-java package.dir='com/lrf'  classpath='lcm.classpath'/>
+  </target>
+  <target name='lrf-test' depends='lrf' extensionOf='test' description='Run unit tests on com.lrf' >
+    <junit printsummary='on' fork='no' haltonfailure='no'>
+      <classpath refid='lcm.classpath'/>
+      <test name='com.lrf.LRFTestSuite'/>
+    </junit>
+  </target>
+  <target name='motion' depends='init, core' extensionOf='java-only' description='Builds the motion components.  TODO: docs please'>
+    <build-java package.dir='com/motion'/>
+  </target>
+  <target name='pioneer' depends='init, core, rxtx' extensionOf='java-only' description='Builds the pioneer components.  TODO: docs please'>
+    <build-java package.dir='com/pioneer' classpath='pioneer.classpath'/>
+  </target>
+  <target name='simspeech' depends='init, core' extensionOf='java-only' description='Builds the simspeech components.  TODO: docs please'>
+    <build-java package.dir='com/simspeech'/>
+  </target>
+  <target name='template' depends='init, core' extensionOf='java-only' description='Builds the template components.  TODO: docs please'>
+    <build-java package.dir='com/template'/>
+  </target>
+  <target name='utilities' depends='init, scala-init, core' extensionOf='java-only' description='Builds some common utilities'>
+    <build-scala package.dir='utilities' package.excludes='utilities/**/**Test.scala'/>
+    <build-java package.dir='utilities'/>
+  </target>
+
+  <!-- ===================== -->
+  <!-- Private Build Targets -->
+  <!-- ===================== -->
+
+  <target name='registry-config-prepend' depends='registry-config-null'>
+    <property name='registry.config.file' value='-f ${f}'/>
+  </target>
+
+  <target name='registry-config-null' unless='f'>
+    <property name='registry.config.file' value=''/>
+    <property name='f' value=''/>
+  </target>
+
+  <!-- =========================== -->
+  <!-- Private Clean Targets       -->
+  <!-- =========================== -->
+
+  <target name='post-build-cleanup'>
+    <delete quiet='true'>
+      <fileset dir='ade' includes='Connection.java,SuperADEComponentImpl.java'/>
+      <fileset dir='ade/gui' includes='SuperADEGuiPanel.java'/>
+    </delete>
+  </target>
+
+  <!-- =========================== -->
+  <!-- Private Precondition Checks -->
+  <!-- =========================== -->
+
+  <target name='hosts-file-check'>
+    <available property='hosts.file.exists' file='${hosts.file}'/>
+  </target>
+
+  <!-- =============== -->
+  <!-- Building Macros -->
+  <!-- =============== -->
+
+  <macrodef name='build-java'>
+    <attribute name='classpath' default='base.classpath'/>
+    <attribute name='package.dir' default='NOT SET'/>
+    <attribute name='package.mask' default='**/*.java'/>
+    <attribute name='package.excludes' default=''/>
+    <sequential>
+      <javac srcdir='${src.dir}'
+             destdir='${build.dir}'
+             includes='@{package.dir}/@{package.mask}'
+             excludes='@{package.excludes}'
+             debug='${debug.enabled}'
+             debuglevel='${debug.level}'
+             deprecation='on'>
+        <classpath refid='@{classpath}'/>
+        <!-- <compilerarg value="-Xlint"/> -->
+      </javac>
+    </sequential>
+  </macrodef>
+
+  <macrodef name='build-scala'>
+    <attribute name='classpath' default='base.classpath'/>
+    <attribute name='package.dir' default='NOT SET'/>
+    <attribute name='package.mask' default='**/*.scala'/>
+    <attribute name='package.excludes' default=''/>
+    <sequential>
+      <scalac srcdir='${src.dir}' destdir='${build.dir}'
+              includes='@{package.dir}/@{package.mask}'
+              excludes='@{package.excludes}'
+              deprecation='on'
+              unchecked='on'
+              addparams='-feature'> 
+        <!--  debug='${debug.enabled}' debuglevel='${debug.level}' -->
+        <classpath refid='@{classpath}'/>
+      </scalac>
+    </sequential>
+  </macrodef>
+
+  <macrodef name='test-scala'>
+    <attribute name='package.dir' default='NOT SET'/>
+    <attribute name='package.dir.dot' default='NOT SET'/>
+    <sequential>
+      <scalatest>
+        <reporter type="stdout"   config=""/>
+        <reporter type="junitxml" directory=
+                  '${src.dir}/testresults/@{package.dir}'/>
+        <runpath>
+          <pathelement location='${build.dir}'/>
+        </runpath>
+        <wildcard package='@{package.dir.dot}'/>
+      </scalatest>
+    </sequential>
+  </macrodef>
+
+  <macrodef name='build-protobuf'>
+    <attribute name='file' default='NOT SET'/>
+    <attribute name='fail' default='false'/>
+    <sequential>
+      <exec executable='protoc' failifexecutionfails='@{fail}'>
+        <arg value='--java_out=${src.dir}'/>
+        <arg value='@{file}'/>
+      </exec>
+    </sequential>
+  </macrodef>
+
+  <!-- ================ -->
+  <!-- Launching Macros -->
+  <!-- ================ -->
+
+  <macrodef name='run-component'>
+    <attribute name='args' default=''/>
+    <attribute name='fork' default='true'/>
+    <attribute name='local.ip' default='${component.default.localIP}'/>
+    <attribute name='pause' default='0'/>
+    <attribute name='registry.ip' default='${component.default.registry.ip}'/>
+    <attribute name='component' default='NOT SET'/>
+    <attribute name='spawn' default='${component.default.spawn}'/>
+    <element name='java-elements' optional='true'/>
+    <sequential>
+      <sleep milliseconds="@{pause}"/>
+      <java fork='@{fork}' classname='ade.ADEComponentImpl' classpathref='omni.classpath' spawn='@{spawn}'>
+        <jvmarg value='-Djava.net.preferIPv4Stack'/>
+        <jvmarg value='-Djava.rmi.server.hostname=@{local.ip}'/>
+        <jvmarg value='-Dcomponent=@{component}'/>
+        <jvmarg value='-Dlog4j.configurationFile=${logging.config.file}'/>
+        <java-elements/>
+        <arg line='-l @{local.ip}'/>
+        <arg line='-r @{registry.ip}'/>
+        <arg line='@{args} ${args}'/>
+      </java>
+    </sequential>
+  </macrodef>
+
+  <macrodef name='run-remote-target'>
+    <attribute name='adehome' default='~/ade-svn/ade'/>
+    <attribute name='host.ip' default='127.0.0.1'/>
+    <attribute name='host.port' default='22'/>
+    <attribute name='pause' default='0'/>
+    <attribute name='sshkeyfile' default='../../.ssh/id_rsa'/>
+    <attribute name='sshlogin' default='hrilab'/>
+    <attribute name='target' default='NOT SET'/>
+    <attribute name='timeout' default='NOT SET'/>
+    <attribute name='un' default='${un}'/>
+    <sequential>
+      <sleep milliseconds="@{pause}"/>
+      <sshexec host='@{host.ip}' port='@{host.port}' username='@{sshlogin}'
+               command='(cd @{adehome};./ant -Dun=@{un} @{target})'
+               trust='true' failonerror='false' keyfile='@{sshkeyfile}' timeout='@{timeout}'/>
+    </sequential>
+  </macrodef>
+
+  <!-- Note: this macro is not used in this file, it's here so that it can be shared between
+  people's personalized build xml files so that they can more easily set up Netbeans.  Do not delete. -->
+  <macrodef name='netbeans-debug-launcher'>
+    <attribute name='args' default='NOT SET'/>
+    <attribute name='classpath' default='serial.classpath'/>
+    <attribute name='project.name' default='NOT SET'/>
+    <attribute name='local.ip' default='${component.default.localIP}'/>
+    <attribute name='registry.ip' default='${component.default.registry.ip}'/>
+    <attribute name='component.name' default='NOT SET'/>
+    <element name='java-elements' optional='true'/>
+    <sequential>
+      <nbjpdastart name='@{project.name}' addressproperty="jpda.address" transport='dt_socket'>
+        <classpath refid='@{classpath}'/>
+      </nbjpdastart>
+      <java fork='true' classname='ade.ADEComponentImpl' classpathref='omni.classpath'>
+        <jvmarg value='-Djava.net.preferIPv4Stack'/>
+        <jvmarg value='-Djava.rmi.server.hostname=@{local.ip}'/>
+        <jvmarg value='-Dlog4j.configurationFile=${logging.config.file}'/>
+        <jvmarg value='-Xdebug'/>
+        <jvmarg value='-Xrunjdwp:transport=dt_socket,address=${jpda.address}'/> <!-- '$' here is not a typo -->
+        <jvmarg value='-Dcomponent=@{component.name}'/>
+        <java-elements/>
+        <arg line='-l @{local.ip}'/>
+        <arg line='-r @{registry.ip}'/>
+        <arg line='@{args}'/>
+      </java>
+    </sequential>
+  </macrodef>
+
+  <!-- ================= -->
+  <!-- Launching Targets -->
+  <!-- ================= -->
+
+  <target name='run' depends='config, registry-config-null' description='Runs a superconfig file'>
+    <java classname='config.${f}' classpathref='ant.classpath' fork='true'>
+      <jvmarg value='-Dlog4j.configurationFile=${logging.config.file}'/>
+      <jvmarg value='-DbuildFile=${ant.file}'/>
+      <jvmarg value='-Dant.home=${ant.home}'/>
+      <jvmarg value='-Djava.home=${java.home}'/>
+      <jvmarg value='-Dconfig.debug=${config.debug}'/>
+    </java>
+  </target>
+
+  <target name='run-config-target' description='For use by superconfig files, probably too large of a PITA to use manually.'>
+    <run-component component='${config.target.component}'
+                   args='${config.target.args}'
+                   local.ip='${config.target.local.ip}'
+                   registry.ip='${config.target.registry.ip}'>
+      <java-elements>
+        <env key='LD_LIBRARY_PATH' value='${config.target.libPath}'/>
+      </java-elements>
+    </run-component>
+  </target>
+
+  <target name='run-registry' depends='hostsFile, core, registry-config-prepend' unless='registry.running' description='Just what it sounds like, it starts a registry.'>
+    <!-- TODO: check to see if there is already a registry running and if so populate registry.running -->
+    <java fork='true' classname='ade.ADEComponentImpl' spawn='${registry.spawn}'>
+      <classpath>
+        <path refid='omni.classpath' />
+      </classpath>
+      <jvmarg value='-Dcomponent=ade.ADERegistry'/>
+      <jvmarg value='-Djava.net.preferIPv4Stack'/>
+      <jvmarg value='-Djava.rmi.server.hostname=${registry.component.localIP}'/>
+      <jvmarg value='-Dlog4j.configurationFile=${logging.config.file}'/>
+      <!-- HACK: using "<arg line=..." here is against best practices, but it's the only option given the way
+      the registry parses arguments.  If you have some spare bandwidth go into the registry and add support
+      for single arguments that contain the flag, a space, and the value.  Then come back here and replace
+      line= with value= below (and in the macrodefs above).  KTHXBAI -->
+      <arg line='-l ${registry.component.localIP}'/>
+      <arg line='-k ${hosts.file}'/>
+      <arg line='${registry.config.file}'/>
+      <arg line='${registry.additionalargs}'/>
+      <arg line='${args}'/>
+    </java>
+  </target>
+
+  <target name='run-actioncomponentarch' depends='action' description='Action Component Arch'>
+    <run-component component='com.action.ActionComponentArch'
+                   args='${component.actionComponentArch.additionalargs}'
+                   local.ip='${component.actionComponentArch.localIP}'
+                   registry.ip='${component.actionComponentArch.registry.ip}'
+        />
+  </target>
+  <target name='run-adesimenvironmentcomponent' depends='adesim' description='We need to protect the ADESimEnvironmentComponent!'>
+    <run-component component='com.adesim.ADESimEnvironmentComponent'
+                   args='${component.adeSimEnvironmentComponent.additionalargs}'
+                   local.ip='${component.adeSimEnvironmentComponent.localIP}'
+                   registry.ip='${component.adeSimEnvironmentComponent.registry.ip}'
+        />
+  </target>
+
+  <target name='run-createcomponent' depends='create' description='It turns out that iRobot Creates can be used for more things than just frisbee, run this target to learn more.'>
+    <run-component component='com.create.CreateComponent'
+                   args='${component.createComponent.additionalargs}'
+                   local.ip='${component.createComponent.localIP}'
+                   registry.ip='${component.createComponent.registry.ip}'>
+      <java-elements>
+        <jvmarg value='-Djava.library.path=/usr/lib/jni'/>
+      </java-elements>
+    </run-component>
+  </target>
+
+  <target name='run-keyboardjoystickcomponent' depends='joystick' description='KeyboardJoystickComponent'>
+    <run-component component='com.joystick.KeyboardJoystickComponent'
+                   args='${component.keyboardJoystickComponent.additionalargs}'
+                   local.ip='${component.keyboardJoystickComponent.localIP}'
+                   registry.ip='${component.keyboardJoystickComponent.registry.ip}'
+        />
+  </target>
+  <target name='run-motioncomponent' depends='motion' description='MotionComponent'>
+    <run-component component='com.motion.MotionComponent'
+                   args='${component.motionComponent.additionalargs}'
+                   local.ip='${component.motionComponent.localIP}'
+                   registry.ip='${component.motionComponent.registry.ip}'
+        />
+  </target>
+  <target name='run-simpioneercomponent' depends='adesim' description='Oregon Trail! SimPioneerComponent'>
+    <run-component component='com.adesim.SimPioneerComponent'
+                   args='${component.simPioneerComponent.additionalargs}'
+                   local.ip='${component.simPioneerComponent.localIP}'
+                   registry.ip='${component.simPioneerComponent.registry.ip}'
+        />
+  </target>
+  <target name='run-simspeechproductioncomponent' depends='simspeech' description='SimSpeechProductionComponent'>
+    <run-component component='com.simspeech.SimSpeechProductionComponent'
+                   args='${component.simSpeechProductionComponent.additionalargs}'
+                   local.ip='${component.simSpeechProductionComponent.localIP}'
+                   registry.ip='${component.simSpeechProductionComponent.registry.ip}'
+        />
+  </target>
+
+  <target name='run-simspeechrecognitioncomponent' depends='simspeech' description='SimSpeechRecognitionComponent'>
+    <run-component component='com.simspeech.SimSpeechRecognitionComponent'
+                   args='${component.simSpeechRecognitionComponent.additionalargs}'
+                   local.ip='${component.simSpeechRecognitionComponent.localIP}'
+                   registry.ip='${component.simSpeechRecognitionComponent.registry.ip}'
+        />
+  </target>
+  <target name='run-simwheelchaircomponent' depends='adesim' description='SimWheelchairComponent'>
+    <run-component component='com.adesim.SimWheelchairComponent'
+                   args='${component.simWheelchairComponent.additionalargs}'
+                   local.ip='${component.simWheelchairComponent.localIP}'
+                   registry.ip='${component.simWheelchairComponent.registry.ip}'
+        />
+  </target>
+  <target name='run-templatecomponent' depends='template' description='TemplateComponent'>
+    <run-component component='com.template.TemplateComponent'
+                   args='${component.templateComponent.additionalargs}'
+                   local.ip='${component.templateComponent.localIP}'
+                   registry.ip='${component.templateComponent.registry.ip}'
+        />
+  </target>
+
+  <target name='run-testcomponent' depends='utilities' description='Launch generic testing component.'>
+    <run-component component='utilities.ui.testing.TestComponent'
+                   args='${component.testComponent.additionalargs}'
+                   local.ip='${component.testComponent.localIP}'
+                   registry.ip='${component.testComponent.registry.ip}'>
+    </run-component>
+  </target>
+  <target name='run-tldldiscoursecomponent' depends='discourse' description='TooLongDidntLikeit Discourse Component'>
+    <run-component component='com.discourse.TLDLDiscourseComponent'
+                   args='${component.tldlDiscourseComponent.additionalargs}'
+                   local.ip='${component.tldlDiscourseComponent.localIP}'
+                   registry.ip='${component.tldlDiscourseComponent.registry.ip}'
+        />
+  </target>
+  <target name='run-urglrfcomponent' depends='lrf' description='UrgLRFComponent'>
+    <run-component component='com.lrf.UrgLRFComponent'
+                   args='${component.urgLRFComponent.additionalargs}'
+                   local.ip='${component.urgLRFComponent.localIP}'
+                   registry.ip='${component.urgLRFComponent.registry.ip}'>
+      <java-elements>
+        <jvmarg value='-Djava.library.path=/usr/lib/jni'/>
+      </java-elements>
+    </run-component>       
+  </target>
+
+</project>

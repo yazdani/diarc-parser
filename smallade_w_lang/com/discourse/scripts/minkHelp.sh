@@ -1,0 +1,1 @@
+java -cp com/discourse/jar/weka.jar:/home/rcantrel:. com/discourse/mink/MinkParser -mode PRINTHELP -printflow

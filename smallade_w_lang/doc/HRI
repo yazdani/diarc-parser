@@ -1,0 +1,13 @@
+On base:
+java -Djava.rmi.server.hostname=172.30.1.95 ade/ADERegistryImpl -l 172.30.1.95 -f rudyhri.config
+killall -9 java
+
+On LC laptop:
+java -Djava.rmi.server.hostname=172.30.1.11 com/tt/TTServerImpl -sonic2 -laser -f ttconfigHRIstressed -field -affrec -l 172.30.1.11 -r 172.30.1.95 -subject sunny
+killall -9 java ; killall -9 festival_server ; killall -9 festival
+
+For sound samples:
+festival evalhri.scm
+
+GUI server:
+java -Djava.rmi.server.hostname=172.30.1.11 ade/ADEGuiServerImpl -l 172.30.1.11 -r 172.30.1.95

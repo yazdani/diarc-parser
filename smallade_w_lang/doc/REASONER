@@ -1,0 +1,61 @@
+README for the system reasoner
+some collected notes
+==============================
+
+Power/Battery calculations:
+The HostMonitor is set up to obtain power information from hosts so that
+battery levels can be taken into account when choosing where to run a
+server. At ADE's level, of course, power calculations are astoundingly
+rough estimates at best. However, rough estimates are better than nothing.
+
+Essentially, we're going to assume that *all* power consumption is due to
+two things: (1) the CPU and (2) any additional devices attached (e.g.,
+cameras, lasers, sonar, etc.). Furthermore, we're going to assume that
+consumption is a simple linear function: for the CPU, it will be calculated
+as: (maximum cpu wattage * cpu load), while for a device, it will be
+calculated as: (maximum wattage * estimated usage). Maximum wattages are
+most likely from vendor specs; the HostMonitor has an enumeration of CPU
+types and wattages obtained from Wikipedia (source:
+http://en.wikipedia.org/wiki/CPU_power_dissipation). The estimated usage of
+a device should be supplied as a configuration parameter, although a default
+value of 0.5 is assigned if none is given.
+
+So, we calculate the power drawn on a host by the CPU and device loads:
+
+PD = Dcpu + Ddevs
+
+The power drawn for the CPU is due to the core voltage, wattage, and load,
+as is the power drawn for the devices:
+
+Dcpu = W/V * load
+Ddevs = sum(W/V * load)
+
+Sanity check: airolablaptop1 (little Dell) has a 1200MHz PentiumM; so
+21W/1.4V=15A. With a capacity of 2662mAh (on BAT1) and 1004mAh (on BAT2)
+and running at 50% load, we have:
+
+15A = 15000mA * 0.5 = 7500mA
+3666mAh / 7500mA * 60min, which would run for about 30 minutes.
+
+Now, airolablaptop2 (LinuxCertified) has a 2000MHz PentiumM; so 27W/1.4V=19A.
+With a capacity of 3792mAh and running at 50% load, we have:
+
+19A = 19000mA * 0.5 = 9500mA
+3792mAh / 9500mA * 60min, which would run for about 20 minutes.
+
+Since the average load is *much* lower (probably around 10%), on airolablaptop1
+we would end up with:
+
+15A = 15000mA * 0.1 = 1500mA
+3666mAh / 1500mA, which would run for about 2 hours, 27 minutes.
+
+Host:
+Voltage (V):
+Current (A):
+Power available (W): V * A
+Capacity (mAH):
+
+Server:
+Voltage (V):
+Power usage (W): yields A=W/V
+

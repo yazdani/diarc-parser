@@ -1,0 +1,58 @@
+#!/bin/bash
+REDHOST=127.0.0.1
+BLUEHOST=127.0.0.1
+# show 2D environment: "yes" or "no"
+ENV2D="no"
+# obstacle avoidance: "yes" or "no"
+OBST="yes"
+# stop button: "yes" or "no"
+STOP="no"
+# delay for taking a reading
+DELAY=2.0
+# environment
+if [ $ENV2D == "yes" ] ; then
+    ENV2D="-g"
+else
+    ENV2D=""
+fi
+kill -9 `ps -ef | grep Dcomponent | grep ade.ADEServerImpl | awk '{ print $2 }'` > /dev/null 2>&1
+(sleep 4 ; ./runadeserver com.adesim.ADESimEnvironmentServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -cfg com/adesim/config/fnirs_map.xml $ENV2D) &
+(sleep 4 ; ./runadeserver com.adesim.ADESimEnvironmentServer -l ${BLUEHOST} 1098 Blue -r ${BLUEHOST} 1098 Blue -cfg com/adesim/config/fnirs_map.xml $ENV2D) &
+# robot
+(sleep 7 ; ./runadeserver com.adesim.SimEraServer -cp jars/vecmath.jar -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -g Camera -initpose 3.75 -5.75 0.79 --persistentGUI) &
+(sleep 7 ; ./runadeserver com.adesim.SimEraServer -cp jars/vecmath.jar -l ${BLUEHOST} 1098 Blue -r ${BLUEHOST} 1098 Blue -g Camera -initpose 3.75 -5.75 0.79 --persistentGUI) &
+# navigation
+if [ $OBST == "no" ] ; then
+    OBST="-noobst"
+else
+    OBST=""
+fi
+(sleep 10 ; ./runadeserver com.motion.MotionServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -tol 0.275 -critical 0.75 -deftv 0.35 -defrv 0.2 -slowtv 0.25 -slowrv 0.2 $OBST) &
+(sleep 10 ; ./runadeserver com.motion.MotionServer -l ${BLUEHOST} 1098 Blue -r ${BLUEHOST} 1098 Blue -tol 0.275 -critical 0.75 -deftv 0.35 -defrv 0.2 -slowtv 0.25 -slowrv 0.2 $OBST) &
+# signal/field
+(sleep 13 ; ./runadeserver com.mopo.FldServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -mopoversion com.adesim.SimEraServer) &
+(sleep 13 ; ./runadeserver com.mopo.FldServer -l ${BLUEHOST} 1098 Blue -r ${BLUEHOST} 1098 Blue -mopoversion com.adesim.SimEraServer) &
+# speech production
+(sleep 16 ; ./runadeserver com.simspeech.SimSpeechProductionServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -textred -geom 660 150 -g) &
+(sleep 16 ; ./runadeserver com.simspeech.SimSpeechProductionServer -l ${BLUEHOST} 1098 Blue -r ${BLUEHOST} 1098 Blue -textblue -geom 660 630 -g) &
+# speech processing
+(sleep 19 ; ./runadeserver com.discourse.TLDLDiscourseServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -actor Red -action -dict com/discourse/TL_DL_parser/newautonomy.dict -festversion com.interfaces.SpeechProductionServer) &
+(sleep 19 ; ./runadeserver com.discourse.TLDLDiscourseServer -l ${BLUEHOST} 1098 Blue -r ${BLUEHOST} 1098 Blue -actor Red -action -dict com/discourse/TL_DL_parser/newautonomy.dict -festversion com.interfaces.SpeechProductionServer) &
+# speech input
+if [ $STOP == "no" ] ; then
+    STOP="com/simspeech/config/newautonomy2"
+else
+    STOP="com/simspeech/config/newautonomy"
+fi
+(sleep 22 ; ./runadeserver com.simspeech.SimSpeechRecognitionServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -config $STOP -textred -nocommand -g) &
+(sleep 22 ; ./runadeserver com.simspeech.SimSpeechRecognitionServer -l ${BLUEHOST} 1098 Blue -r ${BLUEHOST} 1098 Blue -config $STOP -textblue -nocommand -g) &
+# goal managers
+(sleep 25 ; ./runadeserver com.action.ActionManagerLinear -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -field -server com.interfaces.NLPServer -server com.adesim.SimEraServer -motion -dbfilesupp com/action/db/newautonomy.xml -server com.simspeech.SimSpeechProductionServer -agentname Red -script Practice Red Bucky $DELAY --) &
+(sleep 25 ; ./runadeserver com.action.ActionManagerLinear -l ${BLUEHOST} 1098 Blue -r ${BLUEHOST} 1098 Blue -field -server com.interfaces.NLPServer -server com.adesim.SimEraServer -motion -dbfilesupp com/action/db/newautonomy.xml -server com.simspeech.SimSpeechProductionServer -agentname Blue -script Practice Blue Bucky $DELAY --) &
+./runaderegistry -l ${REDHOST} 1099 Red -o ${REDHOST} &
+sleep 2
+REG=`ps -ef | grep Dcomponent=ade.ADEReg | grep -v grep | awk '{ print $2 }'`
+./runaderegistry -l ${BLUEHOST} 1098 Blue -o ${BLUEHOST}
+kill ${REG}
+echo Done.
+# vi:tw=0

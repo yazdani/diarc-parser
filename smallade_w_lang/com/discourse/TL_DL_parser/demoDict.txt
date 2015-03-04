@@ -1,0 +1,48 @@
+is: S/NP/PP, S/NP/NP, S|N/S, S|NP/S: # x. # y. reported(y), # x. # y. reported(y), # x. # y. y, # x. # y. y
+'s: S|N/S, S|NP/S: # x. # y. y, # x. # y. y
+located: S/PP/PP, S/PP: # x. # y. at(x), # x. at(x)
+it: N, NP: # x. x @ it, # x. x @ it
+get: S/NP, S/NP/PP: # x. have(x), # x. # y. have(x`y)
+the: NP/NP/PP, NP/NP, NP/N, NP/N/PP: # x. # y. only(x`y), # x. only(x), # x. only(x), # x. # y. only(x`y)
+to: S/NP: # x. x
+a: NP/NP/PP, NP/NP, NP/N, NP/N/PP: # x. # y. any(x`y), # x. any(x), # x. any(x), # x. # y. any(x`y)
+any: NP/NP/PP, NP/NP, NP/N, NP/N/PP: # x. # y. any(x`y), # x. any(x), # x. any(x), # x. # y. any(x`y)
+next: PP/S,PP|NP/S,PP/S/PP: # x. next_to(x), # x. # y. next_to(x`y), # x. # y. next_to(x)
+first: N: #x. x @ first
+yellow: N: # x. x @ Yellow
+green: N: # x. x @ Green
+blue: N: # x. x @ Blue
+red: N: # x. x @ Red
+block: N|N: # x. x
+blocks: N|N: # x. x
+box: N|N, N: # x. x, # x. x @ box
+boxes: N|N: # x. x
+from: PP/NP: # x. from(x)
+on: PP/NP: # x. x
+left: NP, N: # x. x @ left, # x. x @ left
+there: NP: # x. x @ end_of_hallway
+all: NP/NP: # x. x
+those: NP/N: # x. all(x)
+right: S/S: # x. x
+walk: S/S, S/PP: # x. at(x), # x. at(x)
+into: PP/NP: # x. in(x)
+room: N|N: # x. x(room)
+hallway: N: # x. x @ hallway
+down: S/NP, PP/NP: # x. x, #x. x
+that: PP/N, NP/N: # x. x, # x. x
+go: S/S, S/PP: # x. at(x), # x. at(x)
+through: PP/PP, PP/NP: # x. through(x), # x. through(x)
+doorway: N: # x. x @ doorway
+looks: S/PP: # x. report(x)
+like: PP/S: # x. x
+you: N: # x. x @ you
+will: S|N/S: # x. # y. y
+be: S/S: # x. x
+walking: S/PP: # x. at(x)
+how: S/NP: # x. count(x)
+many: NP/N: # x. x
+b: N: # x. x @ b
+do: S|S/N, S/N/S: # x. # y. x, # x. # y. y
+we: NP, N, N/S: # x. x @ we, # x. x @ we, # x. x(we)
+have: S: # x. x @ have
+see: S/NP: # x. report(x)

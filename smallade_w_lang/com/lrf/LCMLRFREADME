@@ -1,0 +1,38 @@
+                           LCMLRF Component
+                           ================
+
+Author: Tom Williams <Thomas_E.Williams@tufts.edu>
+Date: 2013-01-25 14:23:53 EST
+
+
+1 Introduction 
+~~~~~~~~~~~~~~~
+The LCMLRF Component is responsible for acquiring LRF data from a robot
+running Vulcan.
+
+2 Getting Started 
+~~~~~~~~~~~~~~~~~~
+  RUN SPEX from the command line by running 
+  ./ant run-lcmlrfcomponent -Dargs="[args]"
+  There are a variety of arguments which can go into [args].
+
+2.1 `-lcmport <port>' 
+======================
+Used to specify which port the robot's LRF is on.
+
+2.2 `-path <pathToVulcan>' 
+===========================
+   Specifies the path to the Vulcan wheelchair code.
+
+2.3 `--verbose' 
+================
+   produces verbose output
+
+
+3 DEMO 
+~~~~~~~
+
+3.1 config/wheelchair-demo.config 
+==================================
+To use this demo, add the -lcm flag to the wheelchair component and specify
+the location of vulcan.

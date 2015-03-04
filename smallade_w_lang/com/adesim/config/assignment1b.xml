@@ -1,0 +1,92 @@
+<!--comments are enclosed within standard xml comment brackets (like this line) -->
+
+<!-- the coordinate system is Euclidean.  NOTE THAT THIS IS DIFFERENT FROM THE SCREEN COORDINATE SYSTEM, WHERE Y grows DOWN, not up!  all numbers can be doubles. -->
+
+<!-- everything MUST BE ENCLOSED within the <config> tag -->
+
+<!-- !!!!!!!!!!EVERYTHING IS IN METERS!!!!!!!!!! -->
+
+<!--possible tokens: -->
+
+<!-- <world> {shape_and_optional_actions} </world>.  EACH FILE MUST SPECIFY WORLD DIMENSIONS.  -->
+
+<!-- shape_and_optional_actions are just comprised of a SINGLE shape node, and an OPTIONAL actions-list node: -->
+<!--    let's start with shape:  <shape> {particular_shape} </shape> -->
+<!--        the particular shape can be: -->
+<!--            <rect x="" y="" xLength="" yLength="" />   where (x,y) is bottom left coordinate -->
+<!--            <poly>    <pt x="" y=""/>  <pt x="" y=""/>  ...  </poly>   for a polygon -->
+<!--    the actions list is in the form <actions> {action_item}[s] </actions> -->
+<!--        an action_item can be one of the following: -->
+<!--            <action> <message text="" /> </action> -->
+<!--            <action> <exit/> </action> -->
+<!--        the actions will be executed (IN ORDER) whenever one of the robot lines intersects one of the lines of the shape -->
+
+<!-- objects can be: -->
+<!--    <wall>    {shape_and_optional_actions}   </wall> -->
+<!--    <doorway [*optional* name=""]>    {shape_and_optional_actions}   </doorway> -->
+<!--    <landmark [*optional* name=""] [*optional* laserable="true" (by default, false)]>     {shape_and_optional_actions}     </landmark>  -->
+
+<!-- it is also possible to specify an initial starting position for the robot(s):  -->
+<!--    <init-robot-position id="" x="" y ="" theta=""/> -->
+<!--         where id is the robot's number (first robot = 0, next = 1, etc) 
+             (x,y) are the coordinates, and theta is the robot's angle, 
+             in radians, with 0 facing right, and the angle growing counter-clockwise.
+             NOTE that if a particular initial position is explicitly specified
+             on the command line, it WILL override the init-robot spec. -->
+
+
+
+
+<config>
+
+
+	<world>
+		<shape>
+			<rect x="0" y="0" xLength="8" yLength="8"/> 
+		</shape>
+	</world>
+	
+	
+	<init-robot-positions>
+			<position x="1" y="1" theta="0"/>
+	</init-robot-positions>
+	
+	
+	<!-- side walls -->
+	<wall> <shape> <rect x="0" y="0" xLength="8" yLength="0.1" /> </shape> </wall>
+	<wall> <shape> <rect x="0" y="0" xLength="0.1" yLength="8" /> </shape> </wall>
+	<wall> <shape> <rect x="7.9" y="0" xLength="0.1" yLength="8" /> </shape> </wall>
+	<wall> <shape> <rect x="0" y="7.9" xLength="8" yLength="0.1" /> </shape> </wall>
+	
+	
+	
+	<!-- center block, crazy shaped -->
+	<wall> 
+		<shape>
+			<poly>
+				<pt x="2" y="2"/>
+				<pt x="4" y="2.5"/>
+				<pt x="2.5" y="3"/>
+				<pt x="1.5" y="6"/>
+				<pt x="4" y="6.5"/>
+				<pt x="6" y="6"/>
+				<pt x="5.5" y="5.5"/>
+				<pt x="6" y="2.5"/>
+				<pt x="4" y="2"/>
+			</poly>
+		</shape>
+	</wall>
+	
+	
+	<landmark name="goal">
+		<shape>
+			<rect x="6.1" y="6.1" xLength="1.7" yLength="1.7" />
+		</shape>
+		<actions> 	
+			<action> <message text="YOU REACHED THE GOAL!!!" /> </action>
+			<action> <exit/> </action>
+		</actions>
+	</landmark>
+
+
+</config>

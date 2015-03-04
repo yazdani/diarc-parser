@@ -1,0 +1,121 @@
+Checking out the svn version of ADE requires a few tweaks to various
+components.  Most of the supporting code is available in the svn repository
+alongside ADE:
+
+svn://hri.cogs.indiana.edu/projects/rudy/ade
+svn://hri.cogs.indiana.edu/projects/rudy/playerstage
+svn://hri.cogs.indiana.edu/projects/rudy/festival
+svn://hri.cogs.indiana.edu/projects/rudy/sphinx4
+svn://hri.cogs.indiana.edu/projects/rudy/speech
+svn://hri.cogs.indiana.edu/projects/rudy/vision
+
+See documentation in this directory for advice on installing and using
+these.  It's probably easiest to check these all out in the same directory,
+as many places in the ADE registry and servers specify paths relative to the
+top-level ade directory such as ../festival.
+
+ADE is typically installed for the standard lab user (still named "airolab"
+at present), and there are several places at which paths need to be changed
+to reflect the local geography.
+
+mkade
+    This is the main compilation script for the ADE framework (note that
+    "./mkade" tries to compile *all* ADE servers, some of which have not been
+    updated recently and, therefore, might not compile--you may want to use
+    "./mkade small" instead, which compiles only a subset of the system).
+    When the paths are correct, you can simply type "./mkade small" in the
+    top-level ADE directory to compile the system.
+
+    - Type "./mkade help" for a description of other options.
+
+    - The first time you run mkade, you may be asked a couple of questions
+      about where to find your java installation.
+
+    - Make sure the RXTXcomm.jar file is in the classpath.
+
+    - For the Simbad robot simulator client, you'll need to install Java3d
+      (http://java3d.dev.java.net/) in $JAVADIR/jre.
+
+config/<name>.config
+config/<name>.hosts
+    In the "config" directory are the files that specify ADE instance
+    configurations and host capabilities.  Each ".config" file consists of a
+    list of ADE servers to be started by the ADE registry, with details
+    about how to start each.  Most of these items are optional and will be
+    filled with default values. At a minimum, the 'host,' 'type,' and
+    'startdirectory' items should be listed, and 'serverargs" and
+    'userclasspath' are typically needed, as well.
+    
+    Format and valid options:
+    STARTSERVER
+    host           IP address or hostname
+    port           the RMI port (default=1099)
+    type           server class (e.g., com.test.TestServerImpl)
+    name           assigned name (optional)
+    conn           number of connections supported (default=10)
+    tmout          reaper period
+    acc            access rights
+    startdirectory fully qualified directory
+    userclasspath  server-specific classpath (space delimited)
+    javavmargs     server-specific java vm arguments (space delimited, no
+		   leading dash)
+    serverargs     server-specific command-line arguments
+    restarts       number of recovery attempts (default=0)
+    configfile     configuration file (optional)
+    credentials    additional permissions
+    ENDSERVER
+
+    Hosts are specified similarly in ".hosts" files, with information about
+    what capabilities each has.  All of these entries are optional and will
+    be filled with default values, as found in the ade.ADEPreferences class
+    and the ade.ADEHostInfo.HostDefaultInfo enumeration.
+    
+    Format and valid options:
+    STARTHOST
+    ip           IP address or hostname
+    os           operating system name
+    cpus         number of CPUs (default=1)
+    cpumhz       CPU speeds (default=850)
+    memmb        available memory (default=256MB)
+    adehome      ADE home directory
+    tempdir      temporary directory (e.g., /tmp)
+    javadir      Java home directory
+    javabin      Java executable
+    javacompiler Java compiler
+    shell        command-line shell (e.g., /bin/sh)
+    shellargs    shell arguments (e.g., -c)
+    ping         ping command (e.g., /bin/ping)
+    pingargs     ping arguments (e.g., -c 2)
+    rsh          remote shell command (e.g., /bin/rsh)
+    rshargs      remote shell arguments (e.g., -X -A -n)
+    rcp          remote copy command (e.g., /bin/rcp)
+    rcpargs      remote copy arguments (e.g., -X -A -n)
+    ssh          ssh command (e.g., /bin/ssh)
+    sshargs      ssh arguments (e.g., -X)
+    scp          remote secure copy command (e.g., /bin/rcp)
+    scpargs      remote secure copy arguments (e.g., -A -n)
+    sshlogin     ssh login username
+    ps           process information command (e.g., /bin/ps)
+    psargs       process information command (e.g., -f)
+    devices      interfaces supported on host
+    ENDHOST
+
+    See the examples in the "config" directory for ideas of the kinds of
+    options that are commonly needed.
+
+    - In the ."config" files, the "startdirectory" path should be adjusted,
+      along with the "host" and "userclasspath" settings, as needed
+
+    - In the ".hosts" files, the "adehome" path and "sshlogin" name should
+      be adjusted
+
+runaderegistry
+runadeserver
+    These are convenience scripts for starting ADE.  They do some things to
+    try to figure out the address to use when starting and parse additional
+    arguments.  Type "./runaderegistry help" and "./runadeserver help" for a
+    description of options and some examples.
+
+    - You may want to adjust the IP addresses the script uses to guess RMI
+      args, etc., if they do not match your system and you're tired of
+      providing them on the command line.

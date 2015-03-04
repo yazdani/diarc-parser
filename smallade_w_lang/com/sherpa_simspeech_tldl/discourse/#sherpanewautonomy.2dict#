@@ -1,0 +1,37 @@
+come: S / NP : # x. coming(?actor`x) : # x. come(?actor`x)
+end: S / NP : # x. finished(?actor`x) : # x. finish(?actor`x)
+fly: S / PP : # x. flying(?actor`x) : # x. fly(?actor`x)
+go: S / PP : # x. going(?actor`x) : # x. go(?actor`x)
+halt: S : # x. x @ stopped(?actor) : # x. x @ stop(?actor)
+have: S / NP : # x. having(?actor`x) : # x. have(?actor`x)
+keep: S / NP : # x. keeping(?actor`x) : # x. keep(?actor`x)
+look: S / NP : # x. reported(?actor`partner`x) : # x. report(?actor`partner`x)
+look: NP, N : # x. x @ look: # x. x @ look
+look: NP/ N : # x. x @ reported(?actor`partner`x) : # x. report(?actor`partner`x)
+looking: NP, N : # x. x @ looking : # x. x @ looking
+move: S / PP : # x. moving(?actor`x) : # x. move(?actor`x)
+search: S / PP : # x. reported(?actor`partner`x) : # x. report(?actor`partner`x)
+stop: S : # x. x @ stopped(?actor) : # x. x @ stop(?actor)
+take: S / NP : # x. reported(?actor`partner`x) : # x. report(?actor`partner`x)
+turn: S / NP : # x. turning(?actor`x) : # x. turn(?actor`x)
+around: NP, N : # x. x @ around : # x. x @ around
+back: NP, N : # x. x @ back : # x. x @ back
+forward: NP, N : # x. x @ forward : # x. x @ forward
+left: NP, N : # x. x @ left : # x. x @ left
+right: NP, N : # x. x @ right : # x. x @ right
+straight: NP, N : # x. x @ straight : # x. x @ straight
+for: PP / NP : # x. x : # x. x
+to: PP / NP : # x. x : # x. x
+a: NP / N : # x. x : # x. x
+the: NP / N : # x. x @ pointed_direction : # x. x @ pointed_direction
+there: NP, N : # x. x @ pointed_direction : # x. x @ pointed_direction
+this: NP / N : # x. x @ pointed_direction  : # x. x @ pointed_direction 
+tree: NP, N : # x. x @ tree : # x. x @ tree
+trees: NP, N : # x. x @ tree : # x. x @ trees
+mission: NP, N :  # x. x @ mission : # x. x @ mission
+mountain: NP, N : # x. x @ mountain : # x. x @ mountain
+picture: NP, N : # x. x @ picture : # x. x @ picture
+rocks: NP, N : # x. x @ rocks : # x. x @ rocks
+victim: NP, N : # x. x @ victim : # x. x @ victim
+victims: NP, N : # x. x @ victims : # x. x @ victims
+

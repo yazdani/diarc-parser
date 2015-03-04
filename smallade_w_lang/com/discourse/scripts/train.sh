@@ -1,0 +1,1 @@
+./com/discourse/mink/train.sh com/discourse/models/julyDemo/follow/training2

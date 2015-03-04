@@ -1,0 +1,1 @@
+LD_LIBRARY_PATH=/usr/local/lib ./runadeserver com.vision.VisionServerImpl2 -Djava.library.path=/usr/local/lib:../vision/trunk/JNIversion -cammode 2 -camtype -7 -dfastblob -minSize 4000 

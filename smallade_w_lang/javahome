@@ -1,0 +1,107 @@
+#!/bin/bash
+# 
+#PATH=/bin:/usr/bin
+echo
+echo Checking for JAVA version ...
+JAVAPATH=`which java 2>/dev/null`
+SCALAPATH=`which scalac 2>/dev/null`
+if [ -z $JAVAPATH ]; then
+    echo Could not find JAVA, please specify the path:
+    read JAVAPATH
+    $JAVAPATH -version 2>&1 | grep -q "java version \"1.6.\|java version \"1.7."
+    if [ $? -ne 0 ]; then
+	echo Please install JAVA first
+	exit 1
+    fi
+fi
+echo Found JAVA in $JAVAPATH
+$JAVAPATH -version 2>&1 | grep -q "java version \"1.6.\|java version \"1.7."
+if [ $? -ne 0 ]; then
+    cat << \EOF
+but could not find appropriate JAVA version.  Sun JAVA 1.6 or above is
+required to run ADE.  If an appropriate JAVA version is installed, please
+enter the path now, otherwise quit and install JAVA.
+
+Enter the path to Sun JAVA 1.6.X or above:
+EOF
+    read JAVAPATH
+    $JAVAPATH -version 2>&1 | grep -q "java version \"1.6.\|java version \"1.7."
+    if [ $? -ne 0 ]; then
+	echo ERROR: please install JAVA first, aborting.
+	exit 1
+    fi
+else
+    $JAVAPATH -version 2>&1 | grep -q GNU
+    if [ $? -eq 0 ] ; then
+	cat << \EOF
+but it appears to be a GNU version, which may not work with ADE.  If an
+appropriate JAVA version is installed, please enter the path now, otherwise
+quit and install JAVA.
+
+Enter the path to JAVA 1.6.X or above:
+EOF
+	read JAVAPATH
+	$JAVAPATH -version 2>&1 | grep -q "java version \"1.6.\|java version \"1.7."
+	if [ $? -ne 0 ]; then
+	    echo Please install JAVA, then try again.
+	    exit 1
+	fi
+    fi
+fi
+echo JAVA version OK
+echo
+JAVADIR=`$JAVAPATH JHome`
+echo "JAVA directory is: $JAVADIR"
+# Check compiler version here (make sure it matches above)
+JAVACPATH=$JAVADIR/bin/javac
+if [ ! -f "$JAVACPATH" ] || [ ! -x "$JAVACPATH" ] ; then
+    JAVACPATH=$JAVADIR/Home/bin/java
+    if [ ! -f "$JAVACPATH" ] || [ ! -x "$JAVACPATH" ] ; then
+        echo Can\'t find executable $JAVACPATH
+        echo Please enter the path to the appropriate version of javac:
+        read JAVACPATH
+        echo cpath $JAVACPATH
+        if [ ! -f "$JAVACPATH" ] || [ ! -x "$JAVACPATH" ] ; then
+    	   echo Please install JAVA JDK, then try again.
+   	   exit
+        fi
+    fi
+    JCDIR=`dirname $JAVACPATH`
+    echo cdir $JCDIR
+else
+    JCDIR=$JAVADIR"/bin"
+fi
+if [ ! -f $JAVADIR/jre/lib/ext/RXTXcomm.jar ] &&
+   [ ! -f /usr/share/java/RXTXcomm.jar ] ; then
+    cat << \EOF
+WARNING: Did not find RXTXcomm.jar in the default locations.  Make sure it is
+	 installed (http://www.rxtx.org) before compiling components that need
+	 it (e.g., Camera, GPS) or components that depend on those or you'll
+	 see a *LOT* of error messages.  If you would like, you may enter
+	 the path in which RXTXcomm.jar may be found on your system, and
+	 that will be added to the class path for compilation.  If RXTX is
+	 unavailable, just press ENTER.
+
+Enter the path for RXTXcomm.jar:
+EOF
+    read RXTXCP
+    if [ ! -e $RXTXCP ] ; then
+        if [ ! -e $RXTXP/RXTXcomm.jar ] ; then
+            cat << \EOF
+WARNING: Did not find RXTXcomm.jar at $RXTXP;
+	 it can be added to UCP in ADEENV at a later date.
+EOF
+            unset RXTXP
+        fi
+    fi
+fi
+echo "JDIR=$JAVADIR" > ADEENV
+echo "JCDIR=$JCDIR" >> ADEENV
+echo "export JAVA_HOME=\${JDIR}" >> ADEENV
+echo "JAVA=\${JDIR}/bin/java" >> ADEENV
+echo "JAVAC=\${JCDIR}/javac" >> ADEENV
+echo "JAVACMD=\${JCDIR}/javac" >> ADEENV
+echo "JAVAH=\${JCDIR}/javah" >> ADEENV
+echo "JAVAD=\${JCDIR}/javadoc" >> ADEENV
+echo "UCP=$RXTXCP" >> ADEENV
+echo "SCALAC=${SCALAPATH}" >> ADEENV

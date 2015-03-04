@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="../../../../" default="build">
+		
+	<target name="build">		
+	    <javac srcdir="com/adesim/assignments/a1/" destdir="com/adesim/assignments/a1/" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no" includes="ade/**"/>
+		<jar destfile="toy1.jar" index="true" duplicate="preserve" filesetmanifest="merge">
+			<zipgroupfileset dir="." includes="core/*.jar jars/visionJNI.jar" />
+			<fileset dir="." includesfile="com/adesim/assignments/a1/bootstrap.includes" 
+					excludesfile="com/adesim/assignments/a1/bootstrap.excludes" />
+			<manifest>
+				<attribute name="Main-Class" value="com.adesim.assignments.a1.BootstrapADE"/>
+			</manifest>
+		</jar>		
+	</target>
+	
+
+	
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+
+	
+</project>
+

@@ -1,0 +1,1746 @@
+\documentclass[11pt,letterpaper]{article}
+
+\setlength{\textwidth}{6.5in}
+\setlength{\oddsidemargin}{0.00in}
+\setlength{\evensidemargin}{0.00in}
+\setlength{\textheight}{9.00in}
+\setlength{\topmargin}{0.00in}
+\addtolength{\topmargin}{-\headheight}
+\addtolength{\topmargin}{-\headsep}
+\special{papersize=8.5in,11in}
+
+\usepackage{graphicx}
+\usepackage{url}
+% note:  putting long java names in a url makes them wrap properly,
+% and makes their name stand out as a bonus.
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+\usepackage{xspace}
+\usepackage{verbatim}
+\usepackage{fancyvrb}
+\fvset{samepage=true}
+\fvset{fontsize=\small}
+
+\parskip 10pt
+
+\begin{document}
+
+\title{\huge ADE Goal Manager}
+\author{Paul W. Schermerhorn}
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+The ADE Goal Manager (still commonly referred to as the Action
+Manager, or just ``Action'') performs scheduling implicitly, based on
+the priorities of the agent's currently active {\em top-level goals}
+(TLG).  A TLG represents a goal of the agent that is generally not
+being pursued in service of any other goal.  A TLG may be explicitly
+instantiated on behalf of the user (e.g., a script for the agent to
+execute) or may be implicitly instantiated by some system-level
+motivation (e.g., the obedience motivation can cause a TLG to be
+instantiated in response to a verbal command from the user).
+
+Associated with each TLG is an {\em action interpreter} (AI), the job 
+of which is to execute the actions (typically encoded in the form of a 
+script) required to accomplish the goal.  AIs execute in parallel in 
+their own threads, allowing simultaneous progress toward the 
+achievement of multiple TLGs.  
+
+The Goal Manager continually reevaluates the {\em priority} of each 
+TLG, based on factors including the utility of accomplishing the goal, 
+the time remaining within which to accomplish the goal, and the 
+agent's current affective state.  Priority scores are used to mediate 
+resource conflicts between TLGs; before attempting an action, the AI 
+checks to see whether another AI already has the lock for the 
+contested resource and, if so, compares the priorities of the two.  
+For example, a robot may be executing a low-priority wandering script 
+that has control of the wheel motor lock.  If the robot receives a 
+command from a person instructing it to perform a task requiring it to 
+stay in place, the higher priority of the follow-commands goal will 
+allow that AI to stop the wheels and keep the robot from wandering 
+off.  in the meantime, the AI for the wandering goal is still 
+functioning, trying to issue velocity commands at random intervals.  
+When the follow-commands goal has completed, then, the wandering 
+behavior automatically proceeds in virtue of having regained control 
+of the resource lock.
+
+\section{Writing AI Scripts}
+
+Action Interpreter scripts are stored in XML format.  Hence, a
+description of how to write an AI script must include descriptions of
+both the syntax of the scripts and the syntax of the XML format in
+which they are stored.  For example:
+
+\begin{Verbatim}
+<type>
+  <name>findDoor</name>
+  <dbkind>action</dbkind>
+  <desc>?mover looks for a door at a given heading ?heading</desc>
+  <var>
+    <varname>?mover</varname>
+    <vartype>actor</vartype>
+  </var>
+  <var>
+    <varname>?heading</varname>
+    <vartype>coordinate</vartype>
+  </var>
+  <var>
+    <varname>!headingFrom</varname>
+    <vartype>coordinate</vartype>
+  </var>
+  <var>
+    <varname>!headingTo</varname>
+    <vartype>coordinate</vartype>
+  </var>
+  <!--  Here's where the events start -->
+  <actspec>getHeading ?mover !headingFrom</actspec>
+  <actspec>printText "headingFrom: !headingFrom"</actspec>
+  <actspec>getHeadingTo ?mover !headingFrom ?heading !headingTo</actspec>
+  <actspec>printText "headingTo: !headingTo"</actspec>
+  <control>if</control>
+  <actspec>  gt !headingTo 15</actspec>
+  <control>then</control>
+  <actspec>  timeTurn ?mover !headingTo</actspec>
+  <control>else</control>
+  <actspec>  printText "Not worth turning"</actspec>
+  <control>endif</control>
+  <actspec>startMove ?mover</actspec>
+  <control>while</control>
+  <actspec>  not</actspec>
+  <actspec>    getNearestDoor ?mover</actspec>
+  <actspec>  endnot</actspec>
+  <control>do</control>
+  <actspec>  printText "Still looking for a door"</actspec>
+  <control>endwhile</control>
+  <actspec>stop ?mover</actspec>
+</type>
+\end{Verbatim}
+
+\noindent This simple script has the robot turn to the heading 
+indicated and move forward (presumably down a hallway) until it 
+encounters something matching the description of a doorway.  The XML 
+representation of the script (above) really just packages a more
+traditional scripting language:
+
+\begin{Verbatim}
+:name findDoor
+:desc ?mover looks for a door at a given heading ?heading
+:var ?mover actor 
+:var ?heading coordinate 
+:var !headingFrom coordinate 
+:var !headingTo coordinate 
+# Here's where the events start
+getHeading ?mover !headingFrom
+printText "headingFrom: !headingFrom"
+getHeadingTo ?mover !headingFrom ?heading !headingTo
+printText "headingTo: !headingTo"
+if
+  gt !headingTo 15
+then
+  timeTurn ?mover !headingTo
+else
+  printText "Not worth turning"
+endif
+startMove ?mover
+while
+  not
+    getNearestDoor ?mover
+  endnot
+do
+  printText "Still looking for a door"
+endwhile
+stop ?mover
+\end{Verbatim}
+
+\subsection{Action Scripting Language}
+
+The AI steps through scripts, looking for primitives or syntax 
+elements (below).  When it encounters a primitive, it executes the 
+action associated with it.
+
+\paragraph{Flow Control} The semantics of script syntax elements is as 
+follows:
+
+\begin{description}
+%\item[\em Sequence:] $\alpha <newline> \beta$.  Execute $\alpha$ 
+%followed by $\beta$.
+
+\item[\em Conditional:] if $\alpha$ then $\beta$ elseif $\gamma$ then 
+$\delta$ else $\epsilon$ endif
+
+\item[\em Loop:] while $\alpha$ do $\beta$ endwhile
+
+\item[\em Negation:] not $\alpha$ endnot
+
+\item[\em Conjunction/Disjunction:] $\alpha$ and $\beta$, $\alpha$ or 
+$\beta$
+
+\item[\em Return] return TRUE$|$FALSE endreturn
+\end{description}
+
+\noindent Note the absence of a test primitive; any action can serve 
+as the condition for loops and conditionals, with its exit status 
+serving to determine the outcome of the branch.
+
+\paragraph{Variables}  Action script variables are typed, and come in 
+two varieties: locals (created at call time and discarded when leaving 
+the script) and parameters (passed into the script at call time).  
+Local variable names begin with the character `!'.  Locals can be used 
+as parameters for script invocations from the current script context.
+
+Parameter variable names begin with the character `?'.  Parameters are 
+passed by reference, so the binding of a variable may be different 
+when a script invocation returns from what it was before the 
+invocation.  This, in fact, is how values are ``returned'' from 
+scripts---the user passes in the variable to which the desired return 
+value should be bound.  For example, in the code above, after {\tt 
+getHeading ?mover !headingFrom} completes, the current heading of the 
+robot bound to {\tt ?mover} is stored in the variable {\tt 
+!headingFrom}.  Although somewhat awkward, this design facilitates two 
+features important to ADE action script semantics.  First, because 
+every event in a script is considered an action, including sensing 
+acts, there is the possibility of failure.  The more traditional 
+(i.e., as in C or Java) return value of an action, therefore, is a 
+truth value indicating the success or failure of the action.  This 
+requires that other values be passed back by alternate means.  Second, 
+in many cases it is imperative in the context of embodied agents to 
+have the flexibility to adapt to changes in the situation.  Take the 
+example of an interaction script that takes a person-type variable as 
+a parameter.  If the original interlocutor were to leave during the 
+interaction while another person carried on the conversation, changing 
+the binding for the calling context would prevent the robot from using 
+the wrong name or saying something inappropriate after the script 
+returns.
+
+While it is always best to specify all parameters at invocation time, 
+it is possible to call a script without all parameters.  When this 
+happens, the AI tries to bind the variable itself, for example, by 
+looking for a variable of the same name in the parent's context and 
+looking for (differently-named) variables of the same type in either 
+the child or parent context.  This is based on the assumption that, if 
+the binding is unspecified, the context itself may be able to provide 
+a reasonable guess (analogous to anaphora resolution).  However, this 
+can lead to unexpected results, so it is advised to pass these values 
+in whenever possible.
+
+\paragraph{Actions} An action statement is just the name of the action 
+followed by the names of the parameters to be passed in.  As stated 
+above, the return value is true or false, depending on the success or 
+failure of the action.  Hence, {\em any action can be used as a test for 
+  the {\tt if} and {\tt while} constructs}.
+
+\paragraph{Goal states} It is possible to specify a goal state as part
+of an action script (interleaved with action specifications, if
+desired).  In that case, the AI will choose the highest-utility action
+that achieves the goal state and execute it at that point in the
+script.  Note, however, that this mechanism may be of limited utility,
+as the state description may not specify all of the variables needed
+by the action; the AI will try to guess which ones to use, but this
+will not always work.
+
+\subsection{Action Database File Syntax}
+
+An Action database file is a hierarchical specification of bits of 
+knowledge (primarily primitive actions and scripts, but also other 
+types such as numbers, etc.).  ADE action script files are usually 
+found in the directory {\tt \$ADE/com/action/db}.  The default set of
+action types, primitives, and scripts is loaded automatically when the
+goal manager is initialized.  Additional files can be specified on the
+command line using the {\tt -dbfilesupp} parameter.  The XML structure
+if these files includes:
+
+\begin{description}
+\item[\tt type] Specifies the type being described (e.g., action, 
+thing).
+\item[\tt subtypes] Contains a list of types that are hierarchical 
+subtypes of the current type.
+\item[\tt name] The name of the current type (this is case 
+INSENSITIVE).
+\item[\tt desc] A description that can be used by Action.
+\item[\tt conditions] Specify conditions that must hold for an action
+  to be viable.  There are two types of conditions that can be
+  specified:
+  \begin{description}
+    \item[\tt atstart] conditions must be true at the beginning of the
+      action
+    \item[\tt overall] conditions must remain true throughout the
+      action
+  \end{description}
+  \noindent Note that the distinction is observed only by the SapaServer at this
+  point.
+\item[\tt effects] Specify effects of an action.  There are two types
+  of effects that can be specified:
+  \begin{description}
+    \item[\tt atstart] effects that obtain immediately upon starting
+      an action
+    \item[\tt atend] effects that obtain when the action completes
+  \end{description}
+  \noindent Again, the differences in effects are primarily observed by the
+  SapaServer at this point.  Note also there there is a qualifier
+  that can be added to an effect specification to indicate that it
+  will obtain even if the action fails: $<${\tt atend
+    always="true"}$>$.  If the {\tt always} tag is absent or has some
+    other value, the end effect will only be assumed to obtain if the
+    action succeeds.
+\item[\tt postcond, precond] Specify pre- and post-conditions.  These 
+are not used used consistently right now, and are superseded
+by the {\tt conditions} and {\tt effects} described above.
+\item[\tt benefit, cost, timeout] As you would expect.
+\item[\tt minurg, maxurg] The minimum and maximum urgency for a 
+script.  The defaults are 0.0 and 1.0.
+\item[\tt var] A variable definition.  Variables are typed, and must 
+include the following:
+
+\begin{description}
+\item[\tt varname] The name of variable.
+\item[\tt vartype] The variable's type (e.g., integer, double).
+\end{description}
+\item[\tt actspec] An action specification.  Can be a primitive action  
+or a script.  When using variables, include the `?' or `!' character 
+(which is part of the name), and the ActionInterpreter will look up 
+and pass the appropriate variable binding into the action.
+\item[\tt achieve] A goal state description.  The AI will find the
+  highest-utility action that achieves that goal state and attempt to
+  bind all of its parameters before executing it.
+\item[\tt control] A flow control element (e.g., if, while).
+\item[\tt exec] An action to be executed when the GM starts, given in
+  the same form as other action specifications (i.e., not predicate
+  form).
+\item[\tt goal] A goal to be instantiated when the GM starts, given in
+  predicate form.
+\item[\tt badstate] A state that the GM is forbidden to bring about.
+\item[\tt badaction] An action that the GM is forbidden to perform.
+
+\end{description}
+
+\noindent When the goal manager loads the script files, it uses the 
+tags to aid in parsing.  However, it is not necessary to use the XML 
+format when creating new scripts; a script specified using the non-XML 
+format shown above can be converted to an action script file using the 
+{\tt Scriptify} utility included with ADE (in {\tt 
+\$ADE/com/action/db}).  
+
+\subsection{Writing Action Scripts without XML}
+
+{\bf Note:} the {\tt Scriptify} code has not been updated in a while,
+so it may not support all of the forms described above.  It should
+suffice for simple scripts, but will need to be brought up to date if
+anyone ever starts using it for more than demonstration purposes.
+
+{\tt Scriptify} is a simple parser that allows you to specify Action
+scripts as non-xml text, similar to more traditional scripting
+languages.  Comment lines start with `\#'.  All tags, except for
+$<$var$>$, $<$control$>$, and $<$actspec$>$, are represented by ``:tag
+[value]'' at the start of a line.  A var is represented as ``:var
+[varname] [vartype]'' at the start of a line.  Any line that isn't
+matched to one of the other tags is assumed to be an actspec or
+control--no tag required.
+
+Quickly, the elements that are required for a script are:
+
+\begin{description}
+\item[\tt :name] the name
+\item[\tt :var $<$varname$>$ $<$vartype$>$] the ``variables'' for the script
+\item[\tt :actspec] the actions the script calls (primitives or other scripts);
+  note that the {\tt :actspec} tag is optional for Scriptify
+\item[\tt :control] flow control elements (e.g., if, while)
+  note that the {\tt :control} tag is optional for Scriptify
+\end{description}
+
+\noindent Other possible elements are:
+
+\begin{description}
+\item[\tt :locks] specify which resource locks should be required before executing
+\item[\tt :cost] the cost of running the script
+\item[\tt :benefit] the expected benefit
+\item[\tt :posaff] initial value for positive affect associated with this action
+\item[\tt :negaff] initial value for negative affect associated with this action
+\item[\tt :minurg] minimum urgency for this action
+\item[\tt :maxurg] maximum urgency for this action
+\item[\tt :timeout] time allotted in which to complete action
+\item[\tt :precond] predicate list specifying preconditions
+\item[\tt :postcond] predicate list specifying postconditions
+\end{description}
+
+\noindent Most of these have default values and need only be specified
+if you want to tweak the goal selection process, etc.
+
+Remember that when referring to parameter variables in the 
+actspecs, they must be preceded with a `?'.  Also note that ``local''
+variables (ones that the Action Interpreter should not expect to find in
+the call stack) should be defined with a leading `!'.
+
+\paragraph{Generating XML}
+
+Ensure the utility is compiled ({\tt ./mkade scriptify}) and then run
+it on your input to generate XML output that can be read by the Goal
+Manager.  For example, to translate the file {\tt test.as}:
+
+{\tt java -cp .:jars/xercesImpl.jar com.action.db.Scriptify test.as}
+
+\noindent in \$ADE.  The result is printed to System.out.  It can then
+be pasted into an appropriate xml ActionDB file.  Alternatively, to
+output a full file, pass the ``-s'' flag for a new script, or the
+``-p'' flag for a new primitive, and redirect the output to a new xml
+file.
+
+\section{Semantic Description}
+
+Note that in every case below, the absence/unavailability of the 
+underlying ADE component (e.g., the motion server) results in action 
+failure.  
+%This prerequisite will typically be left implicit in the 
+%specifications below, although ADE components required are specified as
+%dependencies.  
+Similarly, if the AI in which an action is 
+attempted does not hold the appropriate locks, the action fails.  One
+postcondition of any failure is that the action's exit status is set 
+to false.  In many cases, a failure has no effect at the architecture 
+level, but may be meaningful at the script level.
+
+% Script invocations are received (typically from the Discourse server) 
+% as colon delimited strings (e.g., {\tt startmove:?actor:4:meters}).  
+% Discourse fills in the arguments that it can and passes on the others 
+% to Action (e.g., {\tt ?actor} above), which attempts to determine 
+% appropriate values from the script context.
+
+Note also that actions commonly take the agent itself as a parameter
+(exceptions to this rule of thumb are mostly found in the
+``miscellaneous other actions'' category).  One important reason for
+this seemingly extraneous parameter is to allow for simulation of other
+agents' actions.  If the agent is imagining what some other agent
+would do in a given situation, it is important to avoid performing
+those actions in the real world.  Hence, most primitives will check to
+make sure that the actor parameter matches the name of the agent
+before dispatching the action.  The practical impact of this is that
+you need to make sure the value passed for the actor parameter is
+correct; the default value is ``robot'' but it can be specified when
+the Goal Manager is started using the {\tt -agentname} command-line
+parameter.
+
+\subsection{Variable Types}
+
+The Goal Manager maintains a type hierarchy for variables used in
+scripts.  There is (currently) no strict type checking, however,
+because other components rely on typing to function properly (e.g.,
+the planning server determines what to pass to scripts based on the
+types it's given).  It is, therefore, advisable to adhere to the type
+hierarchy to the extent possible.
+% need to make type declarations available via Scriptify
+% :type xxx is yyy, or something
+% the challenge will be fitting them into the hierarchy
+
+\begin{Verbatim}
+object: type
+ location: type
+  hallway: type
+  room: type
+  zone: type
+ doorway: type
+  door: type
+ box: type
+ property: type
+  color: type
+  open_pr: type
+  closed_pr: type
+ agent: type
+  actor: type
+  interactor: type
+  listener: type
+ thing: type
+ data: type
+  text: type
+  keys: type
+  unit: type
+  perspective: type
+  direction: type
+  relationship: type
+  datatype: type
+  percept: type
+ boolean: type
+ number: type
+  integer: type
+  long: type
+   visionTs: type
+   millisec: type
+  double: type
+   coordinate: type
+\end{Verbatim}
+
+
+\subsection{Actions Related to Motion}
+
+There are three primary types of motion-related commands: {\em targetless},
+{\em targeted}, and {\em informational}.  Targetless motion actions attempt
+to initiate some basic motion (e.g., move forward, turn right) that
+has no specific target location and will continue until explicitly
+terminated (e.g., move forward will cause the agent to move forward until
+stopped by a command, obstacle avoidance, etc.).  Targeted motion commands
+initiate actions that will not continue indefinitely, but will stop when
+the target requirements have been satisfied.  Note that an AI passes such
+targeted motion actions to the motion server, which handles the specifics
+of reaching the target--it is treated as a black box.  Hence, there is a
+level of state below the level of the Goal Manager to which it has no
+access beyond the current overall state of the targeted action (in
+progress, success, failure, etc.).  Finally, informational actions attempt
+to provide some kind of information to the overlying script (e.g., the
+agent's current location).
+
+\begin{comment}
+\paragraph{\tt startMoveTo} Initiate move to a location, defined by a 
+pair of coordinates $x,y$ given in the global coordinate system.
+
+\begin{itemize}
+\item{\em Dependencies} Motion server, position server (e.g., Player amcl or
+GPS).
+\item{\em Prerequisites} None.
+\item{\em Success} Motion server attempting to move to location, motion
+request identifier (MRID) saved in AI and returned to script.
+\item{\em Failure} Invalid MRID stored and returned to script level.
+\end{itemize}
+
+\paragraph{\tt startMoveRel} Initiate move to a location, defined by a pair
+of coordinates $x,y$ given relative to the agent's current position and 
+heading.  Note that this is currently achieved by converting to global
+coordinates and moving as in startMoveTo, hence dependencies,
+prerequisites, etc., are identical.
+
+\begin{itemize}
+\item{\em Dependencies} Motion server, position server (e.g., Player amcl or
+GPS).
+\item{\em Prerequisites} None.
+\item{\em Success} Motion server attempting to move to location, MRID saved
+in AI and returned to script.
+\item{\em Failure} Invalid MRID stored and returned to script level.
+\end{itemize}
+
+\paragraph{\tt startMoveDist} Move straight ahead a given distance.  Again,
+this is based on global coordinates, as the wheel encoders are unreliable.
+
+\begin{itemize}
+\item{\em Dependencies} Motion server, position server (e.g., Player amcl or
+GPS).
+\item{\em Prerequisites} None.
+\item{\em Success} Motion server attempting to move to location straight
+ahead the specified distance, MRID saved in AI and returned to
+script.
+\item{\em Failure} Invalid MRID stored and returned to script level.
+\end{itemize}
+
+\paragraph{\tt startTurnRel} Turn a specified amount.  Again, this is based
+on global coordinates, as the wheel encoders are unreliable.
+
+\begin{itemize}
+\item{\em Dependencies} Motion server, position server (e.g., Player amcl or
+GPS).
+\item{\em Prerequisites} None.
+\item{\em Success} Motion server attempting to turn to a heading given by
+the current heading and the requested turn amount, MRID saved in
+AI and returned to script.
+\item{\em Failure} Invalid MRID stored and returned to script level.
+\end{itemize}
+
+\paragraph{\tt checkMotion} Check completion status of a motion request.
+(PWS: Note that at this point it is assumed that a motion action will not
+fail, so the checkMotion failure indicates only that the motion request is
+not completed.  This is a temporary shortcoming waiting to be addressed.)
+
+\begin{itemize}
+\item{\em Dependencies} Motion server.
+\item{\em Prerequisites} A valid MRID, a successfully completed motion
+request.
+\item{\em Success} Action exit status true.
+\item{\em Failure} Action exit status false.
+\end{itemize}
+
+\paragraph{\tt cancelMotion} Cancel a motion request.  The only way to
+fail a cancel is to provide the wrong MRID--the motion server does not
+enforce any permissions.  It is assumed that the Goal Manager's priority
+locks will provide sufficient enforcement.
+
+\begin{itemize}
+\item{\em Dependencies} Motion server.
+\item{\em Prerequisites} The MRID of the currently active motion request.
+\item{\em Success} Motion request cancelled in motion server, robot
+stopped.
+\item{\em Failure} None.
+\end{itemize}
+
+\paragraph{\tt stop} Stop moving.  Unconditional.
+
+\begin{itemize}
+\item{\em Dependencies} Motion server.
+\item{\em Prerequisites} None.
+\item{\em Success} Motion request cancelled in motion server, robot
+stopped.
+\item{\em Failure} None.
+\item{\em Postcondition} {\tt not moving ?mover} and {\tt not turning 
+?mover}.
+\end{itemize}
+
+\paragraph{\tt startleft} Initiate turn (manipulates rotational 
+velocity).
+
+\begin{itemize}
+\item{\em Dependencies} Motion server.
+\item{\em Prerequisite 1} Forward velocity zero.
+\item{\em Success 1} Agent turns in place indefinitely, current motion 
+request cancelled.
+\item{\em Prerequisite 2} Forward velocity non-zero.
+\item{\em Success 2} Agent turns in an arc, current motion request 
+cancelled.
+\item{\em Failure} None.
+\item{\em Postcondition} {\tt turning ?mover left}.
+\end{itemize}
+
+\paragraph{\tt startleft theta} Initiate turn of theta degrees.
+
+\begin{itemize}
+\item{\em Dependencies} Motion server, position server.
+\item{\em Prerequisite 1} Forward velocity zero.
+\item{\em Success 1} Agent initiates turn in place to heading 
+determined by current heading and theta, current motion request 
+cancelled, MRID stored in AI.
+\item{\em Prerequisite 2} Forward velocity non-zero.
+\item{\em Success 2} Agent stops, initiates turn in place to heading
+determined by current heading and theta, current motion request 
+cancelled, MRID stored in AI.
+\item{\em Failure} None.
+\end{itemize}
+
+\paragraph{\tt startright} Initiate turn (manipulates rotational 
+velocity).
+
+\begin{itemize}
+\item{\em Dependencies} Motion server.
+\item{\em Prerequisite 1} Forward velocity zero.
+\item{\em Success 1} Agent turns in place indefinitely, current motion 
+request cancelled.
+\item{\em Prerequisite 2} Forward velocity non-zero.
+\item{\em Success 2} Agent turns in an arc, current motion request 
+cancelled.
+\item{\em Failure} None.
+\item{\em Postcondition} {\tt turning ?mover right}.
+\end{itemize}
+
+\paragraph{\tt startright theta} Initiate turn of theta degrees.
+
+\begin{itemize}
+\item{\em Dependencies} Motion server, position server.
+\item{\em Prerequisite 1} Forward velocity zero.
+\item{\em Success 1} Agent initiates turn in place to heading 
+determined by current heading and theta, current motion request 
+cancelled, MRID stored in AI.
+\item{\em Prerequisite 2} Forward velocity non-zero.
+\item{\em Success 2} Agent stops, initiates turn in place to heading
+determined by current heading and theta, current motion request 
+cancelled, MRID stored in AI.
+\item{\em Failure} None.
+\end{itemize}
+
+\paragraph{\tt startmove} Initiate forward motion.
+
+\begin{itemize}
+\item{\em Dependencies} Motion server.
+\item{\em Prerequisite} None.
+\item{\em Success} Agent initiates indefinite forward motion, 
+rotational velocity set to zero, current motion request cancelled.
+\item{\em Failure} None.
+\item{\em Postcondition} {\tt moving ?mover forward}.
+\end{itemize}
+
+\paragraph{\tt startmove dist} Initiate forward motion a given 
+distance.
+
+\begin{itemize}
+\item{\em Dependencies} Motion server, position server.
+\item{\em Prerequisite} None.
+\item{\em Success} Agent initiates forward motion to location 
+determined by current position and distance parameter, rotational 
+velocity set to zero, current motion request cancelled, MRID of new 
+motion request stored in AI.
+\item{\em Failure} None.
+\end{itemize}
+
+\paragraph{\tt startmoveback} Initiate backward motion.
+
+\begin{itemize}
+\item{\em Dependencies} Motion server.
+\item{\em Prerequisite} None.
+\item{\em Success} Agent initiates indefinite backward motion, 
+rotational velocity set to zero, current motion request cancelled.
+\item{\em Failure} None.
+\item{\em Postcondition} {\tt moving ?mover backward}.
+\end{itemize}
+
+\paragraph{\tt startmoveback dist} Initiate backward motion a given 
+distance.
+
+\begin{itemize}
+\item{\em Dependencies} Motion server, position server.
+\item{\em Prerequisite} None.
+\item{\em Success} Agent initiates backward motion to location 
+determined by current position and distance parameter, rotational 
+velocity set to zero, current motion request cancelled, MRID of new 
+motion request stored in AI.
+\item{\em Failure} None.
+\end{itemize}
+
+\paragraph{\tt startmoveleft}
+
+\begin{itemize}
+\item{\em Dependencies} Motion server.
+\item{\em Prerequisite} None.
+\item{\em Success} Agent initiates indefinite leftward arc, current 
+motion request cancelled.
+\item{\em Failure} None.
+\item{\em Postcondition} {\tt moving ?mover forward} and {\tt turning 
+?mover left}.
+\end{itemize}
+
+\paragraph{\tt startmoveright}
+
+\begin{itemize}
+\item{\em Dependencies} Motion server.
+\item{\em Prerequisite} None.
+\item{\em Success} Agent initiates indefinite rightward arc, current 
+motion request cancelled.
+\item{\em Failure} None.
+\item{\em Postcondition} {\tt moving ?mover forward} and {\tt turning 
+?mover right}.
+\end{itemize}
+
+\paragraph{\tt gpsready} Query GPS server whether valid readings 
+available.  (This is the only interaction between Action and GPS, 
+solely present to determine when it's OK to start sending motion 
+commands to the motion server, which is the primary client of the GOS 
+server.)
+
+\begin{itemize}
+\item{\em Dependencies} GPS server.
+\item{\em Prerequisite} GPS satellite lock acquired.
+\item{\em Success} Action exit status set to true.
+\item{\em Failure} Action exit status set to false.
+\end{itemize}
+
+\paragraph{\tt atLocation} Determine whether agent is currently at 
+(has arrived at) a given location.
+
+\begin{itemize}
+\item{\em Dependencies} Position server.
+\item{\em Prerequisite} Agent's current location is within the epsilon 
+distance of the target location.
+\item{\em Success} Action exit status set to true.
+\item{\em Failure} Action exit status set to false.
+\end{itemize}
+
+\paragraph{\tt getLocation} Get current (global) location.
+
+\begin{itemize}
+\item{\em Dependencies} Position server.
+\item{\em Prerequisite} None.
+\item{\em Success} Current location returned to script.
+\item{\em Failure} None.
+\end{itemize}
+
+\paragraph{\tt getHeading} Get current (global) heading.
+
+\begin{itemize}
+\item{\em Dependencies} Position server.
+\item{\em Prerequisite} None.
+\item{\em Success} Current heading returned to script.
+\item{\em Failure} None.
+\end{itemize}
+
+\paragraph{\tt getHeadingFrom} Get global heading from one location to 
+another, ignoring agent heading.
+
+\begin{itemize}
+\item{\em Dependencies} None.
+\item{\em Prerequisite} None.
+\item{\em Success} Heading returned to script.
+\item{\em Failure} None.
+\end{itemize}
+
+\paragraph{\tt getHeadingFromRel} Get global heading from one location 
+to another, relative to an agent heading at first location (i.e., how 
+far would an agent at location 1 with given heading have to turn to 
+face location 2).
+
+\begin{itemize}
+\item{\em Dependencies} None.
+\item{\em Prerequisite} None.
+\item{\em Success} Heading returned to script.
+\item{\em Failure} None.
+\end{itemize}
+
+\paragraph{\tt getHeadingTo} Get relative heading between two 
+headings.
+
+\paragraph{\tt getDistanceFrom} Get distance from one location to 
+another.
+
+\paragraph{\tt inMotion} Check to see whether the robot is in motion.
+
+% \paragraph{\tt addFieldPoint}
+% 
+% \paragraph{\tt removeFieldPoint}
+% 
+% \paragraph{\tt moveFieldPoint}
+% 
+% \paragraph{\tt fieldReading}
+% 
+% \paragraph{\tt doTransmit}
+\end{comment}
+
+\begin{Verbatim}
+setTV: set translational velocity
+  Parameter vars:
+    ?mover: actor
+    ?tv: double - translational velocity
+  Resource locks:
+    motionLock
+\end{Verbatim}
+
+\begin{Verbatim}
+setRV: set rotational velocity
+  Parameter vars:
+    ?mover: actor
+    ?rv: double - rotational velocity
+  Resource locks:
+    motionLock
+\end{Verbatim}
+
+\begin{Verbatim}
+setVels: set translational and rotational velocities
+  Parameter vars:
+    ?mover: actor
+    ?tv: double - translational velocity
+    ?rv: double - rotational velocity
+  Resource locks:
+    motionLock
+\end{Verbatim}
+
+\begin{Verbatim}
+getVels: get translational and rotational velocities
+  Parameter vars:
+    ?mover: actor
+  Return vars:
+    ?tv: double - translational velocity
+    ?rv: double - rotational velocity
+  Resource locks:
+    motionLock
+\end{Verbatim}
+
+\begin{Verbatim}
+move: move in the specified direction (straight, forward, left, right, back)
+  Parameter vars:
+    ?robot: actor
+    ?direction: direction
+  Resource locks:
+    motionLock
+\end{Verbatim}
+
+\begin{Verbatim}
+qmove: move in the specified direction (straight, forward, left, right, back) 
+       with no verbal confirmation
+  Parameter vars: 
+    ?robot: actor
+    ?direction: direction
+  Resource locks:
+    motionLock
+\end{Verbatim}
+
+\begin{Verbatim}
+turn: turn in the specified direction (left, right)
+  Parameter vars:
+    ?robot: actor
+    ?direction: direction
+  Resource locks:
+    motionLock
+\end{Verbatim}
+
+\begin{Verbatim}
+qturn: turn in the specified direction (left, right) with no verbal 
+       confirmation
+  Parameter vars:
+    ?robot: actor
+    ?direction: direction
+  Resource locks:
+    motionLock
+\end{Verbatim}
+
+\begin{Verbatim}
+stop: stop motion
+  Parameter vars:
+    ?mover: actor
+  Resource locks:
+    motionLock
+\end{Verbatim}
+
+\begin{Verbatim}
+qstop: stop motion with no verbal confirmation
+  Parameter vars:
+    ?robot: actor
+  Resource locks:
+    motionLock
+\end{Verbatim}
+
+\begin{Verbatim}
+safeRight: check whether there's an obstacle to the right
+  Parameter vars:
+    ?mover: actor
+\end{Verbatim}
+
+\begin{Verbatim}
+safeFront: check whether there's an obstacle to the front
+  Parameter vars:
+    ?mover: actor
+\end{Verbatim}
+
+\begin{Verbatim}
+safeLeft: check whether there's an obstacle to the left
+  Parameter vars:
+    ?mover: actor
+\end{Verbatim}
+
+\begin{Verbatim}
+getMotionTolerance: get max distance from destination for successful
+                    motion
+  Parameter vars:
+    ?mover: actor
+  Return vars:
+    ?dist: double - motion tolerance
+\end{Verbatim}
+
+\begin{Verbatim}
+setMotionTolerance: set max distance from destination for successful
+                    motion
+  Parameter vars:
+    ?mover: actor
+    ?dist: double - motion tolerance
+\end{Verbatim}
+
+\begin{Verbatim}
+getCritDist: get the critical distance at which obstacle avoidance 
+             will engage (if active)
+  Parameter vars:
+    ?mover: actor
+  Return vars:
+    ?dist: double - critical distance
+\end{Verbatim}
+
+\begin{Verbatim}
+setCritDist: set the critical distance at which obstacle avoidance
+             will engage (if active)
+  Parameter vars:
+    ?mover: actor
+    ?dist: double - critical distance
+\end{Verbatim}
+
+\begin{Verbatim}
+getStall: check whether motors are stalled (adesim only)
+  Parameter vars:
+    ?mover: actor
+\end{Verbatim}
+
+\begin{Verbatim}
+atLocation: check whether current location is within epsilon of given
+            coordinates
+  Parameter vars:
+    ?mover: actor
+    ?xdest: coordinate - x coordinate
+    ?ydest: coordinate - y coordinate
+    ?epsilon: coordinate - allowable error
+\end{Verbatim}
+
+\begin{Verbatim}
+getLocation: get current location
+  Parameter vars:
+    ?mover: actor
+  Return vars:
+    ?xcoord: coordinate
+    ?ycoord: coordinate
+\end{Verbatim}
+
+\begin{Verbatim}
+getHeading: get current heading
+  Parameter vars:
+    ?mover: actor
+  Return vars:
+    ?heading: double
+\end{Verbatim}
+
+\begin{Verbatim}
+getHeadingTo: get relative heading between two global headings
+  Parameter vars:
+    ?mover: actor
+    ?t1: double - current heading
+    ?t2: double - target heading
+  Return vars:
+    ?heading: double
+\end{Verbatim}
+
+\begin{Verbatim}
+getHeadingFrom: get global heading between one point and another
+  Parameter vars:
+    ?mover: actor
+    ?x1: coordinate - current x coordinate
+    ?y1: coordinate - current y coordinate
+    ?x2: coordinate - target x coordinate
+    ?y2: coordinate - target y coordinate
+  Return vars:
+    ?heading: double - target heading
+\end{Verbatim}
+
+\begin{Verbatim}
+getHeadingFromRel: get relative heading between one point and another
+  Parameter vars:
+    ?mover: actor
+    ?x1: coordinate - current x coordinate
+    ?y1: coordinate - current y coordinate
+    ?x2: coordinate - target x coordinate
+    ?y2: coordinate - target y coordinate
+    ?heading: double - current heading
+  Return vars:
+    ?newHeading: double - target heading
+\end{Verbatim}
+
+\begin{Verbatim}
+getDistanceFrom: get distance between one point and another
+  Parameter vars:
+    ?mover: actor
+    ?x1: coordinate - current x coordinate
+    ?y1: coordinate - current y coordinate
+    ?x2: coordinate - target x coordinate
+    ?y2: coordinate - target y coordinate
+  Return vars:
+    ?dist: coordinate - distance
+\end{Verbatim}
+
+\begin{Verbatim}
+moveTo: move to a given global location
+  Parameter vars:
+    ?mover: actor
+    ?xdest: coordinate - destination x coordinate
+    ?ydest: coordinate - destination y coordinate
+\end{Verbatim}
+
+\begin{Verbatim}
+traverse: move until an obstacle is encountered ahead, avoiding 
+          obstacles to the sides
+  Parameter vars:
+    ?mover: actor
+\end{Verbatim}
+
+\begin{Verbatim}
+moveThroughRel: move through the nearest open doorway
+  Parameter vars:
+    ?mover: actor
+\end{Verbatim}
+
+\begin{Verbatim}
+moveRel: move to a location relative to the current one (heading
+         assumed to be 0)
+  Parameter vars:
+    ?mover: actor
+    ?xdest: coordinate - destination x coordinate
+    ?ydest: coordinate - destination y coordinate
+\end{Verbatim}
+
+\begin{Verbatim}
+timeMove: move forward a given distance (dead reckoning)
+  Parameter vars:
+    ?mover: actor
+    ?dist: double - distance to move (in meters)
+\end{Verbatim}
+
+\begin{Verbatim}
+timeTurn: turn a given amount (dead reckoning)
+  Parameter vars:
+    ?mover: actor
+    ?heading: double - amount to turn (in radians, positive is 
+              counter-clockwise)
+\end{Verbatim}
+
+\subsection{Actions Related to Vision}
+
+\begin{comment}
+\paragraph{\tt getTypes} Get a list of all types of objects currently 
+in visual short-term memory (VSTM).
+
+\paragraph{\tt getAll} Get a list of keys for all tokens in VSTM.
+
+\paragraph{\tt getByType} Get a single key for an object of the given 
+type in VSTM.
+
+\paragraph{\tt getAllByType} Get a list of keys for all objects of the 
+given type in VSTM.
+
+\paragraph{\tt inVisualSTM} Check to see whether the object 
+corresponding to the given key is still in VSTM.
+
+\paragraph{\tt inVisualMemory} Check to see whether the object 
+corresponding to the given key is in visual long-term memory.  This 
+amounts to checking whether that object has been seen by the current 
+instantiation of the vision server.
+
+\paragraph{\tt howManyOfType} See how many objects of the given type 
+are in VSTM.
+
+\paragraph{\tt getToken} Get the token ({\tt MemoryObject}) associated 
+with the given key.
+
+\paragraph{\tt shiftFOA} Start tracking the object corresponding to 
+the given key.
+
+\paragraph{\tt nod} Nod the pan-tilt unit (PTU).
+
+\paragraph{\tt shake} Shake the PTU.
+
+\paragraph{\tt lookUp} Tilt the PTU up.
+
+\paragraph{\tt lookDown} Tilt the PTU down.
+
+\paragraph{\tt lookLeft} Pan the PTU left.
+
+\paragraph{\tt lookRight} Pan the PTU right.
+
+\paragraph{\tt lookForward} Return the PTU to neutral.
+
+\paragraph{\tt startTracking} Start object tracking.
+
+\paragraph{\tt stopTracking} Stop object tracking.
+
+\paragraph{\tt visionSearch} Start a search of the current scene
+for token of type specified by the given key.
+
+\paragraph{\tt visionScan} Start a scan of the current scene for
+any objects of known types.
+
+\paragraph{\tt visionRequestIsDone} Check whether the vision operation
+corresponding to the given time key has completed.
+
+\paragraph{\tt getVisionSearchResult} Get the result of the search
+operation.
+
+\paragraph{\tt getVisionScanResult} Get the result of the scan
+operation.
+
+\paragraph{\tt getBestVisionScanResult} Get the single best match of the
+scan operation.
+
+\paragraph{\tt visionGetResult} Get the result of the last search/scan.
+
+\paragraph{\tt visionLearnObject} Learn a new memory object type.
+
+\paragraph{\tt getPerspective} Get the perspective of some object.
+
+\paragraph{\tt getRelationship} Find the relationship between a 
+perspective and an object.  The perspective can be first-person or 
+from another object.
+
+\paragraph{\tt getRelationship2} Find the relationship between two 
+objects.
+
+\paragraph{\tt lookAround} Look around the room.  Periodically turn 
+``head'' to scan the area.
+\end{comment}
+
+\begin{Verbatim}
+getTypeIds: get a list of ids for all types in STM
+  Parameter vars:
+    ?viewer: actor
+  Return vars:
+    ?STMTypes: keys - list of type ids
+\end{Verbatim}
+
+\begin{Verbatim}
+getTypeId: get the type for the given description
+  Parameter vars:
+    ?viewer: actor
+    ?desc: text - the name of the predicate descriptor (e.g., "book")
+  Return vars:
+    ?vtype: long - type id
+\end{Verbatim}
+
+\begin{Verbatim}
+getAllTokenIds: get the keys for all tokens in visual STM
+  Parameter vars:
+    ?viewer: actor
+  Return vars:
+    ?STMKeys: keys - list of keys for ?vType objects detected
+\end{Verbatim}
+
+\begin{Verbatim}
+getTokenIdByTypeId: get the key for one token of type ?vType in visual STM
+  Parameter vars:
+    ?viewer: actor
+    ?vType: long - type id
+  Return vars:
+    ?STMKey: long - the key for a ?vType object
+\end{Verbatim}
+
+\begin{Verbatim}
+getAllTokenIdsByTypeId: get the keys for all tokens of type ?vType in visual STM
+  Parameter vars:
+    ?viewer: actor
+    ?vType: long - vision type id
+  Return vars:
+    ?STMKeys: keys - list of keys for ?vType objects detected
+\end{Verbatim}
+
+\begin{Verbatim}
+getTokenIdByColor: get the key for one token of color ?vColor in visual STM
+  Parameter vars:
+    ?viewer: actor
+    ?vColor: text - blob color
+  Return vars:
+    ?STMKey: long - the key for a ?vColor object
+\end{Verbatim}
+
+\begin{Verbatim}
+getAllTokenIdsByColor: get the keys for all tokens of color ?vColor in visual STM
+  Parameter vars:
+    ?viewer: actor
+    ?vColor: text - blob color
+  Return vars:
+    ?STMKeys: keys - list of keys for ?vColor objects detected
+\end{Verbatim}
+
+\begin{Verbatim}
+getTokenArea: get the area of the bounding box for the vision token
+              corresponding to ?vKey
+  Parameter vars:
+    ?viewer: actor
+    ?vKey: long - key for the vision token
+  Return vars:
+    ?area: double - area of the bounding box for the vision token
+\end{Verbatim}
+
+\begin{Verbatim}
+getTokenPanTilt: get the pan/tilt of the bounding box for the vision
+                 token corresponding to ?vKey
+  Parameter vars:
+    ?viewer: actor
+    ?vKey: long - key for the vision token
+  Return vars:
+    ?pan: double - pan angle of the 'center of gravity' of the
+                   bounding box for the vision token
+    ?tilt: double - tilt angle of the 'center of gravity' of the
+                    bounding box for the vision token
+\end{Verbatim}
+
+\begin{Verbatim}
+getTokenColor: get the color identifier for the vision token
+               corresponding to ?vKey
+  Parameter vars:
+    ?viewer: actor
+    ?vKey: long - key for the vision token
+  Return vars:
+    ?color: text - the color identifier for the vision token
+\end{Verbatim}
+
+\subsection{Actions Related to Speech Production}
+
+\begin{comment}
+\paragraph{\tt sayTextNow} Speak the string.
+
+\paragraph{\tt changeMood} Modulate the voice's ``mood.''
+
+\paragraph{\tt changeSpeed} Modulate the voice's speed.
+
+\paragraph{\tt stopUtterance} Interrupt the current utterance.
+
+% \subsection{Actions Related to Affect Recognition}
+% \paragraph{\tt status}
+% 
+% \paragraph{\tt trainingOn}
+% 
+% \paragraph{\tt trainingOff}
+\end{comment}
+
+\begin{comment}
+\subsection{Actions Related to Speech Recognition}
+\paragraph{\tt getText} Get recognized text from speech recognizer.
+
+\paragraph{\tt changeSphinx4Configuration}
+
+\paragraph{\tt changeSphinx4Grammar}
+
+%\paragraph{\tt newDiscourseGetBindingOfType}
+
+\paragraph{\tt discourseGetBindingOfType} Request from Discourse a 
+binding for a typed variable (commonly a command).
+
+\paragraph{\tt discourseIsBound} See whether Discourse has been able 
+to find a binding for the specified request.
+
+\paragraph{\tt discourseGetResult} Retrieve the binding for the 
+specified request.
+
+%\paragraph{\tt startChat}
+
+%\paragraph{\tt endChat}
+
+%\paragraph{\tt changeConfiguration}
+
+%\paragraph{\tt speechIsInterested}
+
+%\paragraph{\tt getEmotions}
+
+%\paragraph{\tt incEmotion}
+\end{comment}
+
+\begin{Verbatim}
+sayTextNow: say something to someone
+  Parameter vars:
+    ?speaker: actor
+    ?target: interactor
+    ?statement: text - the phrase to be spoken (vars will be bound)
+  Resource locks:
+    speechLock
+\end{Verbatim}
+
+\begin{Verbatim}
+changeVoice: change Festival voice
+  Parameter vars:
+    ?speaker: actor
+    ?voice: data - new voice name
+\end{Verbatim}
+
+\begin{Verbatim}
+changeMood: change Festival voice mood (currently requires mbrola)
+  Parameter vars:
+    ?speaker: actor
+    ?mood: data - mood string (happy, sad, etc.)
+\end{Verbatim}
+
+\subsection{Miscellaneous Other Actions}
+
+These are primitives that are more conveniently handled by the
+interpreter.
+
+\begin{comment}
+\paragraph{\tt stringCompare} Check whether two strings are identical.
+
+\paragraph{\tt stringContains} Check whether the first string contains 
+the second string.
+
+% \paragraph{\tt XXXsetText}
+
+\paragraph{\tt actionSucceed} Immediately succeed.
+
+\paragraph{\tt actionFail} Immediately fail.
+
+\paragraph{\tt assertFact} Add a fact to the ADB.
+
+\paragraph{\tt retractFact} Remove a fact from the ADB.
+
+\paragraph{\tt isFact} Check whether a fact has been asserted.
+
+\paragraph{\tt sleep} Sleep for the specified time (in ms).
+
+\paragraph{\tt performAction} ``Fork'' an action (i.e., execute in a 
+separate AI).  This can be a little dodgy, use with caution.
+
+\paragraph{\tt true} Succeed.
+
+\paragraph{\tt false} Fail.
+
+\paragraph{\tt logText} Write the string to the log file.
+
+% \paragraph{\tt printPriorities}
+
+\paragraph{\tt setText} Bind a string variable.
+
+\paragraph{\tt printText} Print the string to the screen.
+
+\paragraph{\tt +, -, *, /} Arithmetic operators.
+
+\paragraph{\tt gt, ge, lt, le, =} Arithmetic comparison (greater than, 
+greater than or equal to, less than, less than or equal to, equal to).
+
+\paragraph{\tt getTimeOfDay} Returns current time (in ms).
+
+\paragraph{\tt kill} Try to kill a server (currently only implemented 
+for NLP-related servers).
+
+\paragraph{\tt startADEServerLogging} Start logging.  ADEServerLogging 
+is an infrastructure-wide logging mechanism; issuing this command will 
+start logging in all currently-running servers, as well as any servers 
+subsequently started (before logging is stopped).
+
+\paragraph{\tt startADEServerLoggingInteractive} Present prompt that 
+will start logging.
+
+\paragraph{\tt stopADEServerLogging} Stop logging (write all files, 
+etc.).
+
+%\paragraph{\tt incrementPositiveAffect}
+
+%\paragraph{\tt incrementNegativeAffect}
+\end{comment}
+
+\begin{Verbatim}
+getNearestDoor: get the nearest detected doorway
+  Parameter vars:
+    ?mover: actor
+  Return vars:
+    ?x: coordinate - x coordinate of the doorway
+    ?y: coordinate - y coordinate of the doorway
+    ?ex: coordinate - x coordinate of the 'exit' point (just through
+                      the doorway)
+    ?ey: coordinate - y coordinate of the 'exit' point (just through
+                      the doorway) 
+    ?ax: coordinate - x coordinate of the 'approach' point (just before
+                      the doorway)
+    ?ay: coordinate - y coordinate of the 'approach' point (just before
+                      the doorway)
+    ?dist: coordinate - distance to the doorway
+\end{Verbatim}
+
+\begin{Verbatim}
+getTimeOfDay: get time of day in milliseconds
+  Return vars:
+    ?time: long
+\end{Verbatim}
+
+\begin{Verbatim}
+stringCompare: check whether two strings match
+  Parameter vars:
+    ?stringOne: text
+    ?stringTwo: text
+\end{Verbatim}
+
+\begin{Verbatim}
+stringContains: check whether ?stringOne contains ?stringTwo
+  Parameter vars:
+    ?stringOne: text
+    ?stringTwo: text
+\end{Verbatim}
+
+\begin{Verbatim}
+getNewList: create a list
+  Return vars:
+    ?list: object - the newly-created list
+\end{Verbatim}
+
+\begin{Verbatim}
+getListSize: get number of elements in a list
+  Parameter vars:
+    ?list: object - a list
+  Return vars:
+    ?val: integer - the number of elements in ?list
+\end{Verbatim}
+
+\begin{Verbatim}
+getListElement: get an element from a list
+  Parameter vars:
+    ?list: object - a list
+    ?index: integer - the index of the element to retrieve
+  Return vars:
+    ?val: object - the requested element
+\end{Verbatim}
+
+\begin{Verbatim}
+addListElement: add an element to the end of a list
+  Parameter vars:
+    ?list: object - a list
+    ?val: object - the element to be added to ?list
+\end{Verbatim}
+
+\begin{Verbatim}
+delListElement: delete an element from a list and return the element
+  Parameter vars:
+    ?list: object - a list
+    ?index: integer - the requested element
+  Return vars:
+    ?val: object - the deleted element
+\end{Verbatim}
+
+\begin{Verbatim}
+actionSucceed: exit current script with success exit status
+\end{Verbatim}
+
+\begin{Verbatim}
+actionFail: exit current script with failure exit status
+\end{Verbatim}
+
+\begin{Verbatim}
+true: boolean value true
+\end{Verbatim}
+
+\begin{Verbatim}
+false: boolean value false
+\end{Verbatim}
+
+\begin{Verbatim}
+set: assign a value to a variable
+  Parameter vars:
+    ?value: entity - the new value of ?target
+  Return vars:
+    ?target: entity - the variable to set
+\end{Verbatim}
+
+\begin{Verbatim}
+printText: print the argument text (variables will be bound)
+  Parameter vars:
+    ?text: text
+\end{Verbatim}
+
+\begin{Verbatim}
+logText: log the argument text (variables will be bound)
+  Parameter vars:
+    ?text: text
+\end{Verbatim}
+
+\begin{Verbatim}
++: arithmetic addition
+  Parameter vars:
+    ?arg1: number
+    ?arg2: number
+  Return vars:
+    ?sum: number
+\end{Verbatim}
+
+\begin{Verbatim}
+-: arithmetic subtraction
+  Parameter vars:
+    ?arg1: number
+    ?arg2: number
+  Return vars:
+    ?diff: number
+\end{Verbatim}
+
+\begin{Verbatim}
+*: arithmetic multiplication
+  Parameter vars:
+    ?arg1: number
+    ?arg2: number
+  Return vars:
+    ?prod: number
+\end{Verbatim}
+
+\begin{Verbatim}
+%: arithmetic modulus
+  Parameter vars:
+    ?arg1: integer
+    ?arg2: integer
+  Return vars:
+    ?quot: number
+\end{Verbatim}
+
+\begin{Verbatim}
+/: arithmetic division
+  Parameter vars:
+    ?arg1: number
+    ?arg2: number
+  Return vars:
+    ?quot: number
+\end{Verbatim}
+
+\begin{Verbatim}
+round: round the parameter to the nearest long integer
+  Parameter vars:
+    ?arg: double
+  Return vars:
+    ?round: long
+\end{Verbatim}
+
+\begin{Verbatim}
+lt: arithmetic comparison: less than
+  Parameter vars:
+    ?arg1: number
+    ?arg2: number
+\end{Verbatim}
+
+\begin{Verbatim}
+le: arithmetic comparison: less than or equal to
+  Parameter vars:
+    ?arg1: number
+    ?arg2: number
+\end{Verbatim}
+
+\begin{Verbatim}
+gt: arithmetic comparison: greater than
+  Parameter vars:
+    ?arg1: number
+    ?arg2: number
+\end{Verbatim}
+
+\begin{Verbatim}
+ge: arithmetic comparison: greater than or equal to
+  Parameter vars:
+    ?arg1: number
+    ?arg2: number
+\end{Verbatim}
+
+\begin{Verbatim}
+=: arithmetic comparison: equal to
+  Parameter vars:
+    ?arg1: number
+    ?arg2: number
+\end{Verbatim}
+
+\begin{Verbatim}
+randomInteger: return a random integer in the given range
+  Parameter vars:
+    ?lower: integer - lower bound
+    ?upper: integer - upper bound
+  Return vars:
+    ?value: integer - random value
+\end{Verbatim}
+
+\begin{Verbatim}
+randomDouble: return a random double in the given range
+  Parameter vars:
+    ?lower: double - lower bound
+    ?upper: double - upper bound
+  Return vars:
+    ?value: double - random value
+\end{Verbatim}
+
+\begin{Verbatim}
+startADEServerLogging: start ADE server logging
+\end{Verbatim}
+
+\begin{Verbatim}
+stopADEServerLogging: stop ADE server logging
+\end{Verbatim}
+
+\begin{Verbatim}
+getTeammateLoad: get teammate load (e.g., from fnirs server)
+  Parameter vars:
+    ?robot: actor
+  Return vars:
+    ?load: double
+\end{Verbatim}
+
+\begin{Verbatim}
+sleep: sleep
+  Parameter vars:
+    ?sleeper: actor
+    ?sleepMillis: millisec - sleep duration in milliseconds
+\end{Verbatim}
+
+\section{Variants of the Goal Manager}
+
+There are three variants of the Goal Manager, each distinguished by
+a different approach to calculating goal priority.
+
+\paragraph{GoalManagerLinear} assigns every TLG an identical
+priority regardless of time remaining, net benefit, etc.  This
+effectively implements a first-come, first-served scheduling policy:
+no preepmtion is possible, because no higher-priority goal will ever
+be instantiated.
+
+\paragraph{GoalManagerPriority} assigns priority based on the net
+benefit of the TLG and its urgency.  Urgency, in turn, is based on
+how much time is remaining (but may be bounded minimum and maximum
+urgency values).
+
+\paragraph{GoalManagerAffective} assigns priority based on the net
+benefit and urgency of the TLG, but the cost and benefit components
+are scaled according to the negative and positive affective states of
+the Goal Manager.  In addition, actions may have affective
+evaluations attached to them (e.g., depending on whether they were
+successful or not when executed previously); when multiple options are
+available to achieve a goal, action selection takes these affective
+evaluations into account.
+
+\section{Starting the Goal Manager}
+
+The Goal Manager is started like any other ADE server; this is often
+easiest achieved using the script {\tt runadeserver}.~\footnote{See the ADE
+Guide ({\tt \$ADE/doc/ADE Guide.pdf}) for details.}  For example:
+
+{\tt ./runadeserver com.action.GoalManagerLinear}
+
+\noindent starts an Goal Manager with no requested server references
+and no startup actions.  The following parameters are accepted:
+
+\begin{description}
+  \item[\tt -agentname $<$name$>$] set the name of the agent to $<$name$>$
+  \item[\tt -subject $<$name$>$] set the default name for the interactor
+    to $<$name$>$
+  \item[\tt -script $<$name$>$ [arg] ... --] run the script $<$name$>$ with
+    parameters [arg] ... (``--'' indicates the end of the parameter
+    list for the action specification
+  \item[\tt -goal $<$predicate$>$] add the state described by the
+    predicate to the list of initial goals the GM will pursue when it
+    starts
+  \item[\tt -dbfilesupp $<$name$>$] parse supplemental database file
+    $<$name$>$
+  \item[\tt -server $<$name$>$] acquire reference to server $<$name$>$ (a
+    fully-qualified interface name, either for a specific server, or
+    from {\tt com.interfaces}
+  \item[\tt -badstate $<$predicate$>$] add the state described by the
+    predicate to the list of forbidden states
+  \item[\tt -badaction $<$predicate$>$] add the action described by the
+    predicate to the list of forbidden actions
+\end{description}
+
+%\section{Interacting with the Goal Manager}
+% remote methods
+\end{document}
+
+% '<,'>s/^$/\\end{Verbatim}^M^M\\begin{Verbatim}/
+
+Notes:
+
+-- every action primitive and only primitive takes one cycle (``one
+cycle'' = a loop through the action interpreter in real-time, usually
+200 msec, so at 5Hz loop -- barring overflows, etc.)
+
+==> note that chaining through subscripts is performed right away,
+only when a primitive is encoutered will the AI start counting it
+against a one cycle time limit (200 msec)
+
+
+==> AI scheduling algorithm:
+- run each AI instance for one cycle and then wait for whatever time
+  is remaining to keep the 200msec cycle
+CHECK THIS!
+
+-- note that keywords do not count against the cycle time analogously
+to the subscripts
+
+%%%%%%%%%%%%
+
+syntax: type
+
+ if: type
+
+ then: type
+
+ else: type
+
+ elseif: type
+
+ endif: type
+
+ while: type
+
+ do: type
+
+ endwhile: type
+
+ not: type
+
+ endNot: type
+
+ and: type
+
+ or: type
+
+ return: type
+
+ endreturn: type

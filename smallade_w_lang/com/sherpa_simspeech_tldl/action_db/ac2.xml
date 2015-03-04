@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<type>
+  <name>entity</name>
+  <subtypes>
+    <!-- Defining constants -->
+    <type>
+      <name>constant</name>
+      <subtypes>
+        <type planner="false">
+          <name>r_start</name>
+          <ctype>map</ctype>
+        </type>
+	 <type planner="false">
+	  <name>cross</name>
+	  <ctype>pattern</ctype>
+	</type>
+        <type planner="true">
+          <name>arm</name>
+          <ctype>pseudobject</ctype>
+        </type>
+        <type planner="true">
+          <name>cmdrx</name>
+          <ctype>commander</ctype>
+        </type>
+        <type planner="true">
+          <name>cmdry</name>
+          <ctype>commander</ctype>
+        </type>
+        <type planner="true">
+          <name>cmdrz</name>
+          <ctype>commander</ctype>
+        </type>
+        <type planner="true">
+          <name>clear_pr</name>
+          <ctype>property</ctype>
+        </type>
+        <type planner="true">
+          <name>on_pr</name>
+          <ctype>modestate</ctype>
+        </type>
+        <type planner="true">
+          <name>off_pr</name>
+          <ctype>modestate</ctype>
+        </type>
+        <type planner="true">
+          <name>ok_pr</name>
+          <ctype>armstate</ctype>
+        </type>
+        <type planner="true">
+          <name>nok_pr</name>
+          <ctype>armstate</ctype>
+        </type>
+      </subtypes>
+    </type>
+    <!-- End of Defining -->
+   <!-- Definiting different objects -->
+   <type>
+     <name>object</name>
+     <subtypes>
+       <type planner="false">
+	 <name>pseudobject</name>
+	 <subtypes>
+	   <!-- Definining environment-specific objects --> 
+	   <type planner="false">
+	     <name>location</name>
+	     <api>type</api>
+	     <subtypes>
+	       <type planner="false">
+		 <name>map</name>
+		 <api>type</api>
+		 <subtypes>
+		   <type planner="false">
+		     <name>tree</name>
+		     <api>type</api>
+		   </type>
+		   <type planner="false">
+		     <name>rock</name>
+		     <api>type</api>
+		   </type>
+		   <type planner="false">
+		     <name>mountain</name>
+		     <api>type</api>
+		   </type>
+		    <type planner="false">
+		      <name>bush</name>
+		      <api>type</api>
+		    </type>     
+		 </subtypes>
+		</type>
+	      </subtypes>
+	    </type>
+	    <!-- Definining human-specific items -->
+	    <type planner="false">
+	      <name>cap</name>
+	      <api>type</api>
+	    </type>
+	    <type planner="false">
+	      <name>boot</name>
+	      <api>type</api>
+	    </type>
+	   <type planner="false">
+	     <name>human</name>
+	     <api>type</api>
+	     <subtypes>
+	       <type planne="true">
+		 <name>victim</name>
+		 <api>type</api>
+	       </type>
+	     </subtypes>
+	   </type> 
+	   <!-- <type planner="false"> -->
+           <!--    <name>property</name> -->
+           <!--    <api>type</api> -->
+           <!--    <subtypes> -->
+           <!--      <type planner="true"> -->
+           <!--        <name>modestate</name> -->
+           <!--        <api>type</api> -->
+           <!--      </type> -->
+           <!--      <type planner="true"> -->
+           <!--        <name>armstate</name> -->
+           <!--        <api>type</api> -->
+           <!--      </type> -->
+           <!--    </subtypes> -->
+           <!--  </type> -->
+	   <!-- Definining the agent -->
+	   <type planner="false">
+	     <name>agent</name>
+	     <api>type</api>
+	     <subtypes>
+	    <type planner="true">
+	      <name>commander</name>
+	      <api>type</api>
+	    </type>
+	     </subtypes>
+	   </type>
+	   <!-- <type> -->
+	   <!--   <name>data</name> -->
+	   <!--   <api>type</api> -->
+	   <!--   <subtypes> -->
+	   <!--     <type> -->
+	   <!-- 	 <name>predicate</name> -->
+	   <!-- 	 <subtypes> -->
+	   <!-- 	   <type planner="true"> -->
+	   <!-- 	     <name>stealthmode</name> -->
+	   <!-- 	     <var> -->
+	   <!-- 	       <varname>?mode</varname> -->
+	   <!-- 	       <vartype>modestate</vartype> -->
+	   <!-- 	     </var> -->
+	   <!-- 	   </type> -->
+	   <!-- 	 </subtypes> -->
+	   <!--     </type> -->
+	   <!--   </subtypes> -->
+	   <!-- </type> -->
+	 </subtypes>
+       </type>
+     </subtypes>
+   </type>
+   <!-- Definiting of states -->
+   <type>
+     <name>state</name>
+     <subtypes>
+       <type planner="false">
+	 <name>at(cmdrx,r_start)</name>
+       </type>
+       <!-- <type planner="true"> -->
+       <!-- 	 <name>has_property(arm,ok_pr)</name> -->
+       <!-- </type> -->
+       <!-- <type planner="true"> -->
+       <!--    <name>stealthmode(off_pr)</name> -->
+       <!-- </type> -->
+     </subtypes>
+   </type>
+  <!-- Defining goals -->
+   <type>
+     <name>goal</name>
+     <subtypes>
+       <type planner="false">
+	 <name>at(self,r_start)</name>
+	 <hard>true</hard>
+          <deadline>1450</deadline>
+          <benefit>1000</benefit>
+       </type>
+     </subtypes>
+    </type>
+    <!-- Definiting actions -->
+    <type>
+      <name>action</name>
+      <subtypes>
+        <type>
+          <name>primitive</name>
+          <subtypes>
+            <type>
+              <name>miscPrimitive</name>
+              <subtypes>
+                <type>
+                  <!-- Return true -->
+                  <name>true</name>
+                  <api>boolean value true</api>
+                </type>
+              </subtypes>
+            </type>
+          </subtypes>
+        </type>
+        <type>
+          <name>script</name>
+          <subtypes>
+            <type>
+              <name>DemoAction</name>
+              <desc>a demo action</desc>
+              <taskname>Demo</taskname>
+              <benefit>500</benefit>
+              <cost>50</cost>
+              <timeout>1000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <actspec>printText "printing this text"</actspec>
+              <actspec>sayTextNow "Saying this text"</actspec>
+              <actspec>logText "loggingThisText"</actspec>
+              <actspec>moveRel ?robot 0 1.0</actspec>
+            </type>
+	    <!-- Begin findVictim  -->
+	    <type planner="true">
+	      <name>findVictim</name>
+	      <var>
+                <varname>?act</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?obj</varname>
+                <vartype>pseudobject</vartype>
+              </var>
+              <!-- ?loc only needed for type, not used by action -->
+              <var>
+                <varname>?loc</varname>
+                <vartype>location</vartype>
+              </var>
+              <cost>30.0</cost>
+              <timeout>20</timeout>
+	       <conditions>
+                <!-- does at(?act,?obj) make more sense? -->
+                <atstart>at(?act,?loc)</atstart>
+                <overall>at(?act,?loc)</overall>
+                <atstart>in(?obj,?loc)</atstart>
+                <atstart>found(?act,?obj,?loc)</atstart>
+              </conditions>
+	      <effects>
+                <atend>have(?obj,?act)</atend>
+                <atstart>not(in(?obj,?loc))</atstart>
+                <!-- PWS: is there a way to say that ?obj is always wherever ?act is? -->
+              </effects>
+	      <actspec>findObject ?act ?obj</actspec>
+	    </type>
+	    <!-- End findVictim	 -->
+	    <!-- Begin giveObjectToRequest -->
+            <!-- <type planner="true"> -->
+            <!--   <name>giveObjectToRequestDSDEMO</name> -->
+            <!--   <var> -->
+            <!--     <varname>?act</varname> -->
+            <!--     <vartype>actor</vartype> -->
+            <!--   </var> -->
+            <!--   <var> -->
+            <!--     <varname>?obj</varname> -->
+            <!--     <vartype>pseudobject</vartype> -->
+            <!--   </var> -->
+            <!--   <var> -->
+            <!--     <varname>?comm</varname> -->
+            <!--     <vartype>commander</vartype> -->
+            <!--   </var> -->
+            <!--   <var> -->
+            <!--     <varname>!wirelessStatus</varname> -->
+            <!--     <vartype>boolean</vartype> -->
+            <!--   </var> -->
+            <!--   <effects> -->
+            <!--     <atend>bring(?act,?obj,?comm)</atend> -->
+            <!--   </effects> -->
+            <!--   <cost>5.0</cost> -->
+            <!--   <timeout>75</timeout> -->
+            <!--   <actspec> getWirelessStatus !wstat</actspec> -->
+            <!--   <control>if</control> -->
+            <!--   <actspec> !wstat</actspec> -->
+            <!--   <control>then</control> -->
+            <!--   <actspec> printText "No Wireless :("</actspec> -->
+            <!--   <actspec>actionFail</actspec> -->
+            <!--   <control>else</control> -->
+            <!--   <actspec> printText "Wireless :)"</actspec> -->
+            <!--   <control>endif</control> -->
+            <!-- </type> -->
+ <!-- End giveObjectToRequest -->
+  <!-- Begin moveFromTo -->
+            <type planner="true">
+              <name>moveFromTo</name>
+              <desc>?act moves to ?xdest ?ydest</desc>
+              <var>
+                <varname>?act</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?from</varname>
+                <vartype>location</vartype>
+              </var>
+              <var>
+                <varname>?to</varname>
+                <vartype>location</vartype>
+              </var>
+              <conditions>
+                <atstart>at(?act,?from)</atstart>
+                <overall>connected(?from,?to)</overall>
+              </conditions>
+              <effects postcond="true">
+                <atstart>not(at(?act,?from))</atstart>
+                <atend>at(?act,?to)</atend>
+              </effects>
+              <locks>motionLock</locks>
+              <cost>25.0</cost>
+              <timeout>50</timeout>
+              <control>if</control>
+              <control> not</control>
+              <actspec>  moveTo ?act ?to</actspec>
+              <control> endnot</control>
+              <control>then</control>
+              <actspec> actionFail</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End moveFromTo -->
+  <!-- Begin look-for -->
+            <type planner="true">
+              <!-- Turn around and look for objects of type. -->
+              <name>look-for</name>
+              <desc>?act searches for ?bx</desc>
+              <var>
+                <varname>?act</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?obj</varname>
+                <vartype>pseudobject</vartype>
+              </var>
+              <!--
+                  <var>
+                  <varname>?col</varname>
+                  <vartype>color</vartype>
+                  </var>
+                  <var>
+                  <varname>?pa</varname>
+                  <vartype>pattern</vartype>
+                  </var>
+              -->
+              <var>
+                <varname>?loc</varname>
+                <vartype>location</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!actionStatus</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>!perc</varname>
+                <vartype>percept</vartype>
+              </var>
+              <cost>100.0</cost>
+              <timeout>15</timeout>
+              <conditions>
+                <!--
+                    <atstart>has_property(?obj,?co)</atstart>
+                    <atstart>has_property(?obj,?pa)</atstart>
+                    <overall>in(?obj,?loc)</overall>
+                -->
+                <atstart>at(?act,?loc)</atstart>
+                <overall>at(?act,?loc)</overall>
+              </conditions>
+              <effects>
+                <atend always="true">looked_for(?act,?obj,?loc)</atend>
+                <atend>found(?act,?obj,?loc)</atend>
+              </effects>
+              <!--
+                  <actspec> printText "?act ready to lookFor ?col in ?loc "</actspec>
+              -->
+              <control>if</control>
+              <control> not</control>
+              <actspec>  lookFor ?act ?obj ?loc !perc</actspec>
+              <control> endnot</control>
+              <control>then</control>
+              <actspec> actionFail</actspec>
+              <control>endif</control>
+              <!-- NEED TO WORK OUT NAMING...
+                   <actspec>getTokenName ?act !perc ?bx</actspec>
+              -->
+            </type>
+            <!-- End look-for -->
+	  </subtypes>
+	</type>
+      </subtypes>
+    </type>
+  </subtypes>
+    <goal>spin(self)</goal>
+  </type>

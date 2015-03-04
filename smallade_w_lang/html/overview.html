@@ -1,0 +1,124 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <title>ADE Overview</title>
+</head>
+<body>
+<p>Documentation for the ADE infrastructure; while some of these are out of
+date and are unlikely to compile or function properly, the packages and
+interfaces in the Description are current.</p>
+<p>For a quick overview of ADE, including instructions for compiling and
+running in Linux, and a brief overview (with examples) of writing an ADE
+server, see the file <tt>doc/QuickStart</tt> in the top-level ADE directory.</p>
+<p>
+<b>Note</b>: not everything documented here and available as part of ADE is
+guaranteed to be useful; some of the older packages that are not regularly
+used (e.g., because they have been superceded) may not even compile or work
+correctly.  The best way to determine which ADE servers have been kept up to
+date is to see which ones are compiled by <tt>./mkade small</tt> in the
+top-level ADE directory.  At the time of this writing, that includes:
+</p>
+<!-- Copy and paste additional packages as needed from
+html/overview-summary.html -->
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Commonly-used Packages</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="ade/package-summary.html">ade</A></B></TD>
+<TD>The classes that provide the infrastructure in the ADE system.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/package-summary.html">com</A></B></TD>
+<TD>Provides the "communication" classes for the ADE system.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/action/package-summary.html">com.action</A></B></TD>
+<TD>Provides goal management and action execution for the ADE system.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/adesim/package-summary.html">com.adesim</A></B></TD>
+<TD>A 2D simulation environment for ADE that provides a robot with laser
+ rangefinder, bumpers, and vision.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/audio/package-summary.html">com.audio</A></B></TD>
+<TD>Audio streaming server for ADE.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/camera/package-summary.html">com.camera</A></B></TD>
+<TD>Provides the control interface for a pan-tilt unit.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/discourse/package-summary.html">com.discourse</A></B></TD>
+<TD>Provides semantic understanding functionality.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/festival/package-summary.html">com.festival</A></B></TD>
+<TD>Provides an interface to the Festival speech synthesis system.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/gps/package-summary.html">com.gps</A></B></TD>
+<TD>ADE interface to GPS sensors.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/joystick/package-summary.html">com.joystick</A></B></TD>
+<TD>Joystick server that can control any device that implements the VelServer
+ interface.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/lrf/package-summary.html">com.lrf</A></B></TD>
+<TD>ADE interface to laser rangefinders.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/manyears/package-summary.html">com.manyears</A></B></TD>
+<TD>Provides an interface to the ManyEars sound localization system.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/mod3/package-summary.html">com.mod3</A></B></TD>
+<TD>Implementation of a novel biologically plausible neural network model for
+ vision-based word-referent co-learning.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/motion/package-summary.html">com.motion</A></B></TD>
+<TD>Complex ("stateful") motion server.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/pioneer/package-summary.html">com.pioneer</A></B></TD>
+<TD>Provides <tt>ADEServer</tt> related classes for Pioneer robots.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/reddy/package-summary.html">com.reddy</A></B></TD>
+<TD>Interface to control the RoboMotion Reddy robot torso.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/sapa/package-summary.html">com.sapa</A></B></TD>
+<TD>Provides an interface to the opportunistic planner SapaReplan for the ADE system.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/segway/package-summary.html">com.segway</A></B></TD>
+<TD>Interface to control the Segway RMP.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/simspeech/package-summary.html">com.simspeech</A></B></TD>
+<TD>Server to take the place of a speech recognizer.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/sphinx4/package-summary.html">com.sphinx4</A></B></TD>
+<TD>Provides an interface to the Sphinx 4 speech recognition engine.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/survey/package-summary.html">com.survey</A></B></TD>
+<TD>Survey package that allows users (such as Action) to administer surveys
+ on a computer.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD WIDTH="20%"><B><A HREF="com/vision/package-summary.html">com.vision</A></B></TD>
+<TD>Provides vision functionality, including support for OpenCV.</TD>
+</TR>
+</TABLE>
+
+</body>
+</html>
+

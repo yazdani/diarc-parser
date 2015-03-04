@@ -1,0 +1,47 @@
+Here's a brief summary of how to maintain your own branch for development 
+and merge it back when it's stable:
+
+1. Create the new branch:
+
+  svn copy svn://hri.cogs.indiana.edu/projects/diarc/ade/trunk svn://hri.cogs.indiana.edu/projects/diarc/ade/branches/bestever
+
+2. Check out the new branch:
+
+  svn co svn://hri.cogs.indiana.edu/projects/diarc/ade/branches/bestever myade
+  cd myade
+
+3. Make whatever changes you want in there and check them in as normal.
+
+4. When ready to commit the changes to the main trunk, first bring your 
+branch up to date with the rest of the system:
+
+  svn merge svn://hri.cogs.indiana.edu/projects/diarc/ade/trunk
+
+then commit the branch:
+
+  svn ci
+
+then make sure you have an up-to-date version of the trunk:
+
+  cd ..
+  svn co svn://hri.cogs.indiana.edu/projects/diarc/ade/trunk ade
+
+and then merge your changes back into the trunk:
+
+  cd ade
+  svn merge --reintegrate svn://hri.cogs.indiana.edu/projects/diarc/ade/branches/bestever
+  svn ci
+
+If you're done with the trunk, you can delete it:
+
+  svn delete svn://hri.cogs.indiana.edu/projects/diarc/ade/branches/bestever
+
+There are some ways to streamline it, but these steps will accomplish it.  
+Also, the "cd" commands are just there as hints; you can check them out into 
+whatever directories you want, etc.
+
+Check the authz file to make sure the right permissions are available to
+create and modify the new branch.  A snapshot can be created in much the
+same way as a branch, but then specified as read-only in authz.  Someone
+with root access to the server will need to check/set the permissions (i.e.,
+Matthias or Paul).

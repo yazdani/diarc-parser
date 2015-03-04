@@ -1,0 +1,398 @@
+/**
+ * ADE 1.0
+ * Copyright 1997-2010 HRILab (http://hrilab.org/)
+ *
+ * All rights reserved.  Do not copy and use without permission.
+ * For questions contact Matthias Scheutz at mscheutz@indiana.edu
+ *
+ * UtmLRFComponentImpl.java
+ *
+ * @author Paul Schermerhorn
+ */
+package com.lrf;
+
+import com.LaserScan;
+import gnu.io.*;
+import java.io.*;
+import java.rmi.*;
+import static utilities.Util.*;
+
+/**
+ * <code>UtmLRFComponentImpl</code> interface for Hokuyo Utm LRF.
+ */
+public class UtmLRFComponentImpl extends LRFComponentImpl implements UtmLRFComponent {
+
+    private CommPortIdentifier portIdentifier;
+    private SerialPort port;
+    private InputStream in;
+    private OutputStream out;
+    private Reader r;
+    private byte[] buf;
+    private byte[] zero;
+
+    /* Command Packets */
+    // SCIP 1.1 version info request
+    private byte[] CMD_VERS = {(byte) 0x56, (byte) 0x0A};
+    // SCIP 2.0 version info request
+    private byte[] CMD2_VERS = {(byte) 0x56, (byte) 0x56, (byte) 0x0A};
+    // SCIP 1.1 command to change to SCIP 2.0 mode
+    private byte[] CMD_MODE = {(byte) 0x53, (byte) 0x43, (byte) 0x49, (byte) 0x50, (byte)0x32, (byte) 0x2E, (byte) 0x30, (byte) 0x0A};
+
+    // SCIP 2.0 state request
+    private byte[] CMD2_INFO = {(byte) 0x49, (byte) 0x49, (byte) 0x0A};
+    //
+    // SCIP 1.1 read (181 readings, actually about 190 degrees)
+    private byte[] CMD_READ = {(byte) 0x47, (byte) 0x31, (byte) 0x31, (byte) 0x33, (byte) 0x36, (byte) 0x35, (byte) 0x35, (byte) 0x30, (byte) 0x33, (byte) 0x0A};
+    // SCIP 2.0 read (181 readings, actually about 190 degrees)
+    //----------------------------------G------------S----|Start----0------------0------------0------------0| |End------1------------0------------80-->1|
+    private byte[] CMD2_READ = {(byte) 0x47, (byte) 0x53, (byte) 0x30, (byte) 0x30, (byte) 0x30, (byte) 0x30, (byte) 0x31, (byte) 0x30, (byte) 0x38, (byte) 0x30, (byte) 0x30, (byte) 0x31, (byte) 0x0A};
+    //|Cluster--0------------1|
+    private byte[] CMD2_READ_BIG = {(byte) 0x47, (byte) 0x53, (byte) 0x30, (byte) 0x31, (byte) 0x31, (byte) 0x33, (byte) 0x30, (byte) 0x37, (byte) 0x35, (byte) 0x35, (byte) 0x30, (byte) 0x31, (byte) 0x0A};
+    // SCIP 2.0 laser enable command
+    private byte[] CMD2_ENBL = {(byte) 0x42, (byte) 0x4D, (byte) 0x0A};
+    // SCIP 2.0 laser disable command
+    private byte[] CMD2_DSBL = {(byte) 0x51, (byte) 0x54, (byte) 0x0A};
+    // SCIP 2.0 high sensitivity command
+    private byte[] CMD2_SENS = {(byte) 0x48, (byte) 0x53, (byte) 0x31, (byte) 0x0A};
+    // SCIP 2.0 reset command
+    private byte[] CMD2_RSET = {(byte) 0x52, (byte) 0x53, (byte) 0x0A};
+
+    /** The server is always ready to provide its service after it has come up */
+    protected boolean localServicesReady() {
+        return true;
+    }
+
+    /**
+     * Constructor for UtmLRFComponentImpl.
+     */
+    public UtmLRFComponentImpl() throws RemoteException {
+        super(270*4+1, Math.toRadians(270.0));
+	System.out.println("Starting UtmLRFComponent");
+
+	//based on: 270* field of view, angular resolution 0.25*
+
+        // Search for port if it hasn't been specified
+        if (!userPort) {
+            portName = "/dev/ttyACM";
+            int devNum = 0;
+            while (devNum < 10) {
+                if (new File(portName + devNum).exists()) {
+                    portName = portName + devNum;
+                    break;
+                }
+                devNum++;
+            }
+	    if(devNum==10)
+		portName="/dev/ttyACM1";
+
+        }
+        // Check for RXTX here so we're able to give a hint before the
+        // problems manifest.
+        try {
+            Class.forName("gnu.io.NoSuchPortException");
+        } catch (ClassNotFoundException e) {
+            System.out.println("\nERROR: Can't find gnu.io classes; is RXTXcomm.jar in the classpath?");
+            System.exit(0);
+        }
+
+        readings = new double[numReadings];
+        history = new int[numReadings];
+        buf = new byte[4096];
+        zero = new byte[4096];
+
+        // ACM devices not normally isVisible to gnu.io, so setting here.
+        System.setProperty("gnu.io.rxtx.SerialPorts", portName);
+        try {
+            portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+        } catch (Exception e) {
+            System.err.println(prg + ": can't find " + portName + ": " + e);
+        }
+        if (portIdentifier.isCurrentlyOwned()) {
+            System.err.println(prg + ": port " + portName + " already in use!");
+            System.exit(1);
+        }
+        try {
+            port = (SerialPort) portIdentifier.open(prg, 2000);
+        } catch (Exception e) {
+            System.err.println(prg + ": Error opening port: " + e);
+            System.exit(1);
+        }
+        try {
+            in = port.getInputStream();
+            //inBufSize = port.getInputBufferSize();
+            out = port.getOutputStream();
+            //port.notifyOnDataAvailable(true);
+        } catch (IOException ioe) {
+            System.err.println(prg + ": unable to set up streams: " + ioe);
+            System.exit(1);
+        }
+        command(CMD_VERS);
+        read();
+        read();
+        System.out.format("buf[1]: %02X\n", (short) (buf[1] & 0xff));
+        if (buf[1] == (byte) 0x0A) {
+            // looks like a SCIP 1.0 version response
+            for (int i = 0; i < 7; i++) {
+                read();
+                System.out.println((new String(buf)).trim());
+            }
+            // switch mode to SCIP 2.0
+            command(CMD_MODE);
+            for (int i = 0; i < 3; i++) {
+                read();
+                System.out.println((new String(buf)).trim());
+            }
+        } else {
+            // already in SCIP 2.0 mode
+            read();
+        }
+        command(CMD2_VERS);
+        for (int i = 0; i < 8; i++) {
+            read();
+            System.out.println((new String(buf)).trim());
+        }
+        /*
+        command(CMD2_INFO);
+        for (int i = 0; i < 9; i++) {
+            read();
+            System.out.println((new String(buf)).trim());
+        }
+        */
+        command(CMD2_SENS);
+        for (int i = 0; i < 3; i++) {
+            read();
+            System.out.println((new String(buf)).trim());
+        }
+        command(CMD2_ENBL);
+        for (int i = 0; i < 3; i++) {
+            read();
+            System.out.println((new String(buf)).trim());
+        }
+
+        r = new Reader();
+        r.start();
+    }
+
+    private void command(byte[] msg) {
+        short t = 0;
+
+        // Calculated checksums statically
+        //short cs = checksum(msg, msg.length);
+        //msg[msg.length - 2] = (byte)(cs & 0xFF);
+        //msg[msg.length - 1] = (byte)(cs << 16 >>> 24);
+        try {
+            if (vverbose) {
+                System.out.print("Writing: ");
+                for (int i = 0; i < msg.length; i++) {
+                    System.out.format("%02X ", (short) (msg[i] & 0xff));
+                }
+                System.out.println();
+            }
+            out.write(msg, 0, msg.length);
+        } catch (IOException ioe) {
+            System.err.println(prg + ": exception sending to receiver: " + ioe);
+        }
+    }
+
+    private int read() {
+        int r = -1;
+        int i = 0;
+        byte b = (byte) 0x00;
+
+        //Sleep(100);
+        System.arraycopy(zero, 0, buf, 0, 4096);
+        while (b != (byte) 0x0a) {
+            try {
+                while ((r = in.available()) < 1) {
+                    Sleep(10);
+                }
+                //System.out.format("Read byte: %02X\n", s);
+                r = in.read(buf, i, 1);
+                b = buf[i++];
+            } catch (IOException ioe) {
+                System.err.println(prg + ": error reading: " + ioe);
+            }
+        }
+        if (i > 1) i--; // not checking checksum yet
+        if (vverbose) {
+            System.out.print("Reading: ");
+            for (int j = 0; j < i; j++) {
+                System.out.format("%02X ", (short) (buf[j] & 0xff));
+            }
+            System.out.println();
+        }
+        return i;
+    }
+
+    @Override
+    public LaserScan getLaserScan() throws RemoteException {
+        // TODO
+        return null;
+    }
+
+    /**
+     * The <code>Reader</code> is the main loop that queries the Utm.
+     */
+    private class Reader extends Thread {
+
+        private boolean shouldRead;
+
+        public Reader() {
+            shouldRead = true;
+        }
+
+        public void run() {
+            int num = 0, val, r;
+	    //	    int count = 0;
+            while (shouldRead) {
+                num = 0;
+                command(CMD2_READ);
+                read(); // echo
+                if (vverbose) {
+                    System.out.print("Echo: ");
+                    System.out.println(new String(buf));
+                }
+                read(); // status
+                if (vverbose) {
+                    System.out.print("Status: ");
+                    System.out.println(new String(buf));
+                }
+                r = read();
+                if (r == 1) {
+                    // error in previous status
+                    Sleep(100);
+                    continue;
+                } else if (vverbose) {
+                    System.out.print("Timestamp: ");
+                    System.out.println(new String(buf));
+                }
+                while ((r = read()) > 1) {
+                    for (int i = 0; i < (r - 1); i = i + 2) {
+                        val = ((buf[i] - 0x30) << 6) + (buf[i + 1] - 0x30);
+                        if (val < 20) {
+                            //System.out.println("reading["+(num+1)+"]: "+val);
+                            //System.out.print(val);
+                            val = 4096;
+                            if (false && num>0) {
+                                int x=num;
+                                if (readings[x] == 0.0) {
+                                    readings[num++] = (double) val * 0.001;
+                                } else {
+                                    readings[num++] = readings[x];
+                                }
+                            } else {
+                                readings[num++] = (double) val * 0.001;
+                            }
+                        } else {
+                            readings[num++] = (double) val * 0.001;
+                        }
+                    }
+                }
+                if (verbose) {
+                    System.out.println();
+                    System.out.println("Got " + num + " readings");
+                    for (int i = 0; i < num; i++) {
+                        System.out.format("%1.4f ", readings[i]);
+                    }
+                    System.out.println();
+                }
+
+                //set indices of right/front/left regions and update laser info
+		int toOffset = (int)(Math.toDegrees(offset)*(numReadings/scanAngle)); //number of slots to shift each reading.
+		//		int qC = (int)(90*(numReadings/scanAngle)); //quarter circle * 4 readings per angle
+		//Hard coded for wheelchair...
+		int rightstart = 0;
+		int rightend = 540;
+		int frontstart = 541;
+		int frontend = 900;
+		int leftstart = 901; 
+		int leftend = 1080;
+		int backstart = 0; //never safe
+		int backend = -1;
+		
+		//VVVVV This would work with optimal laser placement... VVVVV
+		/*int rightstart = Math.abs(-toOffset) % numReadings;
+		int rightend = Math.abs(-toOffset + qC) % numReadings;
+		int frontstart = Math.abs(-toOffset + qC + 1) % numReadings;
+		int frontend = Math.abs(-toOffset+ 2*qC) % numReadings;
+		int leftstart = Math.abs(-toOffset+ 2*qC + 1) % numReadings;
+		int leftend = Math.abs(-toOffset+ 3*qC) % numReadings;
+		int backstart = Math.abs(-toOffset+ 3*qC + 1) % numReadings;
+		int backend = Math.abs(-toOffset+ 4*qC + 1) % numReadings;*/
+
+		if (flipped){
+		    if(offset == 0){
+			int temp = rightstart;
+			rightstart = leftstart;
+			leftstart= temp;
+
+			temp = rightend;
+			rightend = leftend;
+			leftend = temp;
+		    }
+		    else{
+			System.out.println("\nERROR: Flip not implemented yet for offset lasers.\n");
+			System.exit(0);	
+		    }
+		}
+		//                int oneThird = (int) (numReadings/3);
+                //                int twoThird = (int) (2*numReadings/3);
+		updateLRF(rightstart, rightend, frontstart, frontend, leftstart, leftend, backstart, backend);
+		
+                //Sleep(1000);
+		//		System.out.println(count++);
+                //Sleep(1);
+            }
+            System.out.println(prg + ": Exiting Reader thread...");
+        }
+
+        public void halt() {
+            System.out.println(prg + ": Halting read thread...");
+            shouldRead = false;
+        }
+    }
+
+    // TODO: the main loop needs to use these...
+    // nothing special for now
+    protected void updateComponent() {
+    }
+    // nothing special for now
+
+    protected void updateFromLog(String logEntry) {
+    }
+
+    /**
+     * Shut down the LRF.
+     */
+    public void shutdown() {
+        r.halt();
+        Sleep(500);
+        command(CMD2_DSBL);
+        for (int i = 0; i < 3; i++) {
+            read();
+            System.out.println((new String(buf)).trim());
+        }
+        command(CMD2_RSET);
+        for (int i = 0; i < 3; i++) {
+            read();
+            System.out.println((new String(buf)).trim());
+        }
+    }
+
+    /**
+     * <code>main</code> passes the arguments up to the ADEComponentImpl
+     * parent.  The parent does some magic and gets the system going.
+     *
+    public static void main(String[] args) throws Exception {
+        portName = "/dev/ttyACM0";
+        // Check for RXTX here so we're able to give a hint before the
+        // problems manifest.
+        try {
+            Class.forName("gnu.io.NoSuchPortException");
+        } catch (ClassNotFoundException e) {
+            System.out.println("\nERROR: Can't find gnu.io classes; is RXTXcomm.jar in the cpasspath?");
+            System.exit(0);
+        }
+        LRFComponentImpl.main(args);
+    } */
+}

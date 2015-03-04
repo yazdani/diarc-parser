@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration advertiser="multicastdns">
+  <properties>
+    <!-- pulling this filename into a property since its used twice -->
+    <property name="world.filename">logs/world.log</property>
+  </properties>
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %m%n"/>
+    </Console>
+    <File name="worldLog" fileName="${world.filename}" bufferedIO="true" advertiseURI="file://${sys:user.dir}/${world.filename}" advertise="true">
+      <PatternLayout pattern="%d{ISO8601} [%t] %-5level %logger{36} - %m%n"/>
+    </File>
+    <File name="collisionPoseLog" fileName="logs/collisionPoses.log" bufferedIO="true">
+      <RegexFilter regex="(POS|NEG|UNDO) .+" onMatch="ACCEPT" useRawMsg="true"/>
+      <PatternLayout pattern="%d{ISO8601} %m%n"/>
+    </File>
+  </appenders>
+  <loggers>
+    <logger name="com.mds.simulator.MdsSimComponentImpl" level="INFO">
+      <!-- <appender-ref ref="collisionPoseLog"/> -->
+    </logger>
+    <logger name="com.mds.MDSComponentImpl" level="INFO">
+      <!-- <appender-ref ref="collisionPoseLog"/> -->
+    </logger>
+    <logger name="com.robotsim.kinematics.inverse" level="INFO">
+      <!-- <appender-ref ref="collisionPoseLog"/> -->
+    </logger>
+    <root level="INFO">
+      <appender-ref ref="Console"/>
+    </root>
+  </loggers>
+</configuration>

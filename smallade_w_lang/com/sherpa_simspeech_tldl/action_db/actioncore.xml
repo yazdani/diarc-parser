@@ -1,0 +1,4997 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+<!DOCTYPE type SYSTEM "action.dtd">
+-->
+<type>
+  <name>entity</name>
+  <subtypes>
+    <type>
+      <!-- if you want to use a constant in a pre/postcondition, it needs to be added here first -->
+      <name>constant</name>
+      <subtypes>
+        <type planner="true">
+          <name>self</name>
+          <ctype>actor</ctype>
+        </type>
+        <type planner="false">
+          <name>red</name>
+          <ctype>color</ctype>
+        </type>
+        <type planner="false">
+          <name>blue</name>
+          <ctype>color</ctype>
+        </type>
+        <type planner="false">
+          <name>white</name>
+          <ctype>color</ctype>
+        </type>
+        <type planner="true">
+          <name>open_pr</name>
+          <ctype>doorstate</ctype>
+        </type>
+        <type planner="true">
+          <name>closed_pr</name>
+          <ctype>doorstate</ctype>
+        </type>
+      </subtypes>
+    </type>
+    <type>
+      <name>object</name>
+      <api>type</api>
+      <subtypes>
+        <type planner="true">
+          <name>pseudobject</name>
+          <api>type</api>
+          <subtypes>
+            <type planner="true">
+              <name>location</name>
+              <api>type</api>
+              <subtypes>
+                <type planner="true">
+                  <name>map</name>
+                  <api>type</api>
+                </type>
+              </subtypes>
+            </type>
+            <type planner="true">
+	      <name>tree</name>
+                  <api>type</api>
+            </type>
+            <type planner="true">
+              <name>victim</name>
+              <api>type</api>
+            </type>
+            <type planner="true">
+              <name>property</name>
+              <api>type</api>
+              <subtypes>
+                <type planner="false">
+                  <name>color</name>
+                  <api>type</api>
+                </type>
+              </subtypes>
+            </type>
+            <type planner="true">
+              <name>agent</name>
+              <api>type</api>
+              <subtypes>
+                <type planner="true">
+                  <name>actor</name>
+                  <api>type</api>
+                </type>
+                <type planner="false">
+                  <name>interactor</name>
+                  <api>type</api>
+                  <subtypes>
+                    <type planner="false">
+                      <name>listener</name>
+                      <api>type</api>
+                    </type>
+                  </subtypes>
+                </type>
+              </subtypes>
+            </type>
+            <type>
+              <name>thing</name>
+              <api>type</api>
+            </type>
+            <type planner="false">
+              <name>data</name>
+              <api>type</api>
+              <subtypes>
+                <type>
+                  <name>text</name>
+                  <api>type</api>
+                </type>
+                <type>
+                  <name>keys</name>
+                  <api>type</api>
+                </type>
+                <type>
+                  <name>unit</name>
+                  <api>type</api>
+                </type>
+                <type>
+                  <name>perspective</name>
+                  <api>type</api>
+                </type>
+                <type planner="false">
+                  <name>direction</name>
+                  <api>type</api>
+                </type>
+                <type>
+                  <name>datatype</name>
+                  <api>type</api>
+                </type>
+                <type>
+                  <name>percept</name>
+                  <api>type</api>
+                </type>
+                <type>
+                  <name>predicate</name>
+                  <subtypes>
+                    <type planner="true">
+                      <name>looked_for</name>
+                      <var>
+                        <varname>?act</varname>
+                        <vartype>actor</vartype>
+                      </var>
+                      <var>
+                        <varname>?obj</varname>
+                        <vartype>pseudobject</vartype>
+                      </var>
+		      <var>
+                        <varname>?col</varname>
+                        <vartype>color</vartype>
+                      </var>
+                      <var>
+                        <varname>?loc</varname>
+                        <vartype>location</vartype>
+                      </var>
+                    </type>
+                    <type planner="true">
+                      <name>at</name>
+                      <var>
+                        <varname>?act</varname>
+                        <vartype>agent</vartype>
+                      </var>
+                      <var>
+                        <varname>?loc</varname>
+                        <vartype>location</vartype>
+                      </var>
+                    </type>
+                    <type planner="true">
+                      <name>have</name>
+                      <!-- order reversed here due to bug in planner -->
+                      <var>
+                        <varname>?obj</varname>
+                        <vartype>pseudobject</vartype>
+                      </var>
+                      <var>
+                        <varname>?ag</varname>
+                        <vartype>agent</vartype>
+                      </var>
+                    </type>
+                    <type planner="true">
+                      <name>found</name>
+                      <var>
+                        <varname>?act</varname>
+                        <vartype>actor</vartype>
+                      </var>
+                      <var>
+                        <varname>?obj</varname>
+                        <vartype>pseudobject</vartype>
+                      </var>
+		      <var>
+                        <varname>?col</varname>
+                        <vartype>color</vartype>
+                      </var>
+                      <var>
+                        <varname>?loc</varname>
+                        <vartype>location</vartype>
+                      </var>
+                    </type>
+                    <type planner="true">
+                      <name>searched_for</name>
+                      
+                      <var>
+                        <varname>?act</varname>
+                        <vartype>actor</vartype>
+                      </var>
+                      <var>
+                        <varname>?obj</varname>
+                        <vartype>pseudobject</vartype>
+                      </var>
+		      <var>
+                        <varname>?col</varname>
+                        <vartype>color</vartype>
+                      </var>
+                      <var>
+                        <varname>?loc</varname>
+                        <vartype>location</vartype>
+                      </var>
+                    </type>
+                    <type planner="false">
+                      <name>reported</name>
+                      <var>
+                        <varname>?act</varname>
+                        <vartype>actor</vartype>
+                      </var>
+                      <var>
+                        <varname>?bx</varname>
+                        <vartype>box</vartype>
+                      </var>
+		      <var>
+                        <varname>?clr</varname>
+                        <vartype>color</vartype>
+                      </var>
+                      <var>
+                        <varname>?loc</varname>
+                        <vartype>location</vartype>
+                      </var>
+                    </type>
+                    <type planner="true">
+                      <name>in</name>
+                      <var>
+                        <varname>?obj</varname>
+                        <vartype>pseudobject</vartype>
+                      </var>
+                      <var>
+                        <varname>?loc</varname>
+                        <vartype>location</vartype>
+                      </var>
+                    </type>
+                    <type planner="true">
+                      <name>has_property</name>
+                      <var>
+                        <varname>?obj</varname>
+                        <vartype>pseudobject</vartype>
+                      </var>
+                      <var>
+                        <varname>?prp</varname>
+                        <vartype>property</vartype>
+                      </var>
+                    </type>
+                    <type planner="true">
+                      <name>met</name>
+                      <var>
+                        <varname>?act</varname>
+                        <vartype>actor</vartype>
+                      </var>
+                      <var>
+                        <varname>?other</varname>
+                        <vartype>agent</vartype>
+                      </var>
+                    </type>
+                  </subtypes>
+                </type>
+              </subtypes>
+            </type>
+            <type>
+              <name>boolean</name>
+              <api>type</api>
+            </type>
+	    <type>
+	      <name>string</name>
+              <api>type</api>
+	    </type>
+            <type>
+              <name>number</name>
+              <api>type</api>
+              <subtypes>
+                <type>
+                  <name>integer</name>
+                  <api>type</api>
+                  <subtypes>
+                    <type>
+                      <name>nodInt</name>
+                    </type>
+                    <type>
+                      <name>shakeInt</name>
+                    </type>
+                    <type>
+                      <name>lookInt</name>
+                    </type>
+                    <type>
+                      <name>fieldStr</name>
+                    </type>
+                  </subtypes>
+                </type>
+                <type>
+                  <name>long</name>
+                  <api>type</api>
+                  <subtypes>
+                    <type>
+                      <name>visionTs</name>
+                      <api>type</api>
+                    </type>
+                    <type>
+                      <name>millisec</name>
+                      <api>type</api>
+                    </type>
+                    <type>
+                      <name>discourseTs</name>
+                    </type>
+                  </subtypes>
+                </type>
+                <type>
+                  <name>double</name>
+                  <api>type</api>
+                  <subtypes>
+                    <type>
+                      <name>coordinate</name>
+                      <api>type</api>
+                    </type>
+                  </subtypes>
+                </type>
+              </subtypes>
+            </type>
+          </subtypes>
+        </type>
+      </subtypes>
+    </type>
+    <type>
+      <name>action</name>
+      <subtypes>
+        <type>
+          <name>primitive</name>
+          <subtypes>
+            <type>
+              <name>motionPrimitive</name>
+              <subtypes>
+                <!-- ACTIONDEFINITION IS STARTING HERE -->
+		<!-- <type> -->
+                <!--   <name>closehand</name> -->
+                <!--   <desc>Robot closes its hand </desc> -->
+                <!--   <var> -->
+                <!--     <varname>?mover</varname> -->
+                <!--     <vartype>actor</vartype> -->
+                <!--   </var> -->
+                <!--   <var> -->
+                <!--     <varname>?hand</varname> -->
+                <!--     <vartype>string</vartype> -->
+                <!--   </var> -->
+                <!--   <effects postcond="true"> -->
+                <!--     <atend>handClosed(?mover, ?hand)</atend> -->
+                <!--   </effects> -->
+                <!-- </type> -->
+		<!-- ACTIONDEFINITION IS ENDING HERE -->
+		<type>
+                  <!-- Start moving forward -->
+                  <name>startmove</name>
+                  <desc>?mover moves forward</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?quiet</varname>
+                    <vartype>boolean</vartype>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- Start backing up (!) -->
+                  <name>startmoveback</name>
+                  <desc>?mover backs up</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?quiet</varname>
+                    <vartype>boolean</vartype>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- Start moving to the left -->
+                  <name>startmoveleft</name>
+                  <desc>?mover moves to the left</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?quiet</varname>
+                    <vartype>boolean</vartype>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- Start moving to the right -->
+                  <name>startmoveright</name>
+                  <desc>?mover moves to the right</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?quiet</varname>
+                    <vartype>boolean</vartype>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- Turn left -->
+                  <name>startleft</name>
+                  <desc>?mover turns left</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?quiet</varname>
+                    <vartype>boolean</vartype>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- Turn right -->
+                  <name>startright</name>
+                  <desc>?mover turns right</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?quiet</varname>
+                    <vartype>boolean</vartype>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- Stop -->
+                  <name>dostop</name>
+                  <desc>?mover stops</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?quiet</varname>
+                    <vartype>boolean</vartype>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- Attempt transmission (fails if field -lt threshold) -->
+                  <name>doTransmit</name>
+                  <desc>?mover attempts transmission</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?threshold</varname>
+                    <vartype>fieldStr</vartype>
+                  </var>
+                  <var>
+                    <varname>?fieldStrength</varname>
+                    <vartype>fieldStr</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <locks>transmitLock</locks>
+                </type>
+                <type>
+                  <!-- Get Motion's tolerance (how closely it has to approach a destination) -->
+                  <name>getMotionTolerance</name>
+                  <api>get max distance from destination for successful motion</api>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var desc="motion tolerance">
+                    <varname>?dist</varname>
+                    <vartype>double</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- Set Motion's tolerance (how closely it has to approach a destination) -->
+                  <name>setMotionTolerance</name>
+                  <api>set max distance from destination for successful motion</api>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var desc="motion tolerance">
+                    <varname>?dist</varname>
+                    <vartype>double</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Get LRF's CRITICALDIST -->
+                  <name>getCritDist</name>
+                  <api>get the critical distance at which obstacle avoidance will engage (if active)</api>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var desc="critical distance">
+                    <varname>?dist</varname>
+                    <vartype>double</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- Set LRF's CRITICALDIST -->
+                  <name>setCritDist</name>
+                  <api>set the critical distance at which obstacle avoidance will engage (if active)</api>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var desc="critical distance">
+                    <varname>?dist</varname>
+                    <vartype>double</vartype>
+                  </var>
+                </type>
+		<type>
+                  <!-- Check whether at location -->
+                  <name>atLocation</name>
+                  <!--
+                  <desc>?mover checks whether it's at location</desc>
+                  -->
+                  <api>check whether current location is within epsilon of given coordinates</api>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var desc="x coordinate">
+                    <varname>?xdest</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var desc="y coordinate">
+                    <varname>?ydest</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var desc="allowable error">
+                    <varname>?epsilon</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Get current location -->
+                  <name>getLocation</name>
+                  <desc>?mover checks current location</desc>
+                  <api>get current location</api>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?xcoord</varname>
+                    <vartype>coordinate</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <var>
+                    <varname>?ycoord</varname>
+                    <vartype>coordinate</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- Get current heading -->
+                  <name>getHeading</name>
+                  <desc>?mover checks current heading</desc>
+                  <api>get current heading</api>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?heading</varname>
+                    <vartype>double</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- Get relative heading between two global headings -->
+                  <name>getHeadingTo</name>
+                  <desc>?mover calculates relative heading</desc>
+                  <api>get relative heading between two global headings</api>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var desc="current heading">
+                    <varname>?t1</varname>
+                    <vartype>double</vartype>
+                  </var>
+                  <var desc="target heading">
+                    <varname>?t2</varname>
+                    <vartype>double</vartype>
+                  </var>
+                  <var>
+                    <varname>?heading</varname>
+                    <vartype>double</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- Get global heading from one point to another-->
+                  <name>getHeadingFrom</name>
+                  <desc>?mover checks heading between two points</desc>
+                  <api>get global heading between one point and another</api>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var desc="current x coordinate">
+                    <varname>?x1</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var desc="current y coordinate">
+                    <varname>?y1</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var desc="target x coordinate">
+                    <varname>?x2</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var desc="target y coordinate">
+                    <varname>?y2</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var desc="target heading">
+                    <varname>?heading</varname>
+                    <vartype>double</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                 <type>
+                  <!-- Get distance from one point to another-->
+                  <name>getDistanceFrom</name>
+                  <desc>?mover checks distance between two points</desc>
+                  <api>get distance between one point and another</api>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var desc="current x coordinate">
+                    <varname>?x1</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var desc="current y coordinate">
+                    <varname>?y1</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var desc="target x coordinate">
+                    <varname>?x2</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var desc="target y coordinate">
+                    <varname>?y2</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var desc="distance">
+                    <varname>?dist</varname>
+                    <vartype>coordinate</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <name>followTreeRight</name>
+                  <desc>?mover follows the right tree</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?actionID</varname>
+                    <vartype>long</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <name>followTreeLeft</name>
+                  <desc>?mover follows the left tree</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?actionID</varname>
+                    <vartype>long</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- The script moveTo wraps this; use it instead -->
+                  <name>startMoveTo</name>
+                  <desc>?mover moves to a new location</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?xdest</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var>
+                    <varname>?ydest</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var>
+                    <varname>?actionID</varname>
+                    <vartype>long</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- The icarus version of the above -->
+                  <name>move-to</name>
+                  <desc>?mover moves to a new location</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?xdest</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var>
+                    <varname>?ydest</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var>
+                    <varname>?actionID</varname>
+                    <vartype>long</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- move through a doorway (moveThrough wraps) -->
+                  <name>move-through</name>
+                  <desc>?mover moves to a new location</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?xdest</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var>
+                    <varname>?ydest</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var>
+                    <varname>?xdest1</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var>
+                    <varname>?ydest1</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var>
+                    <varname>?actionID</varname>
+                    <vartype>long</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- The script timeMove wraps this; use it instead -->
+                  <name>startTimeMove</name>
+                  <desc>?mover moves</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?dist</varname>
+                    <vartype>double</vartype>
+                  </var>
+                  <var>
+                    <varname>?actionID</varname>
+                    <vartype>long</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- The script timeTurn wraps this; use it instead -->
+                  <name>startTimeTurn</name>
+                  <desc>?mover turns</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?heading</varname>
+                    <vartype>double</vartype>
+                  </var>
+                  <var>
+                    <varname>?actionID</varname>
+                    <vartype>long</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- The script turnRel wraps this; use it instead -->
+                  <name>startTurnRel</name>
+                  <desc>?mover turns</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?heading</varname>
+                    <vartype>double</vartype>
+                  </var>
+                  <var>
+                    <varname>?actionID</varname>
+                    <vartype>long</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <locks>motionLock</locks>
+                </type>
+                <type>
+                  <!-- Check status of GPS Server -->
+                  <name>gpsready</name>
+                  <desc>?mover queries GPS</desc>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                </type>
+                <!-- <type> -->
+                  <!-- Reddy point to location -->
+                  <!-- This takes Vision's coordinates and convert's them to Reddy's -->
+                <!--   <name>pointTo</name> -->
+                <!--   <var> -->
+                <!--     <varname>?mover</varname> -->
+                <!--     <vartype>actor</vartype> -->
+                <!--   </var> -->
+                <!--   <var> -->
+                <!--     <varname>?theta</varname> -->
+                <!--     <vartype>lookInt</vartype> -->
+                <!--   </var> -->
+                <!--   <var> -->
+                <!--     <varname>?phi</varname> -->
+                <!--     <vartype>lookInt</vartype> -->
+                <!--   </var> -->
+                <!-- </type> -->
+            <type>
+              <name>speechProdPrimitive</name>
+              <subtypes>
+                <type>
+                  <!-- Say something -->
+                  <name>sayTextNow</name>
+                  <desc>?speaker says ?statement to ?target</desc>
+                  <api>say something to someone</api>
+                  <var>
+                    <varname>?speaker</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?target</varname>
+                    <vartype>interactor</vartype>
+                    <vardefault>nobody</vardefault>
+                  </var>
+                  <var desc="the phrase to be spoken (vars will be bound)">
+                    <!-- The value of this parameter is spoken -->
+                    <varname>?statement</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <locks>speechLock</locks>
+                </type>
+                <type>
+                  <!-- ICARUS version of above -->
+                  <name>report</name>
+                  <desc>?speaker says ?statement to ?target</desc>
+                  <var>
+                    <varname>?speaker</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?target</varname>
+                    <vartype>interactor</vartype>
+                    <vardefault>nobody</vardefault>
+                  </var>
+                  <var>
+                    <!-- The value of this parameter is spoken -->
+                    <varname>?statement</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <locks>speechLock</locks>
+                </type>
+                <type planner="false">
+                  <!-- Sapa report -->
+                  <name>sapareport</name>
+                  <desc>?speaker reports on ?box</desc>
+                  <var>
+                    <varname>?speaker</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?bx</varname>
+                    <vartype>box</vartype>
+                  </var>
+                  <!--  PWS:
+                  <var>
+                    <varname>?col</varname>
+                    <vartype>color</vartype>
+                  </var>
+                  <var>
+                    <varname>?pa</varname>
+                    <vartype>pattern</vartype>
+                  </var>
+                  -->
+                  <var>
+                    <varname>?loc</varname>
+                    <vartype>location</vartype>
+                  </var>
+                  <locks>speechLock</locks>
+                  <cost>100.0</cost>
+                  <timeout>1</timeout>
+                  <conditions>
+                    <atstart>at(?speaker,?loc)</atstart>
+                    <atstart>found(?speaker,?bx,?loc)</atstart>
+                    <!--
+                    <overall>has_property(?bx,?col)</overall>
+                    <overall>has_property(?bx,?pa)</overall>
+                    -->
+                  </conditions>
+                  <effects>
+                    <!--
+                    <atend>reported(?speaker,?bx,?col,?pa,?loc)</atend>
+                    -->
+                    <atend>reported(?speaker,?bx,?loc)</atend>
+                  </effects>
+                </type>
+                <type>
+                  <!-- Dance to a wav file -->
+                  <name>waveDance</name>
+                  <desc>?speaker dances along</desc>
+                  <var>
+                    <varname>?speaker</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?file</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?silent</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <locks>speechLock</locks>
+                </type>
+                <type>
+                  <!-- Lip sync to a wav file -->
+                  <name>lipSync</name>
+                  <desc>?speaker sings along</desc>
+                  <var>
+                    <varname>?speaker</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?file</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?silent</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <locks>speechLock</locks>
+                </type>
+                <type>
+                  <!-- Start chat -->
+                  <name>startChat</name>
+                  <desc>?speaker begins chatting about ?topic</desc>
+                  <var>
+                    <varname>?speaker</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?topic</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Change voice -->
+                  <name>changeVoice</name>
+                  <desc>?speaker changes voice to ?voice</desc>
+                  <api>change Festival voice</api>
+                  <var>
+                    <varname>?speaker</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var desc="new voice name">
+                    <varname>?voice</varname>
+                    <vartype>data</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Change affect expression -->
+                  <name>changeMood</name>
+                  <desc>?speaker changes affect expression to ?mood</desc>
+                  <api>change Festival voice mood (currently requires mbrola)</api>
+                  <var>
+                    <varname>?speaker</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var desc="mood string (happy, sad, etc.)">
+                    <varname>?mood</varname>
+                    <vartype>data</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- playWav -->
+                  <name>playWav</name>
+                  <desc>?speaker plays a wav file</desc>
+                  <var>
+                    <varname>?speaker</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?filename</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Clarify most recent instruction -->
+                  <name>clarify</name>
+                  <desc>?speaker clarifies instructions</desc>
+                  <var>
+                    <varname>?speaker</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Beep -->
+                  <name>beep</name>
+                  <desc>?speaker beeps</desc>
+                  <var>
+                    <varname>?speaker</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                </type>
+              </subtypes>
+            </type>
+                <type>
+                  <!-- Get the name of an object (Predicate, ActionDBEntry) -->
+                  <name>getName</name>
+                  <var>
+                    <varname>?var</varname>
+                    <vartype>object</vartype>
+                  </var>
+                  <var>
+                    <varname>?name</varname>
+                    <vartype>text</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- Get new list -->
+                  <name>getNewList</name>
+                  <api>create a list</api>
+                  <var desc="the newly-created list">
+                    <varname>?list</varname>
+                    <vartype>object</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- Get size of a list -->
+                  <name>getListSize</name>
+                  <api>get number of elements in a list</api>
+                  <var desc="a list">
+                    <varname>?list</varname>
+                    <vartype>object</vartype>
+                  </var>
+                  <var desc="the number of elements in ?list">
+                    <varname>?val</varname>
+                    <vartype>integer</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- Get an element from a list -->
+                  <name>getListElement</name>
+                  <api>get an element from a list</api>
+                  <var desc="a list">
+                    <varname>?list</varname>
+                    <vartype>object</vartype>
+                  </var>
+                  <var desc="the index of the element to retrieve">
+                    <varname>?index</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                  <var desc="the requested element">
+                    <varname>?val</varname>
+                    <vartype>object</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- Add an element to a list -->
+                  <name>addListElement</name>
+                  <api>add an element to the end of a list</api>
+                  <var desc="a list">
+                    <varname>?list</varname>
+                    <vartype>object</vartype>
+                  </var>
+                  <var desc="the element to be added to ?list">
+                    <varname>?val</varname>
+                    <vartype>object</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Delete an element to a list, returning the element in ?val -->
+                  <name>delListElement</name>
+                  <api>delete an element from a list and return the element</api>
+                  <var desc="a list">
+                    <varname>?list</varname>
+                    <vartype>object</vartype>
+                  </var>
+                  <var desc="the requested element">
+                    <varname>?index</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                  <var desc="the deleted element">
+                    <varname>?val</varname>
+                    <vartype>object</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- Get an arg from an object (Predicate, ActionDBEntry) -->
+                  <name>getArgument</name>
+                  <var>
+                    <varname>?var</varname>
+                    <vartype>object</vartype>
+                  </var>
+                  <var>
+                    <varname>?index</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                  <var>
+                    <varname>?val</varname>
+                    <vartype>object</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- Check whether a variable is of a type -->
+                  <name>isA</name>
+                  <var>
+                    <varname>?var</varname>
+                    <vartype>object</vartype>
+                  </var>
+                  <var>
+                    <varname>?type</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Check whether a variable is bound -->
+                  <name>isBound</name>
+                  <var>
+                    <varname>?var</varname>
+                    <vartype>object</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- End action with success exit status -->
+                  <name>actionSucceed</name>
+                  <api>exit current script with success exit status</api>
+                </type>
+                <type>
+                  <!-- End action with failure exit status -->
+                  <name>actionFail</name>
+                  <api>exit current script with failure exit status</api>
+                </type>
+                <type>
+                  <!-- Attempt to perform the action specified -->
+                  <name>performAction</name>
+                  <var>
+                    <varname>?actspec</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?ts</varname>
+                    <vartype>discourseTs</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Alter positive affect -->
+                  <name>incrementPositiveAffect</name>
+                  <var>
+                    <varname>?feeler</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?increment</varname>
+                    <vartype>double</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Alter negative affect -->
+                  <name>incrementNegativeAffect</name>
+                  <var>
+                    <varname>?feeler</varname>
+                    <vartype> actor </vartype>
+                  </var>
+                  <var>
+                    <varname>?increment</varname>
+                    <vartype>double</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Alter negative affect -->
+                  <name>setNegativeAffect</name>
+                  <var>
+                    <varname>?feeler</varname>
+                    <vartype> actor </vartype>
+                  </var>
+                  <var>
+                    <varname>?increment</varname>
+                    <vartype>double</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Alter positive affect for local action -->
+                  <name>incrementPositiveLocalAffect</name>
+                  <var>
+                    <varname>?feeler</varname>
+                    <vartype> actor </vartype>
+                  </var>
+                  <var>
+                    <varname>?increment</varname>
+                    <vartype>double</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Alter negative affect for local action -->
+                  <name>incrementNegativeLocalAffect</name>
+                  <var>
+                    <varname>?feeler</varname>
+                    <vartype> actor </vartype>
+                  </var>
+                  <var>
+                    <varname>?increment</varname>
+                    <vartype>double</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Return true -->
+                  <name>true</name>
+                  <api>boolean value true</api>
+                </type>
+                <type>
+                  <!-- Return false -->
+                  <name>false</name>
+                  <api>boolean value false</api>
+                </type>
+                <type>
+                  <!-- Kill a server (for testing/experimentation) -->
+                  <name>kill</name>
+                  <var>
+                    <varname>?victim</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Print priorities -->
+                  <name>printPriorities</name>
+                </type>
+                <type>
+                  <!-- Set a string variable -->
+                  <name>catText</name>
+                  <var>
+                    <varname>?target</varname>
+                    <vartype>text</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <var>
+                    <varname>?text1</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?text2</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Set a variable -->
+                  <name>set</name>
+                  <api>assign a value to a variable</api>
+                  <var desc="the variable to set">
+                    <varname>?target</varname>
+                    <vartype>entity</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <var desc="the new value of ?target">
+                    <varname>?value</varname>
+                    <vartype>entity</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Set a string variable -->
+                  <name>setText</name>
+                  <var>
+                    <varname>?target</varname>
+                    <vartype>text</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                  <var>
+                    <varname>?text</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Print statement -->
+                  <name>printText</name>
+                  <api>print the argument text (variables will be bound)</api>
+                  <var>
+                    <varname>?text</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <!-- Log statement -->
+                  <name>logText</name>
+                  <api>log the argument text (variables will be bound)</api>
+                  <var>
+                    <varname>?text</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <name>qsleep</name>
+                  <var>
+                    <varname>?sleeper</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?sleepMillis</varname>
+                    <vartype>millisec</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- addition -->
+                  <name>+</name>
+                  <api>arithmetic addition</api>
+                  <var>
+                    <varname>?arg1</varname>
+                    <vartype>number</vartype>
+                  </var>
+                  <var>
+                    <varname>?arg2</varname>
+                    <vartype>number</vartype>
+                  </var>
+                  <var>
+                    <varname>?sum</varname>
+                    <vartype>number</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- subtraction -->
+                  <name>-</name>
+                  <api>arithmetic subtraction</api>
+                  <var>
+                    <varname>?arg1</varname>
+                    <vartype>number</vartype>
+                  </var>
+                  <var>
+                    <varname>?arg2</varname>
+                    <vartype>number</vartype>
+                  </var>
+                  <var>
+                    <varname>?diff</varname>
+                    <vartype>number</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- multiplication -->
+                  <name>*</name>
+                  <api>arithmetic multiplication</api>
+                  <var>
+                    <varname>?arg1</varname>
+                    <vartype>number</vartype>
+                  </var>
+                  <var>
+                    <varname>?arg2</varname>
+                    <vartype>number</vartype>
+                  </var>
+                  <var>
+                    <varname>?prod</varname>
+                    <vartype>number</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- modulus -->
+                  <name>%</name>
+                  <api>arithmetic modulus</api>
+                  <var>
+                    <varname>?arg1</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                  <var>
+                    <varname>?arg2</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                  <var>
+                    <varname>?quot</varname>
+                    <vartype>number</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- division -->
+                  <name>/</name>
+                  <api>arithmetic division</api>
+                  <var>
+                    <varname>?arg1</varname>
+                    <vartype>number</vartype>
+                  </var>
+                  <var>
+                    <varname>?arg2</varname>
+                    <vartype>number</vartype>
+                  </var>
+                  <var>
+                    <varname>?quot</varname>
+                    <vartype>number</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- round -->
+                  <name>round</name>
+                  <api>round the parameter to the nearest long integer</api>
+                  <var>
+                    <varname>?arg</varname>
+                    <vartype>double</vartype>
+                  </var>
+                  <var>
+                    <varname>?round</varname>
+                    <vartype>long</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <name>numericComparison</name>
+                  <subtypes>
+                    <type>
+                      <name>lt</name>
+                      <api>arithmetic comparison: less than</api>
+                      <var>
+                        <varname>?arg1</varname>
+                        <vartype>number</vartype>
+                      </var>
+                      <var>
+                        <varname>?arg2</varname>
+                        <vartype>number</vartype>
+                      </var>
+                    </type>
+                    <type>
+                      <name>le</name>
+                      <api>arithmetic comparison: less than or equal to</api>
+                      <var>
+                        <varname>?arg1</varname>
+                        <vartype>number</vartype>
+                      </var>
+                      <var>
+                        <varname>?arg2</varname>
+                        <vartype>number</vartype>
+                      </var>
+                    </type>
+                    <type>
+                      <name>gt</name>
+                      <api>arithmetic comparison: greater than</api>
+                      <var>
+                        <varname>?arg1</varname>
+                        <vartype>number</vartype>
+                      </var>
+                      <var>
+                        <varname>?arg2</varname>
+                        <vartype>number</vartype>
+                      </var>
+                    </type>
+                    <type>
+                      <name>ge</name>
+                      <api>arithmetic comparison: greater than or equal to</api>
+                      <var>
+                        <varname>?arg1</varname>
+                        <vartype>number</vartype>
+                      </var>
+                      <var>
+                        <varname>?arg2</varname>
+                        <vartype>number</vartype>
+                      </var>
+                    </type>
+                    <type>
+                      <name>=</name>
+                      <api>arithmetic comparison: equal to</api>
+                      <var>
+                        <varname>?arg1</varname>
+                        <vartype>number</vartype>
+                      </var>
+                      <var>
+                        <varname>?arg2</varname>
+                        <vartype>number</vartype>
+                      </var>
+                    </type>
+                  </subtypes>
+                </type>
+                <type>
+                  <name>randomInteger</name>
+                  <api>return a random integer in the given range</api>
+                  <var desc="lower bound">
+                    <varname>?lower</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                  <var desc="upper bound">
+                    <varname>?upper</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                  <var desc="random value">
+                    <varname>?value</varname>
+                    <vartype>integer</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <name>randomDouble</name>
+                  <api>return a random double in the given range</api>
+                  <var desc="lower bound">
+                    <varname>?lower</varname>
+                    <vartype>double</vartype>
+                  </var>
+                  <var desc="upper bound">
+                    <varname>?upper</varname>
+                    <vartype>double</vartype>
+                  </var>
+                  <var desc="random value">
+                    <varname>?value</varname>
+                    <vartype>double</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <name>startADEServerLogging</name>
+                  <api>start ADE server logging</api>
+                </type>
+                <type>
+                  <name>startADEServerLoggingInteractive</name>
+                </type>
+                <type>
+                  <name>stopADEServerLogging</name>
+                  <api>stop ADE server logging</api>
+                </type>
+                <!-- Begin SurveyTextColor -->
+                <type>
+                  <name>SurveyTextColor</name>
+                  <var>
+                    <varname>?color</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <!-- End SurveyTextColor -->
+                <!-- Begin SurveyGeometry -->
+                <type>
+                  <name>SurveyGeometry</name>
+                  <var>
+                    <varname>?x</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                  <var>
+                    <varname>?y</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                </type>
+                <!-- End SurveyTextColor -->
+                <!-- Begin SurveyText -->
+                <type>
+                  <name>SurveyText</name>
+                  <var>
+                    <varname>?text</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?button</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <!-- End SurveyText -->
+                <!-- Begin SurveyButton -->
+                <type>
+                  <name>SurveyButton</name>
+                  <var>
+                    <varname>?button</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <!-- End SurveyButton -->
+                <!-- Begin SurveyTextItem -->
+                <!-- Survey item with text field for response -->
+                <type>
+                  <name>SurveyTextItem</name>
+                  <var>
+                    <varname>?question</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?response</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <!-- End SurveyTextItem -->
+                <!-- Begin SurveyRadioItem -->
+                <!-- Survey item with radio buttons for response -->
+                <type>
+                  <name>SurveyRadioItem</name>
+                  <var>
+                    <varname>?question</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <!-- This is a space-delimited list of valid responses -->
+                    <varname>?buttons</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?response</varname>
+                    <vartype>text</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <!-- End SurveyRadioItem -->
+                <!-- Begin SurveyRadioItemKeyed -->
+                <!-- Survey item with radio buttons for response -->
+                <type>
+                  <name>SurveyRadioItemKeyed</name>
+                  <var>
+                    <varname>?question</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <!-- This is a space-delimited list of valid responses -->
+                    <varname>?buttons</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <!-- This is a space-delimited list of valid responses -->
+                    <varname>?keys</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?response</varname>
+                    <vartype>text</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <!-- End SurveyRadioItem -->
+                <!-- Begin SurveyCheckboxItem -->
+                <!-- Survey item with checkboxes for response -->
+                <type>
+                  <name>SurveyCheckboxItem</name>
+                  <var>
+                    <varname>?question</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <!-- This is a space-delimited list of valid responses -->
+                    <varname>?buttons</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?response</varname>
+                    <vartype>text</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <!-- End SurveyCheckboxItem -->
+                <!-- Begin SurveySliderItem -->
+                <!-- Survey item with slider for response -->
+                <type>
+                  <name>SurveySliderItem</name>
+                  <var>
+                    <varname>?question</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?lower</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                  <var>
+                    <varname>?upper</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                  <var>
+                    <varname>?lowerLabel</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?upperLabel</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?response</varname>
+                    <vartype>integer</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <!-- End SurveySliderItem -->
+                <!-- Begin SurveySliderItem2 -->
+                <!-- Same as SurveySliderItem, but with extra text field -->
+                <type>
+                  <name>SurveySliderItem2</name>
+                  <var>
+                    <varname>?statement</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?question</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?lower</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                  <var>
+                    <varname>?upper</varname>
+                    <vartype>integer</vartype>
+                  </var>
+                  <var>
+                    <varname>?lowerLabel</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?upperLabel</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?response</varname>
+                    <vartype>integer</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <!-- End SurveySliderItem2 -->
+                <!-- Begin DisplayImage -->
+                <type>
+                  <name>DisplayImage</name>
+                  <var>
+                    <varname>?fname</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <!-- End DisplayImage -->
+                <type>
+                  <name>getBlocks</name>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?blocklist</varname>
+                    <vartype>object</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <name>getBoxes</name>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?boxlist</varname>
+                    <vartype>object</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <name>openDoor</name>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?door</varname>
+                    <vartype>doorway</vartype>
+                  </var>
+                  <conditions>
+                    <atstart>not(has_property(?door,open_pr))</atstart>
+                  </conditions>
+                  <effects>
+                    <atend>has_property(?door,open_pr)</atend>
+                  </effects>
+                </type>
+                <type>
+                  <name>openBox</name>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?box</varname>
+                    <vartype>box</vartype>
+                  </var>
+                  <effects>
+                    <atstart>open(?box)</atstart>
+                    <atend>peeked(?box)</atend>
+                  </effects>
+                </type>
+                <type>
+                  <name>closeBox</name>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?box</varname>
+                    <vartype>box</vartype>
+                  </var>
+                </type>
+                <type>
+                  <name>get-from</name>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?box</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?block</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <name>put-into</name>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?box</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?block</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type planner="false">
+                  <name>lookAtWeapon</name>
+                  <var>
+                    <varname>?act</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                </type>
+                <type planner="false">
+                  <name>relaxArms</name>
+                  <var>
+                    <varname>?act</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                </type>
+                <type planner="false">
+                  <name>startPickUpWeapon</name>
+                  <var>
+                    <varname>?act</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                </type>
+                <type planner="false">
+                  <name>startPickUpObject</name>
+                  <var>
+                    <varname>?act</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?obj</varname>
+                    <vartype>pseudobject</vartype>
+                  </var>
+                  <var>
+                    <varname>?id</varname>
+                    <vartype>long</vartype>
+                  </var>
+                </type>
+                <type>
+                  <name>checkAction</name>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?actionID</varname>
+                    <vartype>long</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <!-- This one returns true when the action completes, false if it's in PROGRESS, and sets the actionStatus to "success" if it's SUCCESS, "failure" otherwise (could add "cancel" or whatever... -->
+                  <name>checkActionDetail</name>
+                  <var>
+                    <varname>?mover</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?actionID</varname>
+                    <vartype>long</vartype>
+                  </var>
+                  <var>
+                    <varname>?actionStatus</varname>
+                    <vartype>text</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type planner="false">
+                  <name>putDownObject</name>
+                  <var>
+                    <varname>?act</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?obj</varname>
+                    <vartype>object</vartype>
+                  </var>
+                  <!-- ?loc only needed for type, not used by action -->
+                  <var>
+                    <varname>?loc</varname>
+                    <vartype>location</vartype>
+                  </var>
+                  <cost>6.0</cost>
+                  <timeout>100</timeout>
+                  <conditions>
+                    <atstart>have(?obj,?act)</atstart>
+                    <overall>at(?act,?loc)</overall>
+                  </conditions>
+                  <effects>
+                    <atend>not(have(?obj,?act))</atend>
+                    <atend>in(?obj,?loc)</atend>
+                  </effects>
+                </type>
+                <type planner="false">
+                  <name>giveObjectTo</name>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?taker</varname>
+                    <vartype>interactor</vartype>
+                  </var>
+                  <var>
+                    <varname>?id</varname>
+                    <vartype>object</vartype>
+                  </var>
+                  <!-- ?loc only needed for type, not used by action
+                  <var>
+                    <varname>?loc</varname>
+                    <vartype>location</vartype>
+                  </var>
+                  -->
+                  <cost>6.0</cost>
+                  <timeout>100</timeout>
+                  <conditions>
+                    <atstart>have(?id,?robot)</atstart>
+                    <overall>at(?robot,?loc)</overall>
+                    <overall>at(?taker,?loc)</overall>
+                  </conditions>
+                  <effects>
+                    <atend>not(have(?id,?robot))</atend>
+                    <atend>have(?id,?taker)</atend>
+                  </effects>
+                </type>
+                <type>
+                  <name>activate-light</name>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <locks>lightLock</locks>
+                </type>
+                <type>
+                  <name>deactivate-light</name>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <locks>lightLock</locks>
+                </type>
+                <type>
+                  <name>activate-grabber</name>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <!--
+                  <locks>lightLock</locks>
+                  -->
+                </type>
+                <type>
+                  <name>deactivate-grabber</name>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <!--
+                  <locks>lightLock</locks>
+                  -->
+                </type>
+                <type>
+                  <name>getAttend</name>
+                  <var>
+                    <varname>?type</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?value</varname>
+                    <vartype>text</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <name>setAttend</name>
+                  <var>
+                    <varname>?type</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?value</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <name>setLandmark</name>
+                  <var>
+                    <varname>?name</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?type</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?x</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                  <var>
+                    <varname>?y</varname>
+                    <vartype>coordinate</vartype>
+                  </var>
+                </type>
+                <type>
+                  <name>checkMethods</name>
+                </type>
+                <type>
+                  <name>makePredicate</name>
+                  <var>
+                    <varname>?predspec</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?pred</varname>
+                    <vartype>predicate</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <name>getTeammateLoad</name>
+                  <api>get teammate load (e.g., from fnirs server)</api>
+                  <var>
+                    <varname>?robot</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                  <var>
+                    <varname>?load</varname>
+                    <vartype>double</vartype>
+                    <varrole>return</varrole>
+                  </var>
+                </type>
+                <type>
+                  <name>writeFile</name>
+                  <var>
+                    <varname>?filename</varname>
+                    <vartype>text</vartype>
+                  </var>
+                  <var>
+                    <varname>?message</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <name>informSpexStart</name>
+                  <var>
+                    <varname>?id</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <name>informSpexEnd</name>
+                  <var>
+                    <varname>?id</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <name>acquireLock</name>
+                  <var>
+                    <varname>?lock</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <name>releaseLock</name>
+                  <var>
+                    <varname>?lock</varname>
+                    <vartype>text</vartype>
+                  </var>
+                </type>
+                <type>
+                  <name>inConversation</name>
+                  <var>
+                    <varname>?act</varname>
+                    <vartype>actor</vartype>
+                  </var>
+                </type>
+              </subtypes>
+            </type>
+            <!-- end misc primitives -->
+          </subtypes>
+        </type>
+        <type>
+          <name>script</name>
+          <subtypes>
+            <type>
+              <name>sleep</name>
+              <api>sleep</api>
+              <var>
+                <varname>?sleeper</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var desc="sleep duration in milliseconds">
+                <varname>?sleepMillis</varname>
+                <vartype>millisec</vartype>
+              </var>
+              <var>
+                <varname>!remaining</varname>
+                <vartype>millisec</vartype>
+              </var>
+              <var>
+                <varname>!current</varname>
+                <vartype>millisec</vartype>
+              </var>
+              <!-- WARNING: adding statements here will extend sleep time... -->
+              <!-- local copy of sleepMillis -->
+              <actspec>+ 0 ?sleepMillis !remaining</actspec>
+              <control>while</control>
+              <actspec> qsleep ?sleeper !remaining</actspec>
+              <control>do</control>
+              <control>endwhile</control>
+            </type>
+            <!-- Begin maintain -->
+            <type>
+              <name>maintain</name>
+              <var>
+                <varname>?state</varname>
+                <vartype>predicate</vartype>
+              </var>
+              <var>
+                <varname>!pname</varname>
+                <vartype>text</vartype>
+              </var>
+              <desc>maintaining</desc>
+              <actspec>getName ?state !pname</actspec>
+              <actspec>printText "maintain maintaining !pname"</actspec>
+              <control>if</control>
+              <actspec> isA !pname numericComparison</actspec>
+              <control>then</control>
+              <actspec> maintainNumericRelation ?state</actspec>
+              <!--     else... -->
+              <control>endif</control>
+            </type>
+            <!-- End maintain -->
+            <!-- Begin maintainNumericRelation -->
+            <type>
+              <name>maintainNumericRelation</name>
+              <var>
+                <varname>?state</varname>
+                <vartype>predicate</vartype>
+              </var>
+              <var>
+                <varname>!rel</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>!pname</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>!rarg0</varname>
+                <vartype>object</vartype>
+              </var>
+              <var>
+                <varname>!rarg1</varname>
+                <vartype>object</vartype>
+              </var>
+              <var>
+                <varname>!vtype</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!vkey</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!xcoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!ycoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!dist</varname>
+                <vartype>double</vartype>
+              </var>
+              <desc>maintaining</desc>
+              <actspec>getName ?state !rel</actspec>
+              <actspec>printText "maintaining numeric relation !rel"</actspec>
+              <actspec>getArgument ?state 0 !rarg0</actspec>
+              <actspec>getArgument ?state 1 !rarg1</actspec>
+              <actspec>getName !rarg0 !pname</actspec>
+              <actspec>printText "need to maintain !pname !rel !rarg1"</actspec>
+              <control>while</control>
+              <control>do</control>
+              <control> if</control>
+              <actspec>  stringCompare !pname distance</actspec>
+              <control> then</control>
+              <!-- would get the args to dist (me, you), but they're not being filled in by Discourse, so assuming it's me and person
+              <actspec>  getArgument !rarg0 1 !targ1</actspec>
+              -->
+              <actspec>  getTypeId me person !vtype</actspec>
+              <actspec>  getTokenIdByTypeId me !vtype !vkey</actspec>
+              <!-- grab token (stored in AI) -->
+              <actspec>  getToken me !vkey</actspec>
+              <actspec>  getTokenDistance me !vkey !dist</actspec>
+              <control>  if</control>
+              <actspec>   lt !dist 0</actspec>
+              <control>  then</control>
+              <!-- something went wrong with Vision -->
+              <actspec>   qstop me</actspec>
+              <control>  elseif</control>
+              <control>   not</control>
+              <actspec>    !rel !dist !rarg1</actspec>
+              <control>   endnot</control>
+              <control>  then</control>
+              <control>   if</control>
+              <actspec>    stringCompare !rel lt</actspec>
+              <control>   or</control>
+              <actspec>    stringCompare !rel le</actspec>
+              <control>   then</control>
+              <actspec>    + 0 0 !heading</actspec>
+              <actspec>    + 0 0 !xcoord</actspec>
+              <actspec>    + 0 0 !ycoord</actspec>
+              <actspec>    getTokenLocation me !vkey !xcoord !ycoord !heading</actspec>
+              <actspec>    startMoveTo me !xcoord !ycoord</actspec>
+              <!--        else... -->
+              <control>   endif</control>
+              <control>  else</control>
+              <!-- condition met -->
+              <actspec>   qstop me</actspec>
+              <control>  endif</control>
+              <!--       else... -->
+              <control> endif</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End maintainNumericRelation -->
+            <!-- begin searchForColor -->
+            <type>
+              <name>searchForColor</name>
+              <desc>?robot looks for ?color</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?color</varname>
+                <vartype>text</vartype>
+              </var>
+              <!-- Locals -->
+              <var>
+                <varname>!vKey</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!siftTs</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!pan</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!tilt</varname>
+                <vartype>double</vartype>
+              </var>
+              <!--
+              <control>if</control>
+              <actspec> retrieveFactVal LookHomePan !pan</actspec>
+              <control>then</control>
+              <actspec> retrieveFactVal LookHomeTilt !tilt</actspec>
+              <actspec> printText "found LookHome !pan !tilt"</actspec>
+              <actspec> lookAt ?robot !pan !tilt</actspec>
+              <actspec> sleep ?robot 1000</actspec>
+              <actspec>else</actspec>
+              <actspec> printText "didn't find LookHome"</actspec>
+              <control>endif</control>
+              -->
+              <!--
+              <actspec>startBlobDetect ?robot ?color</actspec>
+              -->
+              <actspec>sleep ?robot 500</actspec>
+              <!-- give it a chance to appear in vSTM -->
+              <actspec>getTokenIdByColor ?robot ?color !vKey</actspec>
+              <actspec>printText "vKey is !vKey "</actspec>
+              <control>if</control>
+              <actspec> getTokenPanTilt ?robot !vKey !pan !tilt</actspec>
+              <control>then</control>
+              <actspec> nod ?robot</actspec>
+              <actspec> saytextNow ?robot someone "Yes, I see a ?color one."</actspec>
+              <actspec>else</actspec>
+              <actspec> shake ?robot</actspec>
+              <actspec> sayTextNow ?robot someone "No, I don't see anything ?color"</actspec>
+              <control>endif</control>
+              <!--
+              <actspec>stopBlobDetect ?robot ?color</actspec>
+              -->
+            </type>
+            <!-- begin lookAtObject -->
+            <!-- assumes ?name is a color OR "me" -->
+            <type>
+              <name>lookAtObject</name>
+              <desc>?robot looks at ?name</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?name</varname>
+                <vartype>text</vartype>
+              </var>
+              <!-- Locals -->
+              <var>
+                <varname>!vKey</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!siftTs</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!pan</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!tilt</varname>
+                <vartype>double</vartype>
+              </var>
+              <control>if</control>
+              <actspec> stringCompare ?name me</actspec>
+              <control>then</control>
+              <!-- ManyEars lags behind Sphinx/Discourse -->
+              <actspec> sleep ?robot 1000</actspec>
+              <!-- Should incorporate check whether source was found -->
+              <actspec> getSpeechSource ?robot !pan !tilt</actspec>
+              <actspec> lookAt ?robot !pan !tilt</actspec>
+              <actspec>else</actspec>
+              <!--
+              <actspec> startBlobDetect ?robot ?name</actspec>
+              -->
+              <actspec> sleep ?robot 250</actspec>
+              <!-- give it chance to appear in vSTM -->
+              <actspec> getTokenIdByColor ?robot ?name !vKey</actspec>
+              <!--
+              <actspec> stopBlobDetect ?robot ?name</actspec>
+              -->
+              <actspec> printText "vKey is !vKey "</actspec>
+              <control> if</control>
+              <actspec>   getTokenPanTilt ?robot !vKey !pan !tilt</actspec>
+              <control> then</control>
+              <actspec>   - !pan 60 !pan</actspec>
+              <actspec>   - 90 !pan !pan</actspec>
+              <actspec>   + 90 !pan !pan</actspec>
+              <actspec>   - 90 !tilt !tilt</actspec>
+              <actspec>   + 90 !tilt !tilt</actspec>
+              <actspec>   lookAt ?robot !pan !tilt</actspec>
+              <actspec>   printText "Looking at !pan !tilt."</actspec>
+              <actspec>   saytextNow ?robot someone "It's over there."</actspec>
+              <actspec> else</actspec>
+              <actspec>   sayTextNow ?robot someone "I don't see anything ?name"</actspec>
+              <control> endif</control>
+              <control>endif</control>
+            </type>
+            <!-- begin pointAtObject -->
+            <!-- assumes ?name is a color -->
+            <type>
+              <name>pointAtObject</name>
+              <desc>?robot points at ?name</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?name</varname>
+                <vartype>text</vartype>
+              </var>
+              <!-- Locals -->
+              <var>
+                <varname>!vKey</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!siftTs</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!pan</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!tilt</varname>
+                <vartype>double</vartype>
+              </var>
+              <!--
+              <actspec>startBlobDetect ?robot ?name</actspec>
+              -->
+              <actspec>sleep ?robot 250</actspec>
+              <!-- give it a chance to appear in vSTM -->
+              <actspec>getTokenIdByColor ?robot ?name !vKey</actspec>
+              <!--
+              <actspec>stopBlobDetect ?robot ?name</actspec>
+              -->
+              <actspec>printText "vKey is !vKey "</actspec>
+              <control>if</control>
+              <actspec> getTokenPanTilt ?robot !vKey !pan !tilt</actspec>
+              <control>then</control>
+              <actspec> pointTo ?robot !pan !tilt</actspec>
+              <actspec> saytextNow ?robot someone "It's over there."</actspec>
+              <actspec> sleep ?robot 1000</actspec>
+              <actspec> moveLeftArm ?robot 0 0 0</actspec>
+              <actspec>else</actspec>
+              <actspec> sayTextNow ?robot someone "I don't see anything ?name"</actspec>
+              <control>endif</control>
+            </type>
+            <!-- begin greeting -->
+            <type>
+              <name>greeting</name>
+              <desc>?greeter greets ?greetee</desc>
+              <var>
+                <varname>?greeter</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?greetee</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>!theta</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!phi</varname>
+                <vartype>integer</vartype>
+              </var>
+              <actspec>sleep ?greeter 1000</actspec>
+              <actspec>getSpeechSource ?greeter !theta !phi</actspec>
+              <actspec>Smile ?greeter</actspec>
+              <actspec>lookAt ?greeter !theta !phi</actspec>
+              <actspec>sayTextNow ?greeter ?greetee "Hello. "</actspec>
+              <actspec>neutralFace ?greeter</actspec>
+            </type>
+            <!-- begin gracious -->
+            <type>
+              <name>gracious</name>
+              <desc>?thankee responds to ?thanker</desc>
+              <var>
+                <varname>?thankee</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?thanker</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>!value</varname>
+                <vartype>integer</vartype>
+              </var>
+              <actspec>randomInteger 0 100 !value</actspec>
+              <control>if</control>
+              <actspec> lt !value 90</actspec>
+              <control>then</control>
+              <actspec> sayTextNow ?thankee ?thanker "You're welcome!"</actspec>
+              <actspec>else</actspec>
+              <actspec> sayTextNow ?thankee ?thanker "No problem!"</actspec>
+              <control>endif</control>
+            </type>
+            <!-- Begin move -->
+            <type planner="false">
+              <name>move</name>
+              <desc>?robot moves ?direction</desc>
+              <api>move in the specified direction (straight, forward, left, right, back)</api>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?direction</varname>
+                <vartype>direction</vartype>
+              </var>
+              <control>if</control>
+              <actspec> stringCompare ?direction straight</actspec>
+              <control>or</control>
+              <actspec> stringCompare ?direction forward</actspec>
+              <control>then</control>
+              <actspec> startmove ?robot</actspec>
+              <control>elseif</control>
+              <actspec> stringCompare ?direction left</actspec>
+              <control>then</control>
+              <actspec> startmoveleft ?robot</actspec>
+              <control>elseif</control>
+              <actspec> stringCompare ?direction right</actspec>
+              <control>then</control>
+              <actspec> startmoveright ?robot</actspec>
+              <control>elseif</control>
+              <actspec> stringCompare ?direction back</actspec>
+              <control>then</control>
+              <actspec> startmoveback ?robot</actspec>
+              <control>elseif</control>
+              <actspec> stringCompare ?direction "?direction"</actspec>
+              <control>then</control>
+              <actspec> startTraverse ?robot</actspec>
+              <actspec>else</actspec>
+              <actspec> sayTextNow ?robot ?partner "I don't know how to go ?direction."</actspec>
+              <control>endif</control>
+              <effects>
+                <!-- where does loc come from?
+                <atstart>not(at(?robot,?loc))</atstart>
+                -->
+                <atend>moving(?robot,?direction)</atend>
+              </effects>
+              <locks>motionLock</locks>
+            </type>
+            <!-- End move -->
+            <!-- Begin qmove -->
+            <type>
+              <name>qmove</name>
+              <desc>?robot moves ?direction</desc>
+              <api>move in the specified direction (straight, forward, left, right, back) with no verbal confirmation</api>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?direction</varname>
+                <vartype>direction</vartype>
+              </var>
+              <control>if</control>
+              <actspec> stringCompare ?direction straight</actspec>
+              <control>or</control>
+              <actspec> stringCompare ?direction forward</actspec>
+              <control>then</control>
+              <actspec> startmove ?robot true</actspec>
+              <control>elseif</control>
+              <actspec> stringCompare ?direction left</actspec>
+              <control>then</control>
+              <actspec> startmoveleft ?robot true</actspec>
+              <control>elseif</control>
+              <actspec> stringCompare ?direction right</actspec>
+              <control>then</control>
+              <actspec> startmoveright ?robot true</actspec>
+              <control>elseif</control>
+              <actspec> stringCompare ?direction back</actspec>
+              <control>then</control>
+              <actspec> startmoveback ?robot true</actspec>
+              <control>elseif</control>
+              <actspec> stringCompare ?direction "?direction"</actspec>
+              <control>then</control>
+              <actspec> startTraverse ?robot</actspec>
+              <control>endif</control>
+              <locks>motionLock</locks>
+            </type>
+            <!-- End qmove -->
+            <!-- Begin turn -->
+            <type planner="false">
+              <name>turn</name>
+              <desc>?robot turns ?direction</desc>
+              <api>turn in the specified direction (left, right)</api>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?direction</varname>
+                <vartype>direction</vartype>
+              </var>
+              <control>if</control>
+              <actspec> stringCompare ?direction left</actspec>
+              <control>then</control>
+              <actspec> startleft ?robot</actspec>
+              <control>elseif</control>
+              <actspec> stringCompare ?direction right</actspec>
+              <control>then</control>
+              <actspec> startright ?robot</actspec>
+              <actspec>else</actspec>
+              <actspec> sayTextNow ?robot ?partner "I don't know how to turn ?direction."</actspec>
+              <control>endif</control>
+              <effects>
+                <!-- where does loc come from?
+                <atstart>not(at(?robot,?loc))</atstart>
+                -->
+                <atend>turning(?robot,?direction)</atend>
+              </effects>
+              <locks>motionLock</locks>
+            </type>
+            <!-- End turn -->
+            <!-- Begin qturn -->
+            <type>
+              <name>qturn</name>
+              <desc>?robot turns ?direction</desc>
+              <api>turn in the specified direction (left, right) with no verbal confirmation</api>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?direction</varname>
+                <vartype>direction</vartype>
+              </var>
+              <control>if</control>
+              <actspec> stringCompare ?direction left</actspec>
+              <control>then</control>
+              <actspec> startleft ?robot true</actspec>
+              <control>elseif</control>
+              <actspec> stringCompare ?direction right</actspec>
+              <control>then</control>
+              <actspec> startright ?robot true</actspec>
+              <control>endif</control>
+              <locks>motionLock</locks>
+            </type>
+            <!-- End qturn -->
+            <!-- Begin stop -->
+            <type planner="false">
+              <!-- Stop -->
+              <name>stop</name>
+              <desc>?mover stops</desc>
+              <api>stop</api>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <locks>motionLock</locks>
+              <effects>
+                <!-- need to work out commonsense inference scheme for these
+                <atend>not(moving(?mover))</atend>
+                <atend>not(turning(?mover))</atend>
+                -->
+                <atend>stopped(?mover)</atend>
+              </effects>
+              <actspec>dostop ?mover false</actspec>
+            </type>
+            <!-- End stop -->
+            <!-- Begin qstop -->
+            <type>
+              <name>qstop</name>
+              <desc>?robot stops</desc>
+              <api>stop motion with no verbal confirmation</api>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <locks>motionLock</locks>
+              <actspec>dostop ?robot true</actspec>
+            </type>
+            <!-- End qstop -->
+            <!-- Begin moveToGPS -->
+            <type>
+              <!-- Move to a location in the map -->
+              <!-- This one has the work done in Player -->
+              <name>moveToGPS</name>
+              <desc>?mover moves to ?xdest ?ydest</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?xdest</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>?ydest</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!xcurr</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ycurr</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <!-- move a little to get heading initialized -->
+              <actspec>moveDist ?mover 1.0</actspec>
+              <actspec>moveTo ?mover ?xdest ?ydest</actspec>
+            </type>
+            <!-- End moveToGPS -->
+            <!-- Begin pauseMotion -->
+            <type>
+              <name>pauseMotion</name>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?millis</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <benefit>180000</benefit>
+              <cost>600</cost>
+              <minurg>1.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>24000</timeout>
+              <locks>motionLock</locks>
+              <actspec>printText "pauseMotion for ?millis millis"</actspec>
+              <actspec>set !actionID 0</actspec>
+              <actspec>printText "canceling motion !actionID"</actspec>
+              <actspec>getCurrentMotion ?mover !actionID</actspec>
+              <actspec>printText "canceling motion !actionID"</actspec>
+              <actspec>cancelMotion ?mover !actionID</actspec>
+              <actspec>sleep ?mover ?millis</actspec>
+              <actspec>restoreMotion ?mover !actionID</actspec>
+            </type>
+            <!-- End pauseMotion -->
+            <!-- Begin moveFromTo -->
+            <type planner="false">
+              <name>moveFromTo</name>
+              <desc>?act moves to ?xdest ?ydest</desc>
+              <var>
+                <varname>?act</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?from</varname>
+                <vartype>location</vartype>
+              </var>
+              <var>
+                <varname>?to</varname>
+                <vartype>location</vartype>
+              </var>
+              <conditions>
+                <atstart>at(?act,?from)</atstart>
+                <overall>connected(?from,?to)</overall>
+              </conditions>
+              <effects postcond="false">
+                <atstart>not(at(?act,?from))</atstart>
+                <atend>at(?act,?to)</atend>
+              </effects>
+              <cost>25.0</cost>
+              <timeout>50</timeout>
+              <control>if</control>
+              <control> not</control>
+              <actspec>  moveTo ?act ?to</actspec>
+              <control> endnot</control>
+              <control>then</control>
+              <actspec> actionFail</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End moveFromTo -->
+            <!-- Begin moveTo -->
+            <type planner="false">
+              <!-- Move to a location in the map -->
+              <!-- This one has the work done in Player -->
+              <name>moveTo</name>
+              <desc>?mover moves to ?xdest ?ydest</desc>
+              <api>move to a given global location</api>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var desc="destination x coordinate">
+                <varname>?xdest</varname>
+                <vartype>object</vartype>
+              </var>
+              <var desc="destination y coordinate">
+                <varname>?ydest</varname>
+                <vartype>object</vartype>
+              </var>
+              <effects>
+                <atend>at(?mover,?xdest)</atend>
+              </effects>
+              <!-- Local variables -->
+              <var>
+                <varname>!xcurr</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ycurr</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!actionStatus</varname>
+                <vartype>text</vartype>
+              </var>
+              <benefit>1800</benefit>
+              <cost>5.0</cost>
+              <minurg>1.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>24000</timeout>
+              <locks>motionLock</locks>
+              <actspec>printText "moveTo ?xdest"</actspec>
+              <actspec>startMoveTo ?mover ?xdest ?ydest !actionID</actspec>
+              <control>while</control>
+              <actspec> lt !actionID 0</actspec>
+              <control>do</control>
+              <actspec> startMoveTo ?mover ?xdest ?ydest !actionID</actspec>
+              <control>endwhile</control>
+              <control>if</control>
+              <actspec> = !actionID 1</actspec>
+              <control>then</control>
+              <actspec> printText "Spex is searching for location ?xdest"</actspec>
+              <!-- PWS: not sure what to do here...let's try this! -->
+              <actspec> actionSucceed</actspec>
+              <control>endif</control>
+              <actspec>sleep ?mover 1000</actspec>
+              <actspec>setText !actionStatus progress</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>  stringCompare !actionStatus success</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <actspec> while</actspec>
+              <control>  not</control>
+              <actspec>   checkMotionDetail ?mover !actionID !actionStatus</actspec>
+              <control>  endnot</control>
+              <control> do</control>
+              <control> endwhile</control>
+              <control> if</control>
+              <control>  not</control>
+              <actspec>   stringCompare !actionStatus success</actspec>
+              <control>  endnot</control>
+              <control> then</control>
+              <actspec>  printText "Restarting moveTo"</actspec>
+              <!--
+              <actspec>  startMoveTo ?mover ?xdest ?ydest !actionID</actspec>
+              <control>  while</control>
+              <actspec>   lt !actionID 0</actspec>
+              <control>  do</control>
+              <actspec>   startMoveTo ?mover ?xdest ?ydest !actionID</actspec>
+              <control>  endwhile</control>
+              -->
+              <actspec>  restoreMotion ?mover !actionID</actspec>
+              <control> endif</control>
+              <control>endwhile</control>
+              <!--
+              <actspec>printText "moveTo finished with !actionStatus status"</actspec>
+              -->
+            </type>
+            <!-- End moveTo -->
+            <!-- Begin moveToRel -->
+            <type>
+              <!-- Move to a relative location, navigating around obstacles when possible -->
+              <name>moveToRel</name>
+              <desc>?mover moves to ?xdest ?ydest</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?xdest</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>?ydest</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!xcurr</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ycurr</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <actspec>startMoveToRel ?mover ?xdest ?ydest !actionID</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   checkMotion ?mover !actionID</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <!--
+              <actspec> getLocation ?mover !xcurr !ycurr</actspec>
+              <actspec> getHeading ?mover !heading</actspec>
+              <actspec> printText "Location: !xcurr !ycurr !heading"</actspec>
+              -->
+              <control>endwhile</control>
+            </type>
+            <!-- End moveToRel -->
+            <!-- Begin move_hall -->
+            <type>
+              <!-- moving down the hall -->
+              <name>move_hall</name>
+              <desc>go to ?to</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?from</varname>
+                <vartype>hallway</vartype>
+              </var>
+              <var>
+                <varname>?to</varname>
+                <vartype>hallway</vartype>
+              </var>
+              <cost>5.0</cost>
+              <timeout>50</timeout>
+              <!--
+              <conditions>
+                <atstart>at(?mover,?from)</atstart>
+                <overall>connected(?from,?to)</overall>
+              </conditions>
+              <effects>
+                <atstart>not(at(?mover,?from))</atstart>
+                <atend>at(?mover,?to)</atend>
+              </effects>
+              -->
+              <actspec>traverse ?mover</actspec>
+            </type>
+            <!-- End move_hall -->
+            <!-- Begin traverse -->
+            <type>
+              <!-- move until an obstacle is encountered ahead, avoiding obstacles to the sides (e.g., for moving down the hall) -->
+              <name>traverse</name>
+              <desc>?mover traverses the room</desc>
+              <api>move until an obstacle is encountered ahead, avoiding obstacles to the sides</api>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!actionStatus</varname>
+                <vartype>text</vartype>
+              </var>
+              <locks>motionLock</locks>
+              <actspec>startTraverse ?mover !actionID</actspec>
+              <actspec>sleep ?mover 1000</actspec>
+              <actspec>setText !actionStatus progress</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>  checkMotionDetail ?mover !actionID !actionStatus</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+              <!--
+              <actspec>printText "Traverse finished with status !actionStatus"</actspec>
+              -->
+              <control>if</control>
+              <control> not</control>
+              <actspec>  stringCompare !actionStatus success</actspec>
+              <control> endnot</control>
+              <control>then</control>
+              <actspec> actionFail</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End traverse -->
+            <!-- Begin moveThrough -->
+            <type>
+              <!-- Move to a location in the map, navigating around obstacles when possible -->
+              <!-- This one has the work done in Player -->
+              <name>moveThrough</name>
+              <desc>?mover moves to ?xdest ?ydest</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?xdest</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>?ydest</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>?xdest1</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>?ydest1</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!xcurr</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ycurr</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <actspec>move-through ?mover ?xdest ?ydest !actionID</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   checkMotion ?mover !actionID</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <!--
+              <actspec> getLocation ?mover !xcurr !ycurr</actspec>
+              <actspec> getHeading ?mover !heading</actspec>
+              <actspec> printText "Location: !xcurr !ycurr !heading"</actspec>
+              -->
+              <control>endwhile</control>
+            </type>
+            <!-- End moveThrough -->
+            <!-- Begin moveThroughRel -->
+            <type>
+              <!-- Move through the nearest doorway -->
+              <name>moveThroughRel</name>
+              <desc>?mover moves through the doorway</desc>
+              <api>move through the nearest open doorway</api>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!x</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!y</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ex</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ey</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ax</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ay</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!dist</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <actspec>getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <actspec>set !actionID -1</actspec>
+              <control>while</control>
+              <actspec> le 0.1 !dist</actspec>
+              <control>do</control>
+              <control> if</control>
+              <actspec>   getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <control> then</control>
+              <actspec>   getHeadingFrom ?mover 0.0 0.0 !x !y !heading</actspec>
+              <!--
+              <actspec>   printText "Moving to door @ !x !y h: !heading d: !dist"</actspec>
+              -->
+              <control>   if</control>
+              <actspec>     = !actionID -1</actspec>
+              <control>   then</control>
+              <!--          calling startMoveToRel instead of moveToRel on purpose -->
+              <actspec>     startMoveToRel ?mover !x !y !actionID</actspec>
+              <control>   else</control>
+              <control>     if</control>
+              <control>       not</control>
+              <actspec>         updateMoveToRel ?mover !actionID !x !y</actspec>
+              <control>       endnot</control>
+              <control>     then</control>
+              <actspec>       set !actionID -1</actspec>
+              <control>     endif</control>
+              <control>   endif</control>
+              <actspec> else</actspec>
+              <!-- turn toward point inside room -->
+              <actspec>   getHeadingFrom ?mover 0.0 0.0 !ex !ey !heading</actspec>
+              <!--
+              -->
+              <actspec>   printText "Turning to find door @ !heading"</actspec>
+              <actspec>   - !heading ${(Math.PI/180)*90} !heading</actspec>
+              <control>   if</control>
+              <actspec>     gt !heading 0.0</actspec>
+              <control>   then</control>
+              <actspec>     qturn ?mover left</actspec>
+              <actspec>   else</actspec>
+              <actspec>     qturn ?mover right</actspec>
+              <control>   endif</control>
+              <control> endif</control>
+              <actspec> sleep ?mover 100</actspec>
+              <control>endwhile</control>
+              <actspec>sleep ?mover 2000</actspec>
+              <!--
+              -->
+              <actspec>printText "Should be at door, turning"</actspec>
+              <actspec>getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !ex !ey !heading</actspec>
+              <actspec>- !heading ${(Math.PI/180)*90} !heading</actspec>
+              <actspec>turnRel ?mover !heading</actspec>
+              <actspec>sleep ?mover 2000</actspec>
+              <actspec>getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !ex !ey !heading</actspec>
+              <actspec>- !heading ${(Math.PI/180)*90} !heading</actspec>
+              <actspec>turnRel ?mover !heading</actspec>
+              <!--
+              -->
+              <actspec>printText "Should be facing door, entering"</actspec>
+              <actspec>moveDist ?mover 1.55</actspec>
+              <!--
+              -->
+              <actspec>printText "Should be through the door now"</actspec>
+            </type>
+            <!-- End moveThroughRel -->
+            <!-- Begin moveRel -->
+            <type>
+              <!-- Move to a location relative to current location -->
+              <name>moveRel</name>
+              <desc>?mover moves to ?xdest ?ydest</desc>
+              <api>move to a location relative to the current one (heading assumed to be 0)</api>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var desc="destination x coordinate">
+                <varname>?xdest</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var desc="destination y coordinate">
+                <varname>?ydest</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <actspec>startMoveRel ?mover ?xdest ?ydest !actionID</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   checkMotion ?mover !actionID</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End moveRel -->
+            <!-- Begin moveDist -->
+            <type>
+              <!-- Move a set distance -->
+              <name>moveDist</name>
+              <api>move forward a given distance (possibly by dead reckoning)</api>
+              <desc>?mover moves ?dist</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var desc="distance to move (in meters)">
+                <varname>?dist</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <effects>
+                <!--
+                <atstart>not(at(?mover,?from))</atstart>
+                <atend>at(?mover,?to)</atend>
+                -->
+                <!-- need to unify moveDist, timeMove, turnDist, timeTurn, etc. -->
+                <atend>movedNOT(?mover,?dist)</atend>
+              </effects>
+              <actspec>startMoveDist ?mover ?dist !actionID</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   checkMotion ?mover !actionID</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End moveDist -->
+            <!-- Begin timeMove -->
+            <type>
+              <!-- This one has the work done in Motion -->
+              <!-- Move relative. -->
+              <name>timeMove</name>
+              <desc>?mover moves ?dist meters</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?dist</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <effects>
+                <!--
+                <atstart>not(at(?mover,?from))</atstart>
+                <atend>at(?mover,?to)</atend>
+                -->
+                <atend>moved(?mover,?dist)</atend>
+              </effects>
+              <actspec>startTimeMove ?mover ?dist !actionID</actspec>
+              <!--
+              <actspec>printText "?mover moving ?dist meters"</actspec>
+              -->
+              <control>while</control>
+              <control> not</control>
+              <actspec>   checkMotion ?mover !actionID</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+              <!--
+              <actspec>printText "Done moving"</actspec>
+              -->
+            </type>
+            <!-- End timeMove -->
+            <!-- Begin look-for -->
+            <type planner="false">
+              <!-- Turn around and look for objects of type. -->
+              <name>look-for</name>
+              <desc>?act searches for ?bx</desc>
+              <var>
+                <varname>?act</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?obj</varname>
+                <vartype>pseudobject</vartype>
+              </var>
+              <!--
+              <var>
+                <varname>?col</varname>
+                <vartype>color</vartype>
+              </var>
+              <var>
+                <varname>?pa</varname>
+                <vartype>pattern</vartype>
+              </var>
+              -->
+              <var>
+                <varname>?loc</varname>
+                <vartype>location</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!actionStatus</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>!perc</varname>
+                <vartype>percept</vartype>
+              </var>
+              <cost>100.0</cost>
+              <timeout>15</timeout>
+              <conditions>
+                <!--
+                <atstart>has_property(?obj,?co)</atstart>
+                <atstart>has_property(?obj,?pa)</atstart>
+                <overall>in(?obj,?loc)</overall>
+                -->
+                <atstart>at(?act,?loc)</atstart>
+                <overall>at(?act,?loc)</overall>
+              </conditions>
+              <effects>
+                <atend always="true">looked_for(?act,?obj,?loc)</atend>
+                <atend>found(?act,?obj,?loc)</atend>
+              </effects>
+              <!--
+              <actspec> printText "?act ready to lookFor ?col in ?loc "</actspec>
+              -->
+              <control>if</control>
+              <control> not</control>
+              <actspec>  lookFor ?act ?obj ?loc !perc</actspec>
+              <control> endnot</control>
+              <control>then</control>
+              <actspec> actionFail</actspec>
+              <control>endif</control>
+              <!-- NEED TO WORK OUT NAMING...
+              <actspec>getTokenName ?act !perc ?bx</actspec>
+              -->
+            </type>
+            <!-- End look-for -->
+            <!-- Begin pushFromTo -->
+            <type planner="false">
+              <!-- push object -->
+              <name>pushFromTo</name>
+              <desc>?mover pushes ?obj from ?from to ?to</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?obj</varname>
+                <vartype>object</vartype>
+              </var>
+              <var>
+                <varname>?from</varname>
+                <vartype>location</vartype>
+              </var>
+              <var>
+                <varname>?to</varname>
+                <vartype>location</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>double</vartype>
+              </var>
+              <cost>8.0</cost>
+              <timeout>15</timeout>
+              <conditions>
+                <atstart>at(?mover,?from)</atstart>
+                <atstart>in(?obj,?from)</atstart>
+              </conditions>
+              <effects postcond="false">
+                <atstart>not(at(?mover,?from))</atstart>
+                <atstart>not(in(?obj,?from))</atstart>
+                <atend>at(?mover,?to)</atend>
+                <atend>in(?obj,?to)</atend>
+              </effects>
+              <actspec>getTokenHeading ?mover ?obj !heading</actspec>
+              <actspec>printText "turning to ?obj"</actspec>
+              <actspec>- !heading ${Math.PI/2} !heading</actspec>
+              <actspec>turnRel ?mover !heading</actspec>
+              <actspec>printText "pushing ?obj"</actspec>
+              <actspec>moveDist ?mover 1.0</actspec>
+            </type>
+            <!-- End pushFromTo -->
+            <!-- Begin openFromTo -->
+            <type planner="false">
+              <!-- enter room -->
+              <name>openFromTo</name>
+              <desc>?mover enters ?dest</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?door</varname>
+                <vartype>doorway</vartype>
+              </var>
+              <var>
+                <varname>?from</varname>
+                <vartype>hallway</vartype>
+              </var>
+              <var>
+                <varname>?to</varname>
+                <vartype>room</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!attend</varname>
+                <vartype>boolean</vartype>
+              </var>
+              <cost>7.0</cost>
+              <timeout>15</timeout>
+              <conditions>
+                <atstart>at(?mover,?from)</atstart>
+                <atstart>door_connected(?door,?from,?to)</atstart>
+                <overall>door_connected(?door,?from,?to)</overall>
+                <!--
+                <atstart>not(has_property(?door,open_pr))</atstart>
+                -->
+              </conditions>
+              <effects postcond="false">
+                <atstart>not(at(?mover,?from))</atstart>
+                <atend>at(?mover,?to)</atend>
+                <atend>has_property(?door,open_pr)</atend>
+              </effects>
+              <actspec>getTokenHeading ?mover ?door !heading</actspec>
+              <!--
+              <actspec>printText "heading is !heading"</actspec>
+              <actspec>timeTurn ?mover !heading</actspec>
+              -->
+              <!-- should turn to door (as above), but for now assuming it's right beside -->
+              <actspec>printText "turning to ?door"</actspec>
+              <control>if</control>
+              <actspec>  gt !heading 0.0</actspec>
+              <control>then</control>
+              <actspec>  timeTurn ?mover ${Math.PI/2}</actspec>
+              <actspec>  assertFactVal enterRoomDir left</actspec>
+              <actspec>else</actspec>
+              <actspec>  timeTurn ?mover ${-Math.PI/2}</actspec>
+              <actspec>  assertFactVal enterRoomDir right</actspec>
+              <control>endif</control>
+              <actspec>getAttend door !attend</actspec>
+              <actspec>setAttend door false</actspec>
+              <actspec>printText "pushing through ?door"</actspec>
+              <actspec>timeMove ?mover 3.0</actspec>
+              <actspec>setAttend door !attend</actspec>
+              <!--
+              <actspec>plannerUpdate at(?dest):not(at(?curr))</actspec>
+              -->
+            </type>
+            <!-- End openFromTo -->
+            <!-- Begin enterFromTo -->
+            <type planner="false">
+              <!-- enter room -->
+              <name>enterFromTo</name>
+              <desc>?mover enters ?dest</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <!--
+              <var>
+                <varname>?door</varname>
+                <vartype>doorway</vartype>
+              </var>
+              -->
+              <var>
+                <varname>?from</varname>
+                <vartype>hallway</vartype>
+              </var>
+              <var>
+                <varname>?to</varname>
+                <vartype>room</vartype>
+              </var>
+              <cost>7.0</cost>
+              <timeout>15</timeout>
+              <conditions>
+                <atstart>at(?mover,?from)</atstart>
+                <atstart>door_connected(?door,?from,?to)</atstart>
+                <overall>door_connected(?door,?from,?to)</overall>
+                <atstart>has_property(?door,open_pr)</atstart>
+                <overall>has_property(?door,open_pr)</overall>
+              </conditions>
+              <effects postcond="false">
+                <atstart>not(at(?mover,?from))</atstart>
+                <atend>at(?mover,?to)</atend>
+              </effects>
+              <actspec>enterRoom ?mover false</actspec>
+            </type>
+            <!-- End enterFromTo -->
+            <!-- Begin exitFromTo -->
+            <type planner="false">
+              <!-- exit room -->
+              <name>exitFromTo</name>
+              <desc>?mover exits ?curr</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <!--
+              <var>
+                <varname>?door</varname>
+                <vartype>doorway</vartype>
+              </var>
+              -->
+              <var>
+                <varname>?from</varname>
+                <vartype>room</vartype>
+              </var>
+              <var>
+                <varname>?to</varname>
+                <vartype>hallway</vartype>
+              </var>
+              <cost>7.0</cost>
+              <timeout>15</timeout>
+              <conditions>
+                <atstart>at(?mover,?from)</atstart>
+                <atstart>door_connected(?door,?to,?from)</atstart>
+                <overall>door_connected(?door,?to,?from)</overall>
+                <atstart>has_property(?door,open_pr)</atstart>
+                <overall>has_property(?door,open_pr)</overall>
+              </conditions>
+              <effects postcond="false">
+                <atstart>not(at(?mover,?from))</atstart>
+                <atend>at(?mover,?to)</atend>
+              </effects>
+              <actspec>printText "CALLING exitRoom"</actspec>
+              <actspec>exitRoom ?mover false</actspec>
+            </type>
+            <!-- End exitFromTo -->
+            <!-- Begin enterRoom -->
+            <type>
+              <name>enterRoom</name>
+              <desc>?mover enters the nearest room</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?check</varname>
+                <vartype>boolean</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!x</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!y</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ex</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ey</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ax</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ay</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!dist</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!heading0</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!tolerance</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!minopen</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!crit</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!attend</varname>
+                <vartype>boolean</vartype>
+              </var>
+              <actspec>qstop ?mover</actspec>
+              <!-- turn to find door -->
+              <control>if</control>
+              <control> not</control>
+              <actspec>  getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <control> endnot</control>
+              <control>then</control>
+              <actspec> printText "turning to find door"</actspec>
+              <actspec> qturn ?mover left</actspec>
+              <actspec> sleep ?mover 500</actspec>
+              <control> while</control>
+              <control>  not</control>
+              <actspec>   getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <control>  endnot</control>
+              <control> do</control>
+              <actspec>  sleep ?mover 500</actspec>
+              <control> endwhile</control>
+              <control>endif</control>
+              <actspec>qstop ?mover</actspec>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !x !y !heading0</actspec>
+              <actspec>printText "Found door @ !x !y h: !heading0 d: !dist"</actspec>
+              <actspec>getDistanceFrom ?mover 0.0 0.0 !ax !ay !dist</actspec>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !ax !ay !heading</actspec>
+              <!--
+              -->
+              <actspec>printText "Approach point @ !ax !ay h: !heading d: !dist"</actspec>
+              <actspec>* !heading0 !heading !heading0</actspec>
+              <!-- if the signs don't match, I'm in between them... -->
+              <control>if</control>
+              <actspec> ge !heading0 0</actspec>
+              <control>then</control>
+              <!-- turn toward approach point -->
+              <actspec> - !heading ${(Math.PI/180)*90} !heading</actspec>
+              <actspec> printText "turning towards approach point"</actspec>
+              <actspec> turnRel ?mover !heading</actspec>
+              <actspec> printText "done turning towards approach point"</actspec>
+              <!-- get doorway again -->
+              <actspec> sleep ?mover 500</actspec>
+              <actspec> getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <!-- move to approach point -->
+              <actspec> getMotionTolerance ?mover !tolerance</actspec>
+              <actspec> setMotionTolerance ?mover 0.1</actspec>
+              <actspec> printText "going to approach point"</actspec>
+              <actspec> moveToRel ?mover !ax !ay</actspec>
+              <actspec> printText "went to approach point"</actspec>
+              <control>endif</control>
+              <!-- turn to find door -->
+              <control>while</control>
+              <control> not</control>
+              <actspec>  getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <actspec> qturn ?mover left</actspec>
+              <actspec> sleep ?mover 500</actspec>
+              <control>endwhile</control>
+              <actspec>qstop ?mover</actspec>
+              <!--
+              <!- - get doorway again - ->
+              <actspec>getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !ex !ey !heading0</actspec>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !x !y !heading</actspec>
+              <actspec>* !heading0 !heading !heading0</actspec>
+              <!- - if the signs don't match, I'm in between them... - ->
+              <control>if</control>
+              <actspec> ge !heading0 0</actspec>
+              <control>then</control>
+              <!- - turn toward entry point - ->
+              <actspec> - !heading ${(Math.PI/180)*90} !heading</actspec>
+              <actspec> printText "turning towards entry point"</actspec>
+              <actspec> turnRel ?mover !heading</actspec>
+              <actspec> printText "done turning towards entry point"</actspec>
+              <!- - get the doorway again - ->
+              <actspec> sleep ?mover 500</actspec>
+              <actspec> getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <actspec> setMotionTolerance ?mover 0.1</actspec>
+              <!- - go to entry point - ->
+              <actspec> printText "going to entry point"</actspec>
+              <actspec> moveToRel ?mover !x !y</actspec>
+              <actspec> printText "went to entry point"</actspec>
+              <control>endif</control>
+              -->
+              <!-- get the doorway again -->
+              <actspec>sleep ?mover 500</actspec>
+              <actspec>getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <!-- turn toward exit point -->
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !ex !ey !heading</actspec>
+              <actspec>- !heading ${(Math.PI/180)*90} !heading</actspec>
+              <actspec>* !heading 0.67 !heading</actspec>
+              <actspec>printText "turning towards exit point"</actspec>
+              <actspec>turnRel ?mover !heading</actspec>
+              <actspec>printText "done turning towards exit point"</actspec>
+              <!-- get the doorway again -->
+              <actspec>sleep ?mover 500</actspec>
+              <actspec>getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <!-- set parameters -->
+              <actspec>setMotionTolerance ?mover 0.5</actspec>
+              <actspec>getMinOpen ?mover !minopen</actspec>
+              <actspec>setMinOpen ?mover 20</actspec>
+              <actspec>getAttend door !attend</actspec>
+              <actspec>setAttend door false</actspec>
+              <control>if</control>
+              <actspec>  stringCompare ?check true</actspec>
+              <control>then</control>
+              <actspec>  printText "HERE'S WHERE I WOULD LOOK AROUND THE ROOM FOR ENEMIES"</actspec>
+              <control>endif</control>
+              <!-- move to exit point -->
+              <actspec>printText "begin movetorel door"</actspec>
+              <actspec>moveToRel ?mover !ex !ey</actspec>
+              <actspec>printText "end movetorel door"</actspec>
+              <actspec>setMotionTolerance ?mover !tolerance</actspec>
+              <actspec>setMinOpen ?mover !minopen</actspec>
+              <actspec>setAttend door !attend</actspec>
+              <!-- inside the door, now move a little further into the room -->
+              <actspec>moveDist ?mover 0.75</actspec>
+            </type>
+            <!-- End enterRoom -->
+            <!-- Begin oldEnterRoom -->
+            <type>
+              <name>oldEnterRoom</name>
+              <desc>?mover enters the nearest room</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?check</varname>
+                <vartype>boolean</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!x</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!y</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ex</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ey</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ax</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ay</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!dist</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!heading0</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!tolerance</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!crit</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!attend</varname>
+                <vartype>boolean</vartype>
+              </var>
+              <actspec>qstop ?mover</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>  getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <actspec> qturn ?mover left</actspec>
+              <actspec> sleep ?mover 500</actspec>
+              <control>endwhile</control>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !x !y !heading0</actspec>
+              <actspec>printText "Found door @ !x !y h: !heading0 d: !dist"</actspec>
+              <actspec>getDistanceFrom ?mover 0.0 0.0 !ax !ay !dist</actspec>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !ax !ay !heading</actspec>
+              <!--
+              -->
+              <actspec>printText "Entry point @ !x !y h: !heading d: !dist"</actspec>
+              <actspec>* !heading0 !heading !heading0</actspec>
+              <!-- if the signs don't match, I'm in between them... -->
+              <control>if</control>
+              <actspec> lt !heading0 0</actspec>
+              <control>then</control>
+              <actspec> set !dist 0.0</actspec>
+              <control>endif</control>
+              <control>if</control>
+              <actspec> gt !dist 0.2</actspec>
+              <control>then</control>
+              <actspec> - !heading ${(Math.PI/180)*90} !heading</actspec>
+              <!--
+              -->
+              <actspec> printText "turning towards door"</actspec>
+              <actspec> turnRel ?mover !heading</actspec>
+              <actspec> - !dist 0.2 !dist</actspec>
+              <!--
+              -->
+              <actspec> printText "moving !dist meters towards door"</actspec>
+              <actspec> moveDist ?mover !dist</actspec>
+              <control>endif</control>
+              <actspec>getMotionTolerance ?mover !tolerance</actspec>
+              <actspec>setMotionTolerance ?mover 0.1</actspec>
+              <!-- this isn't used for navigation, so no need to update the door -->
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !ex !ey !heading</actspec>
+              <actspec>- !heading ${(Math.PI/180)*90} !heading</actspec>
+              <control>if</control>
+              <actspec>  gt !heading 0.0</actspec>
+              <control>then</control>
+              <actspec>  assertFactVal enterRoomDir left</actspec>
+              <actspec>else</actspec>
+              <actspec>  assertFactVal enterRoomDir right</actspec>
+              <control>endif</control>
+              <actspec>getAttend door !attend</actspec>
+              <actspec>setAttend door false</actspec>
+              <!--
+              -->
+              <control>if</control>
+              <actspec>  stringCompare ?check true</actspec>
+              <control>then</control>
+              <actspec>  printText "HERE'S WHERE I WOULD LOOK AROUND THE ROOM FOR ENEMIES"</actspec>
+              <control>endif</control>
+              <actspec>moveThroughRel ?mover</actspec>
+              <!-- inside the door, now move a little further into the room -->
+              <!--
+              -->
+              <actspec>moveDist ?mover 0.75</actspec>
+              <actspec>setAttend door !attend</actspec>
+              <actspec>setMotionTolerance ?mover !tolerance</actspec>
+            </type>
+            <!-- End oldEnterRoom -->
+            <!-- Begin exitRoom -->
+            <type>
+              <name>exitRoom</name>
+              <desc>?mover enters the nearest room</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?check</varname>
+                <vartype>boolean</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!x</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!y</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ex</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ey</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ax</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ay</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!dist</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!heading0</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!tolerance</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!minopen</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!crit</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!attend</varname>
+                <vartype>boolean</vartype>
+              </var>
+              <actspec>qstop ?mover</actspec>
+              <control>if</control>
+              <control> not</control>
+              <actspec>  getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <control> endnot</control>
+              <control>then</control>
+              <actspec> printText "turning to find door"</actspec>
+              <actspec> qturn ?mover left</actspec>
+              <actspec> sleep ?mover 500</actspec>
+              <control> while</control>
+              <control>  not</control>
+              <actspec>   getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <control>  endnot</control>
+              <control> do</control>
+              <actspec>  sleep ?mover 500</actspec>
+              <control> endwhile</control>
+              <control>endif</control>
+              <actspec>qstop ?mover</actspec>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !x !y !heading0</actspec>
+              <actspec>printText "Found door @ !x !y h: !heading0 d: !dist"</actspec>
+              <actspec>getDistanceFrom ?mover 0.0 0.0 !ax !ay !dist</actspec>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !ax !ay !heading</actspec>
+              <!--
+              -->
+              <actspec>printText "Approach point @ !ax !ay h: !heading d: !dist"</actspec>
+              <actspec>* !heading0 !heading !heading0</actspec>
+              <!-- if the signs don't match, I'm in between them... -->
+              <control>if</control>
+              <actspec> lt !heading0 0</actspec>
+              <control>then</control>
+              <actspec> set !dist 0.0</actspec>
+              <control>endif</control>
+              <!--
+              -->
+              <control>if</control>
+              <actspec> gt !dist 0.2</actspec>
+              <control>then</control>
+              <!--
+              <actspec> - !dist 0.2 !dist</actspec>
+              -->
+              <actspec> - !heading ${(Math.PI/180)*90} !heading</actspec>
+              <actspec> printText "turning towards approach point"</actspec>
+              <actspec> turnRel ?mover !heading</actspec>
+              <actspec> printText "done turning towards approach point"</actspec>
+              <actspec> printText "moving !dist meters towards approach point"</actspec>
+              <actspec> moveDist ?mover !dist</actspec>
+              <control>endif</control>
+              <control>while</control>
+              <control> not</control>
+              <actspec>  getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <actspec> qturn ?mover left</actspec>
+              <actspec> sleep ?mover 500</actspec>
+              <control>endwhile</control>
+              <actspec>qstop ?mover</actspec>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !ex !ey !heading</actspec>
+              <actspec>- !heading ${(Math.PI/180)*90} !heading</actspec>
+              <actspec>printText "turning towards exit point"</actspec>
+              <actspec>turnRel ?mover !heading</actspec>
+              <actspec>printText "done turning towards exit point"</actspec>
+              <actspec>getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+
+              <actspec>getMotionTolerance ?mover !tolerance</actspec>
+              <actspec>setMotionTolerance ?mover 0.5</actspec>
+              <actspec>getMinOpen ?mover !minopen</actspec>
+              <actspec>setMinOpen ?mover 20</actspec>
+              <actspec>getAttend door !attend</actspec>
+              <actspec>setAttend door false</actspec>
+              <!--
+              -->
+              <control>if</control>
+              <actspec>  stringCompare ?check true</actspec>
+              <control>then</control>
+              <actspec>  printText "HERE'S WHERE I WOULD LOOK AROUND THE ROOM FOR ENEMIES"</actspec>
+              <control>endif</control>
+              <actspec>printText "begin movetorel door"</actspec>
+              <actspec>moveToRel ?mover !ex !ey</actspec>
+              <actspec>printText "end movetorel door"</actspec>
+              <actspec>setMotionTolerance ?mover !tolerance</actspec>
+              <actspec>setMinOpen ?mover !minopen</actspec>
+              <!-- inside the door, now move a little further into the room -->
+              <!--
+              -->
+              <actspec>moveDist ?mover 0.75</actspec>
+              <actspec>setAttend door !attend</actspec>
+            </type>
+            <!-- End exitRoom -->
+            <!-- Begin oldExitRoom -->
+            <type>
+              <name>oldExitRoom</name>
+              <desc>?mover exits the nearest room</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?check</varname>
+                <vartype>boolean</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!x</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!y</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ex</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ey</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ax</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ay</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!dist</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!tolerance</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!crit</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!attend</varname>
+                <vartype>boolean</vartype>
+              </var>
+              <actspec>turnRel ?mover ${Math.PI}</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>  getNearestDoor ?mover !x !y !ex !ey !ax !ay !dist</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <actspec> printText "didn't find a door, turning"</actspec>
+              <actspec> qturn ?mover left</actspec>
+              <actspec> sleep ?mover 500</actspec>
+              <control>endwhile</control>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !x !y !heading</actspec>
+              <actspec>printText "Found door @ !x !y h: !heading d: !dist"</actspec>
+              <actspec>getDistanceFrom ?mover 0.0 0.0 !ax !ay !dist</actspec>
+              <actspec>getHeadingFrom ?mover 0.0 0.0 !ax !ay !heading</actspec>
+              <!--
+              -->
+              <actspec>printText "Entry point @ !ax !ay h: !heading d: !dist"</actspec>
+              <control>if</control>
+              <actspec> gt !dist 0.2</actspec>
+              <control>then</control>
+              <actspec> getHeadingFrom ?mover 0.0 0.0 !ax !ay !heading</actspec>
+              <!--
+              -->
+              <actspec> printText "heading to door is: !heading"</actspec>
+              <actspec> - !heading ${(Math.PI/180)*90} !heading</actspec>
+              <!--
+              -->
+              <actspec> printText "turning towards door"</actspec>
+              <actspec> turnRel ?mover !heading</actspec>
+              <actspec> - !dist 0.2 !dist</actspec>
+              <!--
+              -->
+              <actspec> printText "moving !dist meters towards door"</actspec>
+              <actspec> moveDist ?mover !dist</actspec>
+              <control>endif</control>
+              <actspec>getMotionTolerance ?mover !tolerance</actspec>
+              <actspec>setMotionTolerance ?mover 0.01</actspec>
+              <actspec>getCritDist ?mover !crit</actspec>
+              <actspec>setCritDist ?mover 0.05</actspec>
+              <actspec>getAttend door !attend</actspec>
+              <actspec>setAttend door false</actspec>
+              <control>if</control>
+              <actspec>  stringCompare ?check true</actspec>
+              <control>then</control>
+              <actspec>  printText "HERE'S WHERE I WOULD LOOK AROUND THE HALLWAY FOR ENEMIES"</actspec>
+              <control>endif</control>
+              <actspec>moveThroughRel ?mover</actspec>
+              <!--
+              <control>if</control>
+              <actspec> isFactVal enterRoomDir right</actspec>
+              <control>then</control>
+              <actspec> turnRel ?mover ${-Math.PI/2}</actspec>
+              <control>elseif</control>
+              <actspec> isFactVal enterRoomDir left</actspec>
+              <control>then</control>
+              <actspec> turnRel ?mover ${Math.PI/2}</actspec>
+              <control>endif</control>
+              -->
+              <actspec>retractFact enterRoomDir</actspec>
+              <actspec>setAttend door !attend</actspec>
+              <actspec>setMotionTolerance ?mover !tolerance</actspec>
+              <actspec>setCritDist ?mover !crit</actspec>
+            </type>
+            <!-- End oldExitRoom -->
+            <!-- Begin move_hallway -->
+            <type>
+              <name>move_hallway</name>
+              <desc>?mover continues down the hallway</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+            </type>
+            <!-- End move_hallway -->
+            <!-- Begin timeTurn -->
+            <type>
+              <!-- This one has the work done in Motion -->
+              <!-- Turn relative. -->
+              <name>timeTurn</name>
+              <desc>?mover turns ?heading radians</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?heading</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <actspec>startTimeTurn ?mover ?heading !actionID</actspec>
+              <!--
+              <actspec>printText "?mover turning ?heading radians"</actspec>
+              -->
+              <control>while</control>
+              <control> not</control>
+              <actspec>   checkMotion ?mover !actionID</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+              <!--
+              <actspec>printText "Done turning"</actspec>
+              -->
+            </type>
+            <!-- End timeTurn -->
+            <!-- Begin turnRel -->
+            <type>
+              <!-- This one has the work done in Motion -->
+              <!-- Turn relative. -->
+              <name>turnRel</name>
+              <api>turn a given amount (possibly using dead reckoning)</api>
+              <desc>?mover turns ?heading radians</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var desc="amount to turn (in radians, positive is counter-clockwise)">
+                <varname>?heading</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <!-- really should have heading ?mover ?heading -->
+              <actspec>startTurnRel ?mover ?heading !actionID</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   checkMotion ?mover !actionID</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+              <!--
+              <actspec>printText "Done turning"</actspec>
+              -->
+            </type>
+            <!-- End turnRel -->
+            <!-- Begin turnTo -->
+            <type>
+              <!-- turn to a global heading -->
+              <name>turnTo</name>
+              <api>turn a global heading (possibly using dead reckoning)</api>
+              <desc>?mover turns toward ?heading</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var desc="heading to turn to (in radians)">
+                <varname>?heading</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!headingFrom</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!headingTo</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <actspec>getHeading ?mover !headingFrom</actspec>
+              <!--
+              <actspec>printText "headingFrom: !headingFrom"</actspec>
+              -->
+              <actspec>getHeadingTo ?mover !headingFrom ?heading !headingTo</actspec>
+              <!--
+              <actspec>printText "headingTo: !headingTo"</actspec>
+              -->
+              <actspec>turnRel ?mover !headingTo</actspec>
+            </type>
+            <!-- End turnTo -->
+            <!-- Begin backTo -->
+            <type>
+              <!-- Even stupider: blindly back to a point -->
+              <!-- USE WITH CAUTION -->
+              <name>backTo</name>
+              <desc>?mover backs to ?xcoord ?ycoord</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!xcurr</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ycurr</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!headingFrom</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!headingTo</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!distTo</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <!-- Try to reduce overshoot -->
+              <actspec>sleep ?mover 2000</actspec>
+              <actspec>getLocation ?mover !xcurr !ycurr</actspec>
+              <actspec> printText "x: !xcurr y: !ycurr"</actspec>
+              <actspec>getHeading ?mover !heading</actspec>
+              <actspec> printText "heading: !heading"</actspec>
+              <actspec>getHeadingFromRel ?mover ?xcoord ?ycoord !xcurr !ycurr !heading !headingTo</actspec>
+              <actspec>printText "headingTo: !headingTo"</actspec>
+              <actspec>turnRel ?mover !headingTo</actspec>
+              <actspec>sleep ?mover 2000</actspec>
+              <actspec>getLocation ?mover !xcurr !ycurr</actspec>
+              <actspec> printText "x: !xcurr y: !ycurr"</actspec>
+              <actspec>getHeading ?mover !heading</actspec>
+              <actspec> printText "heading: !heading"</actspec>
+              <actspec>getHeadingFromRel ?mover ?xcoord ?ycoord !xcurr !ycurr !heading !headingTo</actspec>
+              <actspec>printText "headingTo: !headingTo"</actspec>
+              <actspec>turnRel ?mover !headingTo</actspec>
+              <actspec>sleep ?mover 2000</actspec>
+              <actspec>getDistanceFrom ?mover !xcurr !ycurr ?xcoord ?ycoord !distTo</actspec>
+              <actspec>- 0 !distTo !distTo</actspec>
+              <actspec>printText "distTo: !distTo"</actspec>
+              <actspec>moveDist ?mover !distTo</actspec>
+              <actspec>getLocation ?mover !xcurr !ycurr</actspec>
+              <actspec> printText "x: !xcurr y: !ycurr"</actspec>
+            </type>
+            <!-- End backTo -->
+            <!-- Begin transmit -->
+            <type>
+              <!-- transmit with threshold hard-coded to 400 -->
+              <name>transmit</name>
+              <desc>?mover attempts transmission</desc>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?fieldStrength</varname>
+                <vartype>fieldStr</vartype>
+                <varrole>return</varrole>
+              </var>
+              <locks>transmitLock</locks>
+              <control>if</control>
+              <control> not</control>
+              <actspec>   isFact preparedTransmission</actspec>
+              <control> endnot</control>
+              <control>then</control>
+              <actspec> sayTextNow ?mover ?partner "We must prepare the transmission first, ?partner"</actspec>
+              <control>elseif</control>
+              <actspec> doTransmit ?mover 400 ?fieldStrength</actspec>
+              <control>then</control>
+              <actspec> assertFact ExplorationTaskSuccess</actspec>
+              <actspec>else</actspec>
+              <actspec> assertFact ExplorationTaskFailure</actspec>
+              <actspec> sayTextNow ?mover ?partner "Transmission failed"</actspec>
+              <actspec> sayTextNow ?mover ?partner "Signal strength is only ?fieldStrength"</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End transmit -->
+            <!-- Begin reading -->
+            <type>
+              <!-- Get a reading of field strength -->
+              <name>reading</name>
+              <desc>?robot asks for a reading</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>!fieldStrength</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <actspec>fieldReading ?robot !fieldStrength</actspec>
+              <control>if</control>
+              <actspec> isFact quarterfrigntened</actspec>
+              <control>or</control>
+              <actspec> isFact halffrigntened</actspec>
+              <control>then</control>
+              <actspec> sayTextNow ?robot ?partner "!fieldStrength"</actspec>
+              <actspec>else</actspec>
+              <actspec> sayTextNow ?robot ?partner "Signal strength is !fieldStrength"</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End reading -->
+            <!-- Begin reading -->
+            <type>
+              <!-- Get a reading of field strength -->
+              <name>reading-no-affect-check</name>
+              <desc>?robot asks for a reading</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>!fieldStrength</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <actspec>fieldReading ?robot !fieldStrength</actspec>
+              <actspec>sayTextNow ?robot ?partner "Signal strength is !fieldStrength"</actspec>
+            </type>
+            <!-- End reading -->
+            <!-- Begin pickUpObject -->
+            <type planner="false">
+              <name>pickUpObject</name>
+              <var>
+                <varname>?act</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?obj</varname>
+                <vartype>pseudobject</vartype>
+              </var>
+              <!-- ?loc only needed for type, not used by action -->
+              <var>
+                <varname>?loc</varname>
+                <vartype>location</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!actionStatus</varname>
+                <vartype>text</vartype>
+              </var>
+              <cost>30.0</cost>
+              <timeout>20</timeout>
+              <conditions>
+                <!-- does at(?act,?obj) make more sense? -->
+                <atstart>at(?act,?loc)</atstart>
+                <overall>at(?act,?loc)</overall>
+                <atstart>in(?obj,?loc)</atstart>
+                <atstart>found(?act,?obj,?loc)</atstart>
+              </conditions>
+              <effects>
+                <atend>have(?obj,?act)</atend>
+                <atstart>not(in(?obj,?loc))</atstart>
+                <!-- PWS: is there a way to say that ?obj is always wherever ?act is? -->
+              </effects>
+              <actspec>startPickUpObject ?act ?obj !actionID</actspec>
+              <control>if</control>
+              <actspec> lt !actionID 0</actspec>
+              <control>then</control>
+              <actspec> printText "Error starting pickUpObject"</actspec>
+              <actspec> actionFail</actspec>
+              <control>endif</control>
+              <actspec>sleep ?act 1000</actspec>
+              <actspec>while</actspec>
+              <control> not</control>
+              <actspec>  checkActionDetail ?act !actionID !actionStatus</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+              <control>if</control>
+              <actspec> stringCompare !actionStatus failure</actspec>
+              <control>then</control>
+              <actspec> printText "error: pickUpObject failed"</actspec>
+              <actspec> actionFail</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End pickUpObject -->
+            <!-- Begin listen -->
+            <type planner="false">
+              <!-- listen to commander -->
+              <name>listen</name>
+              <desc>?act listens for commands</desc>
+              <var>
+                <varname>?act</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>!mid</varname>
+                <vartype>long</vartype>
+              </var>
+              <cost>7.0</cost>
+              <timeout>6000000000</timeout>
+              <benefit>6000000000</benefit>
+              <minurg>1.0</minurg>
+              <effects postcond="true">
+                <atstart>listening(?act)</atstart>
+              </effects>
+              <control>while</control>
+              <actspec> true</actspec>
+              <control>do</control>
+              <control> if</control>
+              <actspec>  inConversation ?act</actspec>
+              <control> then</control>
+              <actspec>  printText "in conversation"</actspec>
+              <!--
+              <actspec>  acquireLock motionLock</actspec>
+              -->
+              <actspec>  getCurrentMotion ?act !mid</actspec>
+              <actspec>  suspendMotion ?act !mid</actspec>
+              <control>  while</control>
+              <actspec>   inConversation ?act</actspec>
+              <control>  do</control>
+              <actspec>   sleep ?act 200</actspec>
+              <control>  endwhile</control>
+              <actspec>  printText "out of conversation"</actspec>
+              <!--
+              <actspec>  releaseLock motionLock</actspec>
+              -->
+              <control>  if</control>
+              <actspec>   gt !mid 0</actspec>
+              <control>  then</control>
+              <actspec>   restoreMotion ?act !mid</actspec>
+              <control>  endif</control>
+              <control> else</control>
+              <actspec>  sleep ?act 200</actspec>
+              <control> endif</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End listen -->
+            <!-- Begin wander -->
+            <type>
+              <name>wander</name>
+              <desc>?robot displays</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>!value</varname>
+                <vartype>integer</vartype>
+              </var>
+              <timeout>60000000</timeout>
+              <actspec>printText "about to wander"</actspec>
+              <actspec>startmove ?robot</actspec>
+              <control>while</control>
+              <actspec> true</actspec>
+              <control>do</control>
+              <actspec> randomInteger 10000 20000 !value</actspec>
+              <actspec> sleep ?robot !value</actspec>
+              <actspec> qstop ?robot</actspec>
+              <actspec> randomInteger 0 100 !value</actspec>
+              <control> if</control>
+              <control>   not</control>
+              <actspec>     safeRight ?robot</actspec>
+              <control>   endnot</control>
+              <control> then</control>
+              <actspec>   randomInteger 6000 15000 !value</actspec>
+              <actspec>   startleft ?robot</actspec>
+              <actspec>   sleep ?robot !value</actspec>
+              <control> elseif</control>
+              <control>   not</control>
+              <actspec>     safeLeft ?robot</actspec>
+              <control>   endnot</control>
+              <control> then</control>
+              <actspec>   randomInteger 6000 15000 !value</actspec>
+              <actspec>   startright ?robot</actspec>
+              <actspec>   sleep ?robot !value</actspec>
+              <control> elseif</control>
+              <actspec>   lt 50 !value</actspec>
+              <control> then</control>
+              <actspec>   randomInteger 6000 15000 !value</actspec>
+              <actspec>   startleft ?robot</actspec>
+              <actspec>   sleep ?robot !value</actspec>
+              <actspec> else</actspec>
+              <actspec>   randomInteger 6000 15000 !value</actspec>
+              <actspec>   startright ?robot</actspec>
+              <actspec>   sleep ?robot !value</actspec>
+              <control> endif</control>
+              <actspec> qstop ?robot</actspec>
+              <actspec> startmove ?robot</actspec>
+              <control>endwhile</control>
+            </type>
+            <!-- End wander -->
+            <!-- Begin robotDance -->
+            <type>
+              <name>robotDance</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <!--
+              <actspec>changeMood ?robot halfSad</actspec>
+              <actspec>with discourse USARSimDiscourse</actspec>
+              <actspec>with reddy USARSimServerImpl</actspec>
+              <actspec>  sayTextNow ?robot paul "Wee "</actspec>
+              <actspec>endwith discourse USARSimDiscourse</actspec>
+              <actspec>endwith reddy USARSimServerImpl</actspec>
+              <actspec>sleep ?robot 500</actspec>
+              <actspec>sayTextNow ?robot paul "are "</actspec>
+              <actspec>sleep ?robot 500</actspec>
+              <actspec>with discourse USARSimDiscourse</actspec>
+              <actspec>with reddy USARSimServerImpl</actspec>
+              <actspec>  sayTextNow ?robot paul "thee "</actspec>
+              <actspec>endwith discourse USARSimDiscourse</actspec>
+              <actspec>endwith reddy USARSimServerImpl</actspec>
+              <actspec>sleep ?robot 500</actspec>
+              <actspec>sayTextNow ?robot paul "rowbots "</actspec>
+              -->
+              <actspec>with reddy USARSimServerImpl</actspec>
+              <actspec> waveDance ?robot com/reddy/wav/robots.wav false</actspec>
+              <actspec>endwith reddy VirtualReddy</actspec>
+              <actspec>waveDance ?robot com/reddy/wav/robots.wav true</actspec>
+            </type>
+            <!-- Begin robotDance -->
+            <!-- Begin robotDisco -->
+            <type>
+              <name>robotDisco</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <!--
+              <actspec>changeMood ?robot halfSad</actspec>
+              <actspec>with discourse USARSimDiscourse</actspec>
+              <actspec>with reddy USARSimServerImpl</actspec>
+              <actspec>  sayTextNow ?robot paul "Wee "</actspec>
+              <actspec>endwith discourse USARSimDiscourse</actspec>
+              <actspec>endwith reddy USARSimServerImpl</actspec>
+              <actspec>sleep ?robot 500</actspec>
+              <actspec>sayTextNow ?robot paul "are "</actspec>
+              <actspec>sleep ?robot 500</actspec>
+              <actspec>with discourse USARSimDiscourse</actspec>
+              <actspec>with reddy USARSimServerImpl</actspec>
+              <actspec>  sayTextNow ?robot paul "thee "</actspec>
+              <actspec>endwith discourse USARSimDiscourse</actspec>
+              <actspec>endwith reddy USARSimServerImpl</actspec>
+              <actspec>sleep ?robot 500</actspec>
+              <actspec>sayTextNow ?robot paul "rowbots "</actspec>
+              -->
+              <actspec>with reddy USARSimServerImpl</actspec>
+              <actspec> waveDance ?robot com/reddy/wav/robotsdisco.wav false</actspec>
+              <actspec>endwith reddy VirtualReddy</actspec>
+              <actspec>waveDance ?robot com/reddy/wav/robotsdisco.wav true</actspec>
+            </type>
+            <!-- Begin robotDisco -->
+            <!-- Begin meet -->
+            <!--
+            <type planner="true">
+              <name>meet</name>
+              <var>
+                <varname>?act</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?other</varname>
+                <vartype>agent</vartype>
+              </var>
+              <desc>?act meets ?other</desc>
+              <conditions>
+                <atstart>at(?act,?loc)</atstart>
+                <atstart>at(?other,?loc)</atstart>
+              </conditions>
+              <effects>
+                <atend>met(?act,?other)</atend>
+              </effects>
+              <cost>5.0</cost>
+              <timeout>5</timeout>
+              -->
+              <!-- no action needed -->
+              <!--
+            </type>
+            -->
+            <!-- End meet -->
+            <!-- Begin persist -->
+            <type>
+              <name>persist</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <timeout>6000000000</timeout>
+              <control>while</control>
+              <actspec> true</actspec>
+              <control>do</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End persist -->
+            <!-- Begin spin -->
+            <type>
+              <name>spin</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <timeout>6000000000</timeout>
+              <control>while</control>
+              <actspec> true</actspec>
+              <control>do</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End spin -->
+            <!-- Begin notifyDomain -->
+            <type>
+              <!-- set domain complete flag -->
+              <name>notifyDomain</name>
+              <var>
+                <varname>?id</varname>
+                <vartype>text</vartype>
+              </var>
+              <actspec>printText "got notifyDomain for ?id"</actspec>
+              <actspec>assertFactVal domainComplete ?id</actspec>
+            </type>
+            <!-- End notifyDomain -->
+            <!-- Begin sapaGoal -->
+            <type>
+              <name>sapaGoal</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <desc>executing plan</desc>
+              <timeout>6000000000</timeout>
+              <control>while</control>
+              <actspec> true</actspec>
+              <control>do</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End sapaGoal -->
+            <!-- Begin receiveOrders -->
+            <type>
+              <name>receiveOrders</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <desc>receive orders</desc>
+              <timeout>6000000000</timeout>
+              <benefit>6000000000</benefit>
+              <minurg>1.0</minurg>
+              <locks>motionLock</locks>
+              <actspec>retractFact receivedOrders</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>  isFact receivedOrders</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+              <actspec>retractFact receivedOrders</actspec>
+              <actspec>printText "Ready to proceed"</actspec>
+            </type>
+            <!-- End receiveOrders -->
+            <!-- Begin bg-blink -->
+            <type>
+              <name>bg-blink</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>!now</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!nextblink</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!random</varname>
+                <vartype>integer</vartype>
+              </var>
+              <timeout>6000000000</timeout>
+              <effects>
+                <atend>bg-blink(?robot)</atend>
+              </effects>
+              <actspec>getTimeOfDay !now</actspec>
+              <actspec>randomInteger -1500 1500 !random</actspec>
+              <actspec>+ !now !random !nextblink</actspec>
+              <control>while</control>
+              <actspec> true</actspec>
+              <control>do</control>
+              <actspec>sleep ?robot 100</actspec>
+              <actspec>getTimeOfDay !now</actspec>
+              <control> if</control>
+              <actspec>  lt !nextblink !now</actspec>
+              <control> then</control>
+              <actspec>  blink ?robot</actspec>
+              <actspec>  randomInteger -1500 1500 !random</actspec>
+              <actspec>  + 6000 !random !random</actspec>
+              <actspec>  + !now !random !nextblink</actspec>
+              <control> endif</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End bg-blink -->
+            <!-- Begin bg-headsway -->
+            <type>
+              <name>bg-headsway</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>!now</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!nextsway</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!random</varname>
+                <vartype>integer</vartype>
+              </var>
+              <timeout>6000000000</timeout>
+              <effects>
+                <atend>bg-headsway(?robot)</atend>
+              </effects>
+              <actspec>getTimeOfDay !now</actspec>
+              <actspec>randomInteger -3000 3000 !random</actspec>
+              <actspec>+ !now !random !nextsway</actspec>
+              <control>while</control>
+              <actspec> true</actspec>
+              <control>do</control>
+              <actspec>sleep ?robot 100</actspec>
+              <actspec>getTimeOfDay !now</actspec>
+              <control> if</control>
+              <actspec>  lt !nextsway !now</actspec>
+              <control> then</control>
+              <actspec>  headSway ?robot</actspec>
+              <actspec>  randomInteger -3000 3000 !random</actspec>
+              <actspec>  + 8000 !random !random</actspec>
+              <actspec>  + !now !random !nextsway</actspec>
+              <control> endif</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End bg-headsway -->
+            <!-- Begin testWhatever -->
+            <type>
+              <name>testWhatever</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>!newtarg</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>!intarg</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!dblarg</varname>
+                <vartype>double</vartype>
+              </var>
+              <timeout>6000000000</timeout>
+              <actspec>+ ${2 * 8} 14 !intarg</actspec>
+              <actspec>* 0.5 ${(-Math.PI/180)*90.0} !dblarg</actspec>
+              <actspec>printText "result: !intarg !dblarg"</actspec>
+            </type>
+            <!-- End testWhatever -->
+          </subtypes>
+        </type>
+      </subtypes>
+    </type>
+    <type>
+      <name>syntax</name>
+      <api>type</api>
+      <subtypes>
+        <type>
+          <name>if</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>then</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>else</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>elseif</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>endif</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>while</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>do</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>endwhile</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>not</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>endNot</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>and</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>or</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>return</name>
+          <api>type</api>
+        </type>
+        <type>
+          <name>endreturn</name>
+          <api>type</api>
+        </type>
+      </subtypes>
+    </type>
+    <type>
+      <name>fact</name>
+    </type>
+    <type>
+      <name>motivator</name>
+      <subtypes>
+        <type>
+          <name>be polite</name>
+        </type>
+        <type>
+          <name>obey commands</name>
+        </type>
+      </subtypes>
+    </type>
+  </subtypes>
+  <funcmap>
+    <funcname>end</funcname>
+    <funcarg>hallway</funcarg>
+    <funcval>hall_end</funcval>
+  </funcmap>
+  <!--
+  <funcmap>
+    <funcname>wounded</funcname>
+    <funcarg>people</funcarg>
+    <funcval>box1 green</funcval>
+  </funcmap>
+  <funcmap>
+    <funcname>locations</funcname>
+    <funcarg>box1 green</funcarg>
+    <funcval>box1 green room1</funcval>
+  </funcmap>
+  -->
+  <funcmap>
+    <funcname>through</funcname>
+    <funcarg>doorway</funcarg>
+    <funcval>through-door</funcval>
+  </funcmap>
+  <funcmap>
+    <funcname>first</funcname>
+    <funcarg>room</funcarg>
+    <funcval>room1</funcval>
+  </funcmap>
+  <funcmap>
+    <funcname>in</funcname>
+    <funcarg>room1</funcarg>
+    <funcval>room1</funcval>
+  </funcmap>
+</type>

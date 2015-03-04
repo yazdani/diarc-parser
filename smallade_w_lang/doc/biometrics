@@ -1,0 +1,94 @@
+Contents:
+--------------------------------------------------------------------------------
+1. Intro
+2. Parani SD200L
+3. The biometrics package
+4. Recording: without CF card
+5. Recording: with CF card
+6. Sensors
+7. ProComp Infiniti
+
+================================================================================
+1. Intro
+--------------------------------------------------------------------------------
+This really just a collection of notes regarding the use of the ProComp
+Infiniti with the Parani SD200L Bluetooth Serial Adapter.  Later, I'll
+collect them into something more systematic, but probably not until an ADE
+server has been written for it.
+
+================================================================================
+2. Parani SD200L
+--------------------------------------------------------------------------------
+This device is a little touchy.  It's supposed to run in Mode 2 (see
+http://www.sena.com/download/manual/manual_parani_sd200L-v1.0.0.pdf for
+details and flash codes), but it sometimes won't go into Mode 2, and it also
+works in Mode 3.  It seems to tend to drop out of Mode 2/3 into Mode 0, and
+the only way we've been able to reset it is using the Windows client
+(ParaniWin).  The communication parameters 19200-N-1 seem to work best.
+I've had trouble getting it to go into Mode 2 with different settings (e.g.,
+9600 baud).
+
+The charger is a smallish USB cable (i.e., the device charges from the USB
+port).
+
+UPDATE: The SD200L was too touchy, we exchanged it for the original Promi
+SD101.  The mode-switching problems mentioned above are no longer a problem.
+
+================================================================================
+3. The biometrics package
+--------------------------------------------------------------------------------
+The repo is at svn://hri.cogs.indiana.edu/projects/diarc/biometrics.  See
+edu.indiana.hri.biometrics.test.WatchChannels for an example of how to use
+the package.  When building, ant can sometimes seek out the gcj version of
+javac, which causes a ton (450+) of errors.  I solved this by adding
+'debug="true" fork="yes" executable="/usr/java/java/bin/javac"' to the javac
+field of the 'compile' target.  You may need to point it to your preferred
+JDK.
+
+At some point, an ADE server will be written, in which case a jar file for
+the biometrics package will be included in the ADE repo.
+
+================================================================================
+4. Recording: without CF card
+--------------------------------------------------------------------------------
+To start recording, insert the connectors for each sensor and hold the power
+button down for one second.  It starts streaming data immediately.  Turn it
+off by holding the power button down for another second.
+
+================================================================================
+5. Recording: with CF card
+--------------------------------------------------------------------------------
+When a CF card is installed, the CF LED will blink to indicate whether it is
+valid, and how much space is available.  If it is valid, the LED is on for a
+second, then blinks in a burst of short blinks, one for each 10% of
+remaining capacity.  If the CF is invalid, the CF LED blinks a bunch for a
+second or two and then produces an error code.  See the manual for the
+sequences.
+
+To start recording to the CF, hold the power button down for three seconds,
+or until the white LED comes on.  Stop recording by holding the button down
+for one second.
+
+================================================================================
+6. Sensors
+--------------------------------------------------------------------------------
+We currently have three sensors, enumerated here by the ports to which they
+should be plugged into:
+
+A: Skin conductance
+B: Heart rate
+C: Respiration rate
+
+================================================================================
+7. ProComp Infiniti
+--------------------------------------------------------------------------------
+The Infiniti will typically be set up to use the Promi SD101 device,
+which requires different dip switch settings than the TT-USB device.
+
+Promi:  0100
+TT_USB: 0010
+
+Moreover, the TT-USB interface appears to be completely different from the
+one implemented for the Promi device, so it doesn't look like it will be
+possible for us to use that without additional coding in the biometrics
+package.

@@ -1,0 +1,14 @@
+STARTHOST
+ip 192.168.0.164
+os Linux
+javadir /usr/local/java/java/bin/
+adehome /home/tom/oldade/
+sshlogin tom
+ENDHOST
+STARTHOST
+ip 192.168.0.191
+os Linux
+javadir /usr/local/java/java/bin/
+adehome /home/hrilab/code/ade/
+sshlogin hrilab
+ENDHOST

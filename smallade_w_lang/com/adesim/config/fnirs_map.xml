@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!--    comments are enclosed within standard xml comment brackets (like this line)  --> 
+
+<!-- GENERAL NOTES:  
+
+    * The coordinate system is Euclidean.  NOTE THAT THIS IS DIFFERENT FROM THE
+    * SCREEN COORDINATE SYSTEM, WHERE Y grows DOWN, not up!  all numbers can be
+    * doubles. 
+    * The Z dimension, to the extent that it is used, points UPWARDS.
+    * All measurements are in METERS and RADIANS
+    * The entire configuration MUST BE ENCLOSED within the <config> tag.
+    
+    
+    A note about NUMERICAL PARAMETERS:
+    * Expressions are EVALUATED.  Therefore, you can write things like 
+    * x="5.32 * 6"
+    * Note that you do NOT need to put a decimal after division - though you
+    * can if it makes you feel better.
+    * You can use the constant PI.  I.e.: theta="PI / 4"
+    * You can use the built-in constant RAND which is very handy, but
+    * OVERLOADED WITH MEANING:
+    *    For angles, RAND is anywhere between 0 and 2*PI.  Hence, if you set
+    *    the robot's theta to RAND, it will face in any possible direction.
+    *    Everywhere else, RAND is a number between 0 and 1.  Hence, you can set
+    *    the fraction by which a door is open to RAND.  Or the position of a
+    *    block as "x = 3 + (4*RAND)"
+    * Finally, constants are NOT cASe SenSitiVE.  Write them as awkwardly as
+    * you wish...
+    
+
+
+    possible tokens: 
+
+        <world [*optional* bounded="true/false" (true by default)]>   <shape> {particular_shape} <shape>   </world>.  
+        	Note that EACH FILE MUST SPECIFY WORLD DIMENSIONS.
+        	Bounded refers to whether the simulation should automatically put in walls at the world's edge, so that
+        		the robot does not drive off into nothingness.  It is true by default.
+        	  
+
+        shape_and_optional_actions are just comprised of a SINGLE shape node, and optional actions: 
+            let's start with shape:  
+	            <shape [*optional* z="0"] [*optional* zLength="�"] [*optional* rotation="0"] > {particular_shape} </shape> 
+	                the particular shape can be: 
+	                    <rect [*optional* x="0"] [*optional* y="0"] [*optional center="False"] xLength="" yLength="" />  
+	                        where (x,y) is bottom left coordinate, UNLESS center="True" is specified, in which case
+	                        (x,y) is the CENTER (useful for placing percepts, i.e., boxes and blocks).
+	                    <poly>    <pt x="" y=""/>  <pt x="" y=""/>  ...  </poly>   for a polygon 
+            the actions can be OPTIONALLY surrounded by an <actions>  {action_item}[s]  </actions> node,
+                    but that is for backwards compatibility only;  they can also just reside within the shape.
+                    a shape can have zero, one, or many actions.
+                an action_item can be one of the following: 
+                    <action> <message text="" /> </action> 
+                    <action> <exit/> </action> 
+                    <action> <remove/> </action>
+                    <action> <push/> </action>   (to bulldoze the object in same direction as robot is moving,
+                         but bounded by walls).
+                    <action> <pushDoor/> </action>  (ONLY APPLICABLE TO PUSHING DOORS OPEN/CLOSED).
+                the actions will be executed (IN ORDER) whenever one of the robot lines intersects 
+                one of the lines of the shape. 
+
+         objects can be: 
+            <wall>    {shape_and_optional_actions}   </wall> 
+            <door [*optional* name=""] openFraction="[0 through 1.0]" x="" 
+            					y="" width="" thickness="" closed_angle="" pivot_angle=""/>
+            		    {optional_actions}  </door>
+                   where (x,y) specify pivot point, the closed angle refers to the angle of the door when closed    
+                   (relative to the pivot point, where east = 0, north = PI/2, etc), and pivot_angle refers to the angle difference    
+                   (typically +/- ~PI/2.0) relative to the closed_angle that the door should swing to when opened.
+                   NOTE that pivot_angle of magnitude PI or greater may cause problems when used in conjunction with
+                   a pushDoor action.
+            <landmark [*optional* name=""] [*optional* laserable="false"]>     {shape_and_optional_actions}     </landmark>  
+            <block [*optional* name=""] [*optional* laserable="true"] >    [*optional* {color}]  {shape_and_optional_actions}    </block>.
+            <box [*optional* name=""]>    [*optional* {color}]  {shape_and_optional_actions}  [*optional* {contains}]   </block>.
+            
+        the color node is of one of two forms:
+        	* <color name="" />     where "name" is any color name specified within com.adesim.ColorConverter.java.
+        	* <color red="" green="" blue="" />    where red, green, and blue are ints 0-255.  When the sim is asked
+        	     for colors by name, it will use the ColorConverter to find the closest named color for the specified RGB.
+        
+        the <contains> node allows to specify objects that are, at startup, present inside of boxes or
+        	in the robot's possession (see <init-robot-positions> below).  It looks like this:
+        	<contains>
+        		{block} (see specs above)
+        		...
+        	</contains>
+        	note that in the case of contained objects, x and y really don't matter, as they'll be put in the middle of 
+        	    the box (if contained in a box), or outstretched in front of the robot (in case of robot).
+        	    for rectangular objects, feel free to omit the "x" and "y" attributes altogether; for polygons, 
+        	    create the shape using the x-s and y-s, but know that your polygon will be moved anyway (which means you
+        	    can construct the polygon with whatever coordinate shift is easiest for you)
+
+
+        it is also possible to *optionally* specify an initial starting position for the robot(s):  
+             <init-robot-positions>
+             	
+             	<position x="" y ="" theta="">
+             		[*optional* {contains}]
+             	</position>   (for first robot that joins the simulation)
+             	
+             	<position x="" y ="" theta=""/>   (for second robot that joins the simulation)
+             	
+             	... etc ...
+             </init-robot-positions>
+             Where (x,y) are the coordinates, and theta is the robot's angle, 
+                 in radians or "rand", with 0 facing right, and the angle growing counter-clockwise.
+                 NOTE that if a particular initial position is explicitly specified
+                 on the command line, it WILL override the init-robot spec. 
+                
+-->
+
+<config>
+    <world bounded="false">
+        <shape>
+            <rect x="-50" y="-50" xLength="99.2" yLength="99.2" />
+        </shape>
+    </world>
+    <init-robot-positions>
+        <position x="6.5" y="-3" theta="0"/>
+    </init-robot-positions>
+    <wall>
+      <!-- left -->
+        <color name="white" />
+        <shape zLength="2.5">
+            <poly>
+                <pt x="3.0" y="3.0" />
+                <pt x="2.45" y="-6.45" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+      <!-- bottom -->
+        <color name="white" />
+        <shape zLength="2.5">
+            <poly>
+                <pt x="2.45" y="-6.45" />
+                <pt x="8.9" y="-6.75" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+      <!-- right -->
+        <color name="white" />
+        <shape zLength="2.5">
+            <poly>
+                <pt x="8.9" y="-6.75" />
+                <pt x="9.4" y="2.6" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+      <!-- top -->
+        <color name="white" />
+        <shape zLength="2.5">
+            <poly>
+                <pt x="9.4" y="2.6" />
+                <pt x="3.0" y="3.0" />
+            </poly>
+        </shape>
+    </wall>
+    <landmark laserable="true">
+      <!-- blue box -->
+        <color red="36" green="56" blue="100" />
+        <shape zLength="1.194">
+            <poly>
+                <pt x="5.7" y="-0.8" />
+                <pt x="6.1" y="-1.1" />
+                <pt x="6.65" y="-0.3" />
+                <pt x="6.3" y="0.0" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="true">
+      <!-- red box -->
+        <color red="117" green="27" blue="50" />
+        <shape zLength="0.7">
+            <poly>
+                <pt x="4.35" y="-4.25" />
+                <pt x="4.9" y="-4.8" />
+                <pt x="5.3" y="-4.3" />
+                <pt x="4.75" y="-3.75" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- black -->
+        <color red="42" green="48" blue="50" />
+        <shape zLength="1.067">
+            <poly>
+                <pt x="2.483206" y="-5.879465" />
+                <pt x="2.516411" y="-5.308931" />
+                <pt x="2.616411" y="-5.308931" />
+                <pt x="2.583206" y="-5.879465" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- red -->
+        <color red="160" green="48" blue="81" />
+        <shape zLength="0.9017">
+            <poly>
+                <pt x="2.572858" y="-4.339072" />
+                <pt x="2.608278" y="-3.730502" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- orange -->
+        <color red="158" green="64" blue="35" />
+        <shape zLength="2.4">
+            <poly>
+                <pt x="2.691649" y="-2.298026" />
+                <pt x="2.717476" y="-1.854277" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- green -->
+        <color red="11" green="100" blue="11" />
+        <shape zLength="2.4">
+            <poly>
+                <pt x="2.727476" y="-1.854277" />
+                <pt x="2.737428" y="-1.511457" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- blue -->
+        <color red="30" green="55" blue="95" />
+        <shape zLength="2.4">
+            <poly>
+                <pt x="2.737428" y="-1.511457" />
+                <pt x="2.763999" y="-1.054930" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- red -->
+        <color red="160" green="48" blue="81" />
+        <shape zLength="0.9017">
+            <poly>
+                <pt x="2.780198" y="-0.776601" />
+                <pt x="2.815617" y="-0.168031" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- red -->
+        <color red="160" green="48" blue="81" />
+        <shape zLength="0.9017">
+            <poly>
+                <pt x="2.939574" y="1.961765" />
+                <pt x="2.974993" y="2.570335" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- yellow -->
+        <color red="195" green="175" blue="9" />
+        <shape zLength="0.9017">
+            <poly>
+                <pt x="4.596884" y="2.900195" />
+                <pt x="5.205297" y="2.862169" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- yellow -->
+        <color red="195" green="175" blue="9" />
+        <shape zLength="0.9017">
+            <poly>
+                <pt x="7.056086" y="2.746495" />
+                <pt x="7.664499" y="2.708469" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- green -->
+        <color red="11" green="100" blue="11" />
+        <shape zLength="0.9017">
+            <poly>
+                <pt x="9.380333" y="2.232225" />
+                <pt x="9.347780" y="1.623495" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- green -->
+        <color red="11" green="100" blue="11" />
+        <shape zLength="1.346">
+            <poly>
+                <pt x="9.224353" y="-0.684607" />
+                <pt x="9.191800" y="-1.293337" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- green -->
+        <color red="11" green="100" blue="11" />
+        <shape zLength="0.9017">
+            <poly>
+                <pt x="9.052096" y="-3.905804" />
+                <pt x="9.019544" y="-4.514535" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- black -->
+        <color red="42" green="48" blue="50" />
+        <shape zLength="1.067">
+            <poly>
+                <pt x="8.955795" y="-5.706631" />
+                <pt x="8.925277" y="-6.277316" />
+                <pt x="8.825277" y="-6.277316" />
+                <pt x="8.855795" y="-5.706631" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- blue -->
+        <color red="30" green="55" blue="95" />
+        <shape zLength="0.9017">
+            <poly>
+                <pt x="7.745248" y="-6.696291" />
+                <pt x="7.136307" y="-6.667968" />
+            </poly>
+        </shape>
+    </landmark>
+    <landmark laserable="false">
+      <!-- blue -->
+        <color red="30" green="55" blue="95" />
+        <shape zLength="1.346">
+            <poly>
+                <pt x="4.447114" y="-6.542889" />
+                <pt x="3.838172" y="-6.514566" />
+            </poly>
+        </shape>
+    </landmark>
+</config>

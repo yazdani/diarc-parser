@@ -1,0 +1,66 @@
+#!/bin/bash
+if [ $# -lt 1 ] ; then
+    echo "Usage: $0 <ID>"
+    exit
+fi
+REDHOST=192.168.0.160
+#REDHOST=192.168.0.2
+BLUEHOSTEXT=192.168.0.148
+BLUEHOSTINT=10.69.0.11
+#REDHOST=10.68.0.107
+#BLUEHOSTEXT=10.68.0.1
+#BLUEHOSTINT=10.68.0.1
+# show 2D environment: "yes" or "no"
+ENV2D="no"
+# obstacle avoidance: "yes" or "no"
+OBST="yes"
+# stop button: "yes" or "no"
+STOP="no"
+# environment
+if [ $ENV2D == "yes" ] ; then
+    ENV2D="-g"
+else
+    ENV2D=""
+fi
+if [ $OBST == "no" ] ; then
+    OBST="-noobst"
+else
+    OBST=""
+fi
+
+environment_pr2() {
+    kill -9 `ps -ef | grep Dcomponent | grep ade.ADEServerImpl | awk '{ print $2 }'` > /dev/null 2>&1
+    rm -f /tmp/adepipe
+    mkfifo /tmp/adepipe
+    (sleep 3 ; ./runadeserver com.pr2.RosLRFServer -host pr2c1 -uri http://pr2c1:11311 -cp `grep ros.runtime.classpath com/ros/ade_base_scan_sub/ros.properties | cut -f 2 -d =` -l ${BLUEHOSTINT} 1098 Blue -r ${BLUEHOSTINT} 1098 Blue) &
+    (sleep 7 ; ./runadeserver com.pr2.PR2BaseServer -host pr2c1 -uri http://pr2c1:11311 -cp `grep ros.runtime.classpath com/ros/ade_move_base_goal/ros.properties | cut -f 2 -d =` -l ${BLUEHOSTINT} 1098 Blue -r ${BLUEHOSTINT} 1098 Blue) &
+    (sleep 10 ; ./runadeserver com.motion.MotionServer -l ${BLUEHOSTINT} 1098 Blue -r ${BLUEHOSTINT} 1098 Blue -vel com.pr2.PR2BaseServer -pos com.pr2.PR2BaseServer -lrf com.pr2.RosLRFServer -tol 0.275 -critical 0.75 -deftv 0.35 -defrv 0.2 -slowtv 0.25 -slowrv 0.2 -noobst) &
+    # signal/field
+    (sleep 13 ; ./runadeserver com.mopo.FldServer -l ${BLUEHOSTINT} 1098 Blue -r ${BLUEHOSTINT} 1098 Blue -mopoversion com.pr2.PR2BaseServer) &
+    # fnirs
+    (sleep 16 ; ./runadeserver com.fnir.FNIRServer -l ${BLUEHOSTINT} 1098 Blue -r ${BLUEHOSTINT} 1098 Blue -external -port 10002) &
+    # speech production
+    #(sleep 16 ; ./runadeserver com.simspeech.SimSpeechProductionServer -l ${BLUEHOSTINT} 1098 Blue -r ${BLUEHOSTINT} 1098 Blue -textblue -geom 660 630 -g) &
+    # speech processing
+    (sleep 19 ; ./runadeserver com.discourse.TLDLDiscourseServer -l ${BLUEHOSTEXT} 1098 Blue -r ${BLUEHOSTINT} 1098 Blue -actor Blue -action -dict com/discourse/TL_DL_parser/newautonomy.dict) &
+    # speech input
+    if [ $STOP == "no" ] ; then
+        STOP="com/simspeech/config/newautonomy2"
+    else
+        STOP="com/simspeech/config/newautonomy"
+    fi
+    #(sleep 22 ; ./runadeserver com.simspeech.SimSpeechRecognitionServer -l ${BLUEHOSTINT} 1098 Blue -r ${BLUEHOSTINT} 1098 Blue -config $STOP -textblue -nocommand -g) &
+    #(sleep 120 ; ./runadeserver com.action.ActionManagerLinear -l ${BLUEHOSTINT} 1098 CPULog -r ${BLUEHOSTINT} 1098 Blue -logcpu) &
+
+    ./runaderegistry -cp `grep ros.runtime.classpath com/ros/ade_base_scan_sub/ros.properties | cut -f 2 -d =` -l ${BLUEHOSTEXT} 1098 Blue -k config/fnirs.hosts
+    if [ -e logs$1 ] ; then
+        echo logs$1 already exists, copy by hand!
+    else
+        mkdir logs$1
+        mv logs/* logs$1
+    fi
+    echo Done.
+}
+
+environment_pr2 2>&1 | tee /tmp/environment_pr2.out
+# vi:tw=0

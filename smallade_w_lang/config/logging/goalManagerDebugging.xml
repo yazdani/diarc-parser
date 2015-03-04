@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <properties>
+    <property name="gm.filename">logs/goalManager.log</property>
+  </properties>
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %m%n"/>
+    </Console>
+    <File name="gmLog" fileName="${gm.filename}" bufferedIO="true" advertiseURI="file://${sys:user.dir}/${gm.filename}" advertise="true">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %m%n"/>
+    </File>
+  </appenders>
+  <loggers>
+    <logger name="com.action.GoalManagerImpl" level="TRACE">
+      <appender-ref ref="gmLog"/>
+    </logger>
+    <root level="INFO">
+      <appender-ref ref="Console"/>
+    </root>
+  </loggers>
+</configuration>

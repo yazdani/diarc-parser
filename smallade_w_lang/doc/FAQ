@@ -1,0 +1,522 @@
+Frequently Asked Questions (FAQ) about ADE
+Last Updated: July 5, 2006
+
+Throughout this document, "ADEHOME" is used to indicate the ADE
+installation directory (the location in which the download was
+untarred). A command-line prompt, where the current working directory
+is the ADE installation directory, is indicated by "ADEHOME$".
+
+A. General Information
+======================
+A.1. Why would I want to use ADE?
+A.2. What are the system/software requirements for running ADE?
+A.3. How do I obtain ADE?
+A.4. Where can I learn more about ADE?
+A.5. Who do I contact about [problems | suggestions | contributing ]?
+
+B. Installation
+===============
+B.1. How do I install ADE?
+B.2. What is RXTX?
+
+C. Basic Usage
+==============
+C.1. How do I start using ADE?
+C.2. What is an ADEServer?
+C.3. What is an ADERegistry?
+C.4. How do I connect to an ADEServer?
+C.5. What is a "startup script"?
+C.6. Can I start ADE without a "startup script"?
+C.7. Can I start/use multiple ADERegistrys?
+C.8. How do I change the method call timeout?
+C.9. What are some common "gotchas" I should watch for?
+
+D. Programming ADEServers
+=========================
+D.1. How do I write my own ADEServer?
+D.2. Why are there both *Server.java and *ServerImpl.java files?
+D.3. What does the "Impl" in an ADEServer's name signify?
+D.4. Why do I have to implement an interface for my own server?
+D.5. How do I compile my component (ADEServer)?
+D.6. What is the "finishedInitialization()" method?
+D.7. How do I add a graphical representation of my component (ADEServer)?
+D.8. What are some common "gotchas" I should watch for?
+
+E. Distributing Components
+==========================
+E.1. How do I distribute my application over multiple hosts?
+E.2. How do I invoke (remote) method calls?
+E.3. What is a "pseudo-reference"?
+E.4. Why do I have to use the "call" method to invoke remote method
+     calls rather than using standard Java syntax?
+
+F. Other Questions
+==================
+F.1. How does ADE support fault-tolerant computing?
+F.2. How do I make failure recovery faster?
+F.3. Can I increase the time between disconnect detection and recovery?
+F.4. How do I change the failure recovery "policy"?
+F.5. What are ADE's security features?
+
+
+
+A. General Information
+======================
+A.1. Why would I want to use ADE?
+
+- The ADE framework provides designers of robotics architectures with
+  an easy-to-use, secure, robust, extensible, development environment.
+  
+A.2. What are the system/software requirements for running ADE?
+
+- You must have Java 1.5 installed to use the most basic ADE setups.
+  Depending on your intentions, you may also need to install:
+  RXTX Java serial port interface (available from ...)
+  Festival speech production (available from ...)
+  Player/Stage robot system (available from ...)
+  OpenCV vision software (available from ...)
+
+A.3. How do I obtain ADE?
+
+- ADE is available from http://ade.sourceforge.net/
+
+A.4. Where can I learn more about ADE?
+
+- In addition to the documentation (manuals, READMEs, Javadoc), many papers
+  have been published in relation to the ADE system and projects that have
+  been developed using ADE. Some selected references:
+
+A.5. Who do I contact about [problems | suggestions | contributing ]?
+
+- Contact the AiroLab group at Indiana University (email: ?)
+
+
+
+B. Installation
+===============
+B.1. How do I install ADE?
+
+- The ADE source code comes in a gzipped tar file. In the future, ADE will
+  most likely be available by anonymous CVS checkout.
+  
+B.2. What is RXTX?
+
+- RXTX is an open-source implementation for accessing serial ports from
+  Java. More information can be found at http://www.rxtx.org/
+
+
+
+C. Basic Usage
+==============
+C.1. How do I start using ADE?
+
+- First install the ADE system and any other software you will be using.
+  To start ADE with a graphical user interface (GUI) and a new
+  configuration, type:
+  
+  ADEHOME$ java StartADEGui
+  
+  There are also example programs in the "ADEHOME/examples/" directory.
+  An example that demonstrates both communication between ADEServers and
+  ADE's failure recovery mechanisms can be run by typing:
+
+  ADEHOME$ java examples/testTestServer
+
+  An example that demonstrates how the Stage simulator (assuming it has
+  been properly installed) works in ADE can be run by typing:
+
+  ADEHOME$ java examples/testStageSimulator
+  
+C.2. What is an ADEServer?
+
+- An ADEServer, called a "component" in the context of a robotic agent's
+  architecture, is a Java object that provides services in an ADE system.
+  ADEServers are designed to be secure, location-transparent, and
+  fault-tolerant.
+  
+C.3. What is an ADERegistry?
+
+- An ADERegistry is a special type of ADEServer that performs bookkeeping
+  tasks in an ADE configuration, including controlling access to ADEServers
+  and restarting failed components.
+  
+C.4. How do I connect to an ADEServer?
+
+- Before making use of the services an ADEServer provides, you must obtain
+  a connection to it. To do so, use the following ("pseudoref" and
+  "ExampleServerType" are examples):
+  
+  private Object pseudoref;
+  ...
+  try {
+    pseudoref = getClient("ExampleServerType");
+  } catch (RemoteException re) {
+    System.err.println("Exception getting ExampleServerType client:");
+    System.err.println(re);
+  }
+  
+  See D.1 "How do I write my own ADEServer?" and E.2 "How do I invoke
+  (remote) method calls?" for more.
+  
+C.5. What is a "startup script"?
+
+- A "startup script", also called a "configuration file", is a text file
+  that contains information about one or more ADEServers in an ADE
+  configuration. An ADERegistry is able to process the file to automatically
+  start an entire pre-defined architecture.
+  
+C.6. Can I start ADE without a "startup script"?
+
+- Absolutely, but you will have to start each ADEServer manually.
+
+C.7. Can I start/use multiple ADERegistrys?
+
+- Yes. There are at least two cases where you might want to do this:
+  
+  (1) Maintaining a separation between applications, which allows more
+      than one project to execute simultaneously without any overlap.
+  (2) To take advantage of ADE's failure recovery mechanisms; since an
+      ADERegistry is responsible for restarting failed ADEServers, it
+      is necessary to provide a "backup" registry in case the host on
+      which the "primary" registry becomes inaccessible.
+  
+  However, only one ADERegistry can execute on the same host and port
+  with the same name and type. Assigning a different host, port, and
+  name is done from the command line with the "-l <IP> [port] [name]"
+  switch. For example, to start separate registries like case (1):
+  
+  First registry, which defaults to port 1099, named "ADERegistry": 
+  java ade/ADERegistryImpl -l 127.0.0.1
+  
+  Second registry, which uses port 1100, named "ADERegistryTwo": 
+  java ade/ADERegistryImpl -l 127.0.0.1 1100 ADERegistryTwo
+  
+  To incorporate ADE's failure recovery ability, simply add the
+  "-r <IP> [port] [name]" switch to the second registry, which causes
+  it to register with the registry located there. The command line
+  startup would be (note the port and name use the default settings
+  of port 1099 and name "ADERegistry"):
+  
+  java ade/ADERegistryImpl -l 127.0.0.1 1100 ADERegistryTwo -r 127.0.0.1
+  
+  Additional ADERegistrys can also be started from a "startup script"
+  (see C.4.).
+  
+C.8. How do I change the length of the method call timeout?
+
+- When a connection is made to another ADEServer using a pseudo-reference,
+  ADE uses a timeout for determining how long is a method call should take
+  before returning (see E.2. "How do I invoke (remote) method calls?").
+  You can also set the rate of checking the timeout -- checking more often
+  results in more timely results, but incurs more overhead. To adjust the
+  timeout for a particular pseudo-reference (where "pseudoref" is the
+  Object returned by "getClient" (see C.4), 2000 is an example maximum
+  timeout in milliseconds, and 500 is an example checking rate, also in
+  milliseconds), do the following:
+  
+  if (!setCallTimeoutAndDecrement(pseudoref, 2000, 500)) {
+    System.out.println("Failed to adjust timeout parameters!");
+  }
+
+C.9. What are some common "gotchas" I should watch for?
+
+- Only methods that appear in an interface (see C.6.) can be called by
+  other ADEServers.
+- When using a "startup script" (see C.4.), a NullPointerException
+  indicates that at least one of the ADEServers could not be instantiated
+  due to an internal exception. The system will not shut down; rather,
+  the ADERegistry and other servers will continue to operate.
+- A ConnectionException is often caused by incorrect options in the
+  "hosts" or "config" files, a firewall that blocks RMI connections, or
+  other reasons.
+- Only a single connection to any one ADEServer is granted to any one
+  user. After disconnecting, a couple seconds need to pass before the
+  ADEServer recognizes that the user is no longer connected.
+
+
+
+D. Programming ADEServers
+=========================
+
+D.1. How do I write my own ADEServer?
+
+- Create a Java interface that defines the methods (i.e., services) your
+  ADEServer will provide. You can examine any of the *Server.java files
+  in one of the subdirectories of ADEHOME/com/ for examples; there are
+  predefined interfaces for common robotic tasks available for extension
+  in the ADEHOME/com/interfaces/ directory.
+
+  Then, write your ADEServer by extending the ADEServerImpl class and
+  implementing the methods (i.e., services) defined in the previous step.
+  Note that there are also 6 abstract methods that must be implemented as
+  required by the ADEServerImpl superclass:
+  
+  protected void clientConnectReact(String user),
+  protected void clientDownReact(String user),
+  protected void serverDownReact(String s),
+  protected void serverReconnectReact(String s),
+  protected boolean localrequestShutdown(Object credentials), and
+  protected void localshutdown()
+  
+  In addition, your ADEServer must call the "finishedInitialization()"
+  method before it can register and be accessed (see C.11. and C.12.).
+  
+  From there, no restrictions are placed on your Java code, with the
+  exception of interacting with other ADEServers. To obtain a
+  "pseudo-reference" (i.e., a connection) to another ADEServer, use
+  the "getClient" method, which takes the type of ADEServer you are
+  requesting as a parameter and returns an Object (see C.4). To use
+  the services provided by that ADEServer (i.e., invoke one of it's
+  publically available methods), use the following:
+  
+  call(pseudo-reference, methodname, methodarguments);
+  
+D.2. Why do I have to use both *Server.java and *ServerImpl.java files?
+
+- These separate files are needed to define the methods (i.e., services)
+  an ADEServer provides, although the names are a matter of convention.
+  In the ADE framework, the *Server.java file is a Java interface that
+  defines the methods available to clients; it must, either directly or
+  via inheritence, extend Java's "Remote" interface. The *ServerImpl.java
+  files are the implementation of (at least) the methods defined by the
+  interfaces they implement.
+
+D.3. What does the "Impl" in an ADEServer's name signify?
+
+- The "Impl" is simply a convention that is used to distinguish an RMI
+  class from an interface.
+  
+D.4. Why do I have to implement an interface for my own server?
+
+- This is required by Java to satisfy RMI functionality.
+
+D.5. How do I compile my component (ADEServer)?
+
+- Assuming Java is installed, from the ADEHOME directory, use the
+  following command to compile <yourADEServer>:
+
+  ADEHOME$ javac <yourADEServer>
+  
+D.6. What is the "finishedInitialization()" method?
+
+- The "finishedInitialization()" method causes an ADEServer to attempt
+  registration with an ADERegistry. It allows the server to execute
+  initialization procedures, which may require a relatively large
+  amount of time or be necessary before it can operate properly.
+  Although usually found in the server's constructor, it can actually
+  be called at any point during execution, at which time it will
+  register.
+
+D.7. How do I add a graphical representation of my component (ADEServer)?
+
+- You have to implement a subclass of "ADEGuiPanel" that will display
+  the server's data in the way you wish. There are a few things you have
+  to do during the implementation:
+  
+  1. The associated ADEServer (for example, a TestServerImpl) must have a
+     self-reference called "myself", of the server type it implements (for
+	  example, a TestServer; see D.2). The source code might look like so:
+     
+     ... class declaration, etc. ...
+     public TestServer myself;
+     ...
+     public TestServerImpl() throws RemoteException {
+       super();
+       myself = this;
+       ...
+     }
+     
+  2. The associated ADEServer (for example, a TestServerImpl) must have
+     the following two static public methods defined:
+     
+     * The method that will return the button components (cut and paste
+       of the following code will work):
+       
+       static public ArrayList extendInit(ADEBasicObjectInterface boi) {
+         ArrayList components = new ArrayList();
+         ADEGuiActionListener gal = new ADEGuiActionListener(boi, components);
+         return components;
+       }
+       
+     * The method that creates the buttons and associates them with
+       particular panels:
+       
+       static public ArrayList createGuiTriggers() {
+         ArrayList agts = new ArrayList();
+			JButton jb;
+			String panelName;
+			
+			// example shows two buttons and a separate panel for each
+			jb = new JButton("Panel 1");
+			panelName = "com.mydir.gui.MyNumberOneGuiPanel";
+			agts.add(new ADEGuiTrigger(jb, panelName));
+			jb = new JButton("Panel 2");
+			panelName = "com.mydir.gui.MyNumberTwoGuiPanel";
+			agts.add(new ADEGuiTrigger(jb, panelName));
+         return agts;
+       }
+   
+  3. A subclass of ADEGuiPanel must have a constructor that takes a single
+     parameter of the same type as "myself" (see #1). For example, the
+     constructor of TestServerPanel has one parameter is of type
+     TestServer:
+	  
+	  public TestServerPanel(TestServer server) {
+	    ...
+     }
+	  
+	  Other panels will have their own appropriate type.
+     
+  4. A subclass of ADEGuiPanel must implement the abstract updatePanel
+     method, which will be executed periodically to obtain new data.
+  
+  Numbers 3 and 4 are part of implementing your own GUI panel; a simple
+  example can be found in the ADEHOME/com/test/gui/TestServerPanel.java.
+  Don't forget to import the appropriate Java packages (e.g., javax.swing.*)
+  in your server!
+
+D.8. What are some common "gotchas" I should watch for?
+
+- In your ADEServerImpl constructor, you always need to call "super()"
+  on the first line; also, a call to "finishedInitialization()" must
+  be made before the server is allowed to register and join the system.
+- Calls to "finishedInitialization()" (and some other things you might
+  attempt to do) cannot be performed at arbitrary times and will throw
+  a "NullPointerException" when attempting to create the ADEServer. For
+  instance, the "finishedInitialization()" call must be done in the
+  subclass level -- the object needs to be instantiated before it can
+  be manipulated!
+- Only methods that appear in an interface (see C.6.) can be called by
+  other ADEServers.
+- When using a "startup script" (see C.4.), a NullPointerException
+  indicates that at least one of the ADEServers could not be instantiated
+  due to an internal exception. The system will not shut down; rather,
+  the ADERegistry and other servers will continue to operate.
+- A ConnectionException is often caused by incorrect options in the
+  "hosts" or "config" files, a firewall that blocks RMI connections, or
+  other reasons.
+
+
+
+E. Distributing Components
+==========================
+
+E.1. How do I distribute my application over multiple hosts?
+
+- You must have network connectivity between hosts, and all hosts must be
+  on the same network. In addition, you must have passwordless, remote
+  login capability and appropriate permissions on all the hosts you will
+  be using. By default, ADE uses secure shell (ssh) and its related agent
+  program (ssh-agent).
+
+  Once passwordless, remote logins are enabled, one or more ADERegistries
+  must be started, followed by the ADEServers you are using. See question
+  C.4 What is a startup script? for more information on how to automate
+  distribution.
+  
+E.2. How do I invoke (remote) method calls?
+
+- Use either the "call" or "callEx" methods in the ADEServerImpl superclass.
+  The format for each is:
+
+  variable = (casttype)call(pseudo-reference, methodname, methodarguments);
+
+  or
+
+  try {
+    variable = (casttype)callEx(pseudo-reference, methodname, methodarguments);
+  } catch (Exception e) {
+    // do something with the exception
+  }
+
+  See questions D.3 What is a "pseudo-reference"? and D.4. Why do I have to
+  use the "call" method to invoke remote method calls rather than using
+  standard Java syntax? for more.
+  
+E.3. What is a "pseudo-reference"?
+
+- A "pseudo-reference" is a Java object that represents a (possibly) remote
+  ADEServer. While it allows you to make remote method calls, it also provides
+  transparent maintenence of the connection with remote ADEServers, including
+  access control and failure recovery capabilities.
+  
+E.4. Why do I have to use the "call" method to invoke remote method
+     calls rather than using standard Java syntax?
+
+- ADE puts a level of indirection between the code you write and the actual
+  remote reference. For you, this provides transparent failure recovery; the
+  remote reference can be replaced without having to take any action. For the
+  designer of the ADEServer to which you are a client, this provides strict
+  access control at the individual method level.
+
+
+
+F. Other Questions
+==================
+
+F.1. How does ADE support fault-tolerant computing?
+
+- Each ADEServer maintains a "heartbeat" and "reaper" combination with each
+  ADEServer to which it is connected. A heartbeat is sent by a client to an
+  ADEServer periodically with notification of its operational state; at about
+  twice that period, an ADEServer's reaper checks to make sure a heartbeat
+  was received.
+  
+  In the general case, if an ADEServer is acting as a client and its heartbeat
+  is not successfully received, an assumption is made that the server is down
+  and it will attempt to reconnect. If an ADEServer is acting as a server and
+  does not receive a heartbeat from one of its clients, that client is removed
+  from its list and must request a new connection to access services.
+  
+  Due to the role the ADERegistry plays in an ADE configuration, it provides
+  special functionality with its heartbeat/reaper. When an ADERegistry does
+  not receive a heartbeat within its allotted reaper period, the same
+  assumption as in the general case is made: the server is down. However,
+  the ADERegistry can attempt to restart the server on the same or another
+  host, after which affected clients will automatically reconnect and resume
+  operation.
+  
+  Additionally, an ADEServer can be customized to take specific actions when
+  either one of its clients (dis)connects or when it (dis)connects to another
+  ADEServer.
+  
+F.2. How do I make failure recovery faster?
+
+- Failure recovery depends on the period of the "heartbeat" (which is a
+  notification that an ADEServer is still functioning). A coarse-grained
+  way to make failure recovery faster is to simply decrease the period
+  (that is, increase the number of times notification occurs). However,
+  be aware that this affects *all* ADEServers registered with a particular
+  ADERegistry and can substantially increase the amount of network traffic.
+
+  Another way is to have a redundant ADEServer executing. When a component
+  fails, a client will attempt to restore its connection--first to the
+  ADEServer to which it was connected, then to an ADEServer of the same
+  type. If an ADEServer of that type is already executing, a new connection
+  can be made without waiting for the ADERegistry to restart the component.
+  
+F.3. Can I increase the time between disconnect detection and recovery?
+
+- Yes, the time can be increased separately for each ADEServer to some
+  multiple of the usual failure detection time period (the "reaper" period,
+  see F.1. and F.2. for more). This might be useful if you know network
+  outages are likely and may last longer than the reaper period. To change
+  the setting, add the following line to your ADEServer source code:
+  
+  setRecoveryMultiplier(<multiplier>);
+
+  Be aware that the multiplier will be in effect anytime the ADERegistry
+  detects that the ADEServer failed -- including when you shut it down
+  yourself.
+  
+F.4. How do I change the failure recovery "policy"?
+
+- TODO
+
+F.5. What are ADE's security features?
+
+- server-specified user/password list for access control, including
+  ADERegistry administration
+- server-specified per-method access control according to the client
+- final and private methods
+- use of ssh for remote login

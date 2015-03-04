@@ -1,0 +1,51 @@
+# ADE hosts file config/airolab5.hosts
+# All of these entries are optional and will be filled with
+# default values, as found in the ade.ADEPreferences class
+# and the ade.ADEHostInfo.HostDefaultInfo enumeration.
+# 
+# Format and valid options:
+# STARTHOST
+# ip           IP address or hostname
+# os           operating system name
+# cpus         number of CPUs (default=1)
+# cpumhz       CPU speeds (default=850)
+# memmb        available memory (default=256MB)
+# adehome      ADE home directory
+# tempdir      temporary directory (e.g., /tmp)
+# javadir      Java home directory
+# javabin      Java executable
+# javacompiler Java compiler
+# shell        command-line shell (e.g., /bin/sh)
+# shellargs    shell arguments (e.g., -c)
+# ping         ping command (e.g., /bin/ping)
+# pingargs     ping arguments (e.g., -c 2)
+# rsh          remote shell command (e.g., /bin/rsh)
+# rshargs      remote shell arguments (e.g., -X -A -n)
+# rcp          remote copy command (e.g., /bin/rcp)
+# rcpargs      remote copy arguments (e.g., -X -A -n)
+# ssh          ssh command (e.g., /bin/ssh)
+# sshargs      ssh arguments (e.g., -X)
+# scp          remote secure copy command (e.g., /bin/rcp)
+# scpargs      remote secure copy arguments (e.g., -A -n)
+# sshlogin     ssh login username
+# ps           process information command (e.g., /bin/ps)
+# psargs       process information command (e.g., -f)
+# devices      interfaces supported on host
+# ENDHOST
+# 
+STARTHOST
+ip 127.0.0.1
+adehome /home/pscherm1/work/projects/ade/
+sshlogin pscherm1
+ENDHOST
+#
+# airolab5
+STARTHOST
+ip 192.168.0.5
+cpumhz 2260
+memmb 512000
+javadir /usr/java/jdk1.5.0_03/
+adehome /home/pscherm1/work/projects/ade/
+sshlogin pscherm1
+ENDHOST
+#

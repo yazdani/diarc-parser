@@ -1,0 +1,16 @@
+
+Interesting Windows tidbits:
+When starting Java from the command line, the class file *does not* use the
+standard Windows file separator; you can use either periods (standard java
+package demarcation) or forward slashes (standard UNIX file separator). For
+example, to start an ADE registry (which is located in the "ade" directory),
+the following work (showing a full path to the java executable for comparison
+purposes):
+
+C:\adehome> C:\jdk1.5.0_06\bin\java ade.ADERegistryImpl
+C:\adehome> C:\jdk1.5.0_06\bin\java ade/ADERegistryImpl
+
+However, the following will not work:
+
+C:\adehome> C:\jdk1.5.0_06\bin\java ade\ADERegistryImpl
+

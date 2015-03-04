@@ -1,0 +1,182 @@
+# ADE hosts file config/rudy.hosts
+# All of these entries are optional and will be filled with
+# default values, as found in the ade.ADEPreferences class
+# and the ade.ADEHostInfo.HostDefaultInfo enumeration.
+# 
+# Format and valid options:
+# STARTHOST
+# ip           IP address or hostname
+# os           operating system name
+# cpus         number of CPUs (default=1)
+# cpumhz       CPU speeds (default=850)
+# memmb        available memory (default=256MB)
+# adehome      ADE home directory
+# tempdir      temporary directory (e.g., /tmp)
+# javadir      Java home directory
+# javabin      Java executable
+# javacompiler Java compiler
+# shell        command-line shell (e.g., /bin/sh)
+# shellargs    shell arguments (e.g., -c)
+# ping         ping command (e.g., /bin/ping)
+# pingargs     ping arguments (e.g., -c 2)
+# rsh          remote shell command (e.g., /bin/rsh)
+# rshargs      remote shell arguments (e.g., -X -A -n)
+# rcp          remote copy command (e.g., /bin/rcp)
+# rcpargs      remote copy arguments (e.g., -X -A -n)
+# ssh          ssh command (e.g., /bin/ssh)
+# sshargs      ssh arguments (e.g., -X)
+# scp          remote secure copy command (e.g., /bin/rcp)
+# scpargs      remote secure copy arguments (e.g., -A -n)
+# sshlogin     ssh login username
+# ps           process information command (e.g., /bin/ps)
+# psargs       process information command (e.g., -f)
+# devices      interfaces supported on host
+# ENDHOST
+# 
+# A localhost entry that generally matches airolab setups
+STARTHOST
+ip 127.0.0.1
+os Linux
+javadir /usr/local/java/java/
+adehome /home/hrilab/ade-svn/ade/
+pingargs -c 2
+sshlogin airolab
+ENDHOST
+#
+# the little dell
+STARTHOST
+ip 192.168.0.200
+os Linux
+cpumhz 1800
+memmb 634000
+javadir /usr/java/jdk1.5.0_03/
+adehome /home/airolab/ade-svn/ade/
+sshlogin airolab
+#devices SpeechRecognitionComponent SpeechProductionComponent
+ENDHOST
+#
+# the linux certified
+STARTHOST
+ip 192.168.0.201
+os Linux
+cpumhz 2000
+memmb 904000
+javadir /usr/java/jdk1.5.0_03/
+adehome /home/airolab/ade-svn/ade/
+sshlogin airolab
+ENDHOST
+#
+# hri.cogs
+STARTHOST
+ip 192.168.0.254
+os Linux
+cpumhz 1300
+memmb 384000
+javadir /usr/local/java/java/
+adehome /home/airolab/ade-svn/ade/
+sshlogin airolab
+ENDHOST
+#
+# hrilab1
+STARTHOST
+ip 192.168.0.1
+os Linux
+cpumhz 1300
+memmb 384000
+javadir /usr/local/java/java/
+adehome /home/airolab/ade-svn/ade/
+sshlogin airolab
+ENDHOST
+#
+# the other ibm thinkpad (wired)
+STARTHOST
+ip 192.168.0.103
+os Linux
+cpumhz 1733
+memmb 505000
+javadir /usr/local/java/java/
+adehome /home/airolab/ade-svn/ade/
+sshlogin airolab
+ENDHOST
+#
+# the other ibm thinkpad
+STARTHOST
+ip 192.168.0.102
+os Linux
+cpumhz 1733
+memmb 505000
+javadir /usr/local/java/java/
+adehome /home/pscherme/work/projects/ade/
+sshlogin pscherme
+ENDHOST
+#
+#
+STARTHOST
+ip 192.168.0.202
+os Linux
+cpumhz 1733
+memmb 505000
+javadir /usr/local/java/java/
+adehome /home/pscherme/work/projects/ade/
+sshlogin pscherme
+ENDHOST
+#
+# the other ibm thinkpad
+STARTHOST
+ip 192.168.0.203
+os Linux
+cpumhz 1733
+memmb 505000
+javadir /usr/local/java/java/
+adehome /home/airolab/ade-svn/ade/
+sshlogin airolab
+ENDHOST
+#
+# the other ibm thinkpad
+STARTHOST
+ip 192.168.0.203
+os Linux
+cpumhz 1733
+memmb 505000
+javadir /usr/local/java/java/
+adehome /home/airolab/ade-svn/ade/
+sshlogin airolab
+ENDHOST
+#
+# the new Dell laptop
+STARTHOST
+ip 192.168.0.204
+os Linux
+cpumhz 1733
+memmb 505000
+javadir /usr/local/java/java/
+adehome /home/hrilab/ade-svn/ade/
+sshlogin hrilab
+ENDHOST
+#
+###### Z added new
+#
+# Z tower the new Dell 
+STARTHOST
+ip 192.168.0.4
+os Linux
+cpumhz 1733
+memmb 505000
+javadir /usr/local/java/java/
+adehome /home/zhaga/ade/ade/
+sshlogin zhaga
+ENDHOST
+###### Z added new
+#
+# Michael's computer?
+STARTHOST
+ip 192.168.0.99
+os Linux
+cpumhz 1733
+memmb 505000
+javadir /usr/local/java/java/
+adehome /home/rcantrel/ade/ade
+sshlogin rcantrel
+ENDHOST
+#
+# End of file

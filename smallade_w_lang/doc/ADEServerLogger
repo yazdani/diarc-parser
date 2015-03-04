@@ -1,0 +1,29 @@
+The local logger can then be used as follows:
+
+(1) any ADEServer can request ADEServer logging by calling the local
+method "setADEServerLogging(true)", which will return when all servers
+have enabled local logging
+
+(2) each server will create a local log file, where the file name
+consists of the servername followed by "_" and by the time of creation
+in milliseconds
+
+(3) to log a string representation of an object, simply call "logIt(o)"
+on the object, which will create a new line in the log file with the
+time stamp followed by the string representation of the object separated
+by a space (note that if there is no "toString()" function, the default
+will be to print the object's identifier, which is rather useless...).
+if local logging is not enabled or if there is any problem with the log
+file, then the above will throw an IOException
+
+(4) to log when possible without IO exceptions, call "canLogIt(o)",
+which never throws an exception
+
+(5) to stop logging, call "setADEServerLogging(false)"
+
+CAVEATS: I have not tested this, so there might be bugs, but I did
+implement some mechanisms that should prevent multiple servers from
+making logging requests at the same time; also, currently all log files
+will be in the logs subdirectory of the ADE home directory on the host on
+which the server is running.
+

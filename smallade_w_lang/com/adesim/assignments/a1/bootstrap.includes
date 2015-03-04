@@ -1,0 +1,9 @@
+com/**/*.class
+edu/
+utilities/**/*.class
+com/action/*.class
+com/adesim/**/*
+com/interfaces/*
+utilities/*.class
+com/vision/MemoryObject.class
+com/*.class

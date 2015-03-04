@@ -1,0 +1,22 @@
+To install the RXTX package (enables use of serial/parallel port hardware
+with Java), simply untar the "rxtx-install_files.tar.gz" in the top level
+java directory. 
+
+If java is located in /usr/java/j2sdk/ and "rxtx-install_files.tar.gz"
+is in /root/, perform the following:
+
+cd /usr/java/j2sdk/
+tar -xvzf /root/rxtx-install_files.tar.gz
+
+This should install RXTX version 2.1-7pre17 by decompressing:
+jre/lib/ext/RXTXcomm.jar
+lib/ext/comm.jar
+lib/javax.comm.properties
+jre/lib/i386/librxtxI2C.so
+jre/lib/i386/librxtxParallel.so
+jre/lib/i386/librxtxRS485.so
+jre/lib/i386/librxtxRaw.so
+jre/lib/i386/librxtxSerial.so
+
+To access the packages from your java source code, put "import gnu.io.*;"
+at the top of your class.

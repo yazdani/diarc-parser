@@ -1,0 +1,2 @@
+JAR=com/discourse/jar/
+java -cp WLSVM/lib/libsvm.jar:WLSVM/lib/wlsvm.jar:$JAR:$JAR/weka.jar:$JAR/postaipc-0.8.5.jar:$JAR/protobuf-java-2.3.0.jar:$JAR/protobuf-java-2.3.0-lite.jar:. com/discourse/mink/MinkParser -config $1 -actionclassifier $2 -labelclassifier $3 -infile $4

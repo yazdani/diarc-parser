@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE type SYSTEM "action.dtd"> 
+<type>  
+  <name>entity</name>
+  <subtypes>
+    <type>      
+      <name>action</name>
+      <subtypes>
+        <type>          
+          <name>script</name>
+          <subtypes>
+            <!-- Begin ExplorationTask1 -->
+            <type>              
+              <name>ExplorationTask1</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <taskname>Explore</taskname>
+              <benefit>500</benefit>
+              <cost>50</cost>
+              <timeout>3000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>double</vartype>
+              </var>
+	      <!--
+              <actspec>startADEServerLogging</actspec>
+	      -->
+	      <actspec>printText "DISABLING LOGGING DURING DEBUGGING!"</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <!-- Begin 75 -75 -->
+              <actspec>addFieldPoint ?robot 75 -75 450</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start, ?partner"</actspec>
+              <actspec>logText "BEGIN Task 1"</actspec>
+              <actspec>ExplorationCommand ?robot ?partner</actspec>
+              <actspec>sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec>logText "END Task 1"</actspec>
+              <actspec>sayTextNow ?robot ?partner "Returning home"</actspec>
+              <actspec>qstop ?robot</actspec>
+              <actspec>moveTo ?robot -135 215</actspec>
+              <!-- Home is -145 225 (approximately) -->
+              <actspec>backTo ?robot -145 225</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <!-- End 75 -75 -->
+              <!-- Begin -150 -75 -->
+              <actspec>addFieldPoint ?robot -150 -75 450</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start, ?partner"</actspec>
+              <actspec>logText "BEGIN Task 2"</actspec>
+              <actspec>ExplorationCommand ?robot ?partner</actspec>
+              <actspec>sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec>logText "END Task 2"</actspec>
+              <actspec>sayTextNow ?robot ?partner "Returning home"</actspec>
+              <actspec>qstop ?robot</actspec>
+              <actspec>moveTo ?robot -135 215</actspec>
+              <actspec>backTo ?robot -145 225</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <!-- End -150 -75 -->
+              <!-- Begin 150 0 -->
+              <actspec>addFieldPoint ?robot 150 0 450</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start, ?partner"</actspec>
+              <actspec>logText "BEGIN Task 3"</actspec>
+              <actspec>ExplorationCommand ?robot ?partner</actspec>
+              <actspec>sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec>logText "END Task 3"</actspec>
+              <actspec>sayTextNow ?robot ?partner "Returning home"</actspec>
+              <actspec>qstop ?robot</actspec>
+              <actspec>moveTo ?robot -135 215</actspec>
+              <actspec>backTo ?robot -145 225</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <!-- End 150 0 -->
+              <!-- Begin -25 -75 -->
+              <actspec>addFieldPoint ?robot -25 -75 450</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start, ?partner"</actspec>
+              <actspec>logText "BEGIN Task 4"</actspec>
+              <actspec>ExplorationCommand ?robot ?partner</actspec>
+              <actspec>sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec>logText "END Task 4"</actspec>
+              <actspec>sayTextNow ?robot ?partner "Returning home"</actspec>
+              <actspec>qstop ?robot</actspec>
+              <actspec>moveTo ?robot -135 215</actspec>
+              <actspec>backTo ?robot -145 225</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <!-- End -25 -75 -->
+              <!-- Begin 75 150 -->
+              <actspec>addFieldPoint ?robot 75 150 450</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start, ?partner"</actspec>
+              <actspec>logText "BEGIN Task 5"</actspec>
+              <actspec>ExplorationCommand ?robot ?partner</actspec>
+              <actspec>sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec>logText "END Task 5"</actspec>
+              <actspec>sayTextNow ?robot ?partner "We are finished, ?partner"</actspec>
+              <actspec>qstop ?robot</actspec>
+              <!-- End 75 150 -->
+              <actspec> stopADEServerLogging</actspec>
+              <actspec> actionSucceed</actspec>
+            </type>
+            <!-- End ExplorationTask1-->
+            <!-- Begin ExplorationTask2 -->
+            <type>              
+              <name>ExplorationTask2</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <taskname>Explore</taskname>
+              <benefit>500</benefit>
+              <cost>50</cost>
+              <timeout>3000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <actspec>startADEServerLogging</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <!-- Begin 75 -75 -->
+              <actspec>addFieldPoint ?robot 75 -75 450</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start, ?partner"</actspec>
+              <actspec>logText "BEGIN Task 1"</actspec>
+              <actspec>ExplorationCommand ?robot ?partner</actspec>
+              <actspec>sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec>logText "END Task 1"</actspec>
+              <actspec>sayTextNow ?robot ?partner "Returning home"</actspec>
+              <actspec>qstop ?robot</actspec>
+              <actspec>moveTo ?robot -135 215</actspec>
+              <!-- Home is -145 225 (approximately) -->
+              <actspec>backTo ?robot -145 225</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <!-- End 75 -75 -->
+              <!-- Begin 150 0 -->
+              <actspec>addFieldPoint ?robot 150 0 450</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start, ?partner"</actspec>
+              <actspec>logText "BEGIN Task 2"</actspec>
+              <actspec>ExplorationCommand ?robot ?partner</actspec>
+              <actspec>sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec>logText "END Task 2"</actspec>
+              <actspec>sayTextNow ?robot ?partner "Returning home"</actspec>
+              <actspec>qstop ?robot</actspec>
+              <actspec>moveTo ?robot -135 215</actspec>
+              <actspec>backTo ?robot -145 225</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <!-- End 150 0 -->
+              <!-- Begin -25 -75 -->
+              <actspec>addFieldPoint ?robot -25 -75 450</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start, ?partner"</actspec>
+              <actspec>logText "BEGIN Task 3"</actspec>
+              <actspec>ExplorationCommand ?robot ?partner</actspec>
+              <actspec>sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec>logText "END Task 3"</actspec>
+              <actspec>sayTextNow ?robot ?partner "Returning home"</actspec>
+              <actspec>qstop ?robot</actspec>
+              <actspec>moveTo ?robot -135 215</actspec>
+              <actspec>backTo ?robot -145 225</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <!-- End -25 -75 -->
+              <!-- Begin -150 -75 -->
+              <actspec>addFieldPoint ?robot -150 -75 450</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start, ?partner"</actspec>
+              <actspec>logText "BEGIN Task 4"</actspec>
+              <actspec>ExplorationCommand ?robot ?partner</actspec>
+              <actspec>sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec>logText "END Task 4"</actspec>
+              <actspec>sayTextNow ?robot ?partner "Returning home"</actspec>
+              <actspec>qstop ?robot</actspec>
+              <!--
+              <actspec>moveTo ?robot -105 -25</actspec>
+              --> 
+              <actspec>moveTo ?robot -135 215</actspec>
+              <actspec>backTo ?robot -145 225</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <!-- End -150 -75 -->
+              <!-- Begin 75 150 -->
+              <actspec>addFieldPoint ?robot 75 150 450</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start, ?partner"</actspec>
+              <actspec>logText "BEGIN Task 5"</actspec>
+              <actspec>ExplorationCommand ?robot ?partner</actspec>
+              <actspec>sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec>logText "END Task 5"</actspec>
+              <actspec>sayTextNow ?robot ?partner "We are finished, ?partner"</actspec>
+              <actspec>qstop ?robot</actspec>
+              <!-- End 75 150 -->
+              <actspec> stopADEServerLogging</actspec>
+              <actspec> actionSucceed</actspec>
+            </type>
+            <!-- End ExplorationTask2 -->
+            <!-- Begin ExplorationTask2 -->
+            <type>              
+              <name>ExplorationTask3</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <taskname>Explore</taskname>
+              <benefit>500</benefit>
+              <cost>50</cost>
+              <timeout>3000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?xcoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?ycoord</varname>
+                <vartype>double</vartype>
+              </var>
+              <actspec>startADEServerLogging</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <actspec>addFieldPoint ?robot -150 -75 450</actspec>
+              <actspec>ExplorationCommand ?robot ?partner</actspec>
+              <actspec>sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec>logText "END Task 4"</actspec>
+              <actspec>sayTextNow ?robot ?partner "Returning home"</actspec>
+              <actspec>qstop ?robot</actspec>
+              <!--
+              <actspec>moveTo ?robot -105 -25</actspec>
+              --> 
+              <actspec>moveTo ?robot -135 215</actspec>
+              <actspec>backTo ?robot -145 225</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <!-- End -150 -75 -->
+              <!-- Begin 75 150 -->
+              <actspec>addFieldPoint ?robot 75 150 450</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start, ?partner"</actspec>
+              <actspec>logText "BEGIN Task 5"</actspec>
+              <actspec>ExplorationCommand ?robot ?partner</actspec>
+              <actspec>sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec>logText "END Task 5"</actspec>
+              <actspec>sayTextNow ?robot ?partner "We are finished, ?partner"</actspec>
+              <actspec>qstop ?robot</actspec>
+              <!-- End 75 150 -->
+              <actspec> stopADEServerLogging</actspec>
+              <actspec> actionSucceed</actspec>
+            </type>
+            <!-- End ExplorationTask2 -->
+            <!-- Begin DiscourseExplorationCommand -->
+            <!-- for use with DiscourseServerImpl -->
+            <type>              
+              <name>DiscourseExplorationCommand</name>
+              <desc>?robot follows commands from ?partner</desc>
+              <taskname>Obey_Commands</taskname>
+              <benefit>500</benefit>
+              <cost>50</cost>
+              <!--<timeout>600</timeout>-->
+              <timeout>60000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!command</varname>
+                <vartype>action</vartype>
+              </var>
+              <var>
+                <varname>!id</varname>
+                <vartype>discourseTs</vartype>
+              </var>
+              <locks>motionLock transmitLock</locks>
+              <actspec>printText "In ExplorationCommand"</actspec>
+              <actspec>sleep 5000</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   isFact ExplorationTaskSuccess</actspec>
+              <control> endnot</control>
+              <control>do</control>
+	      <!-- This is awkward: need !id to be 0 to initialize a new request -->
+	      <actspec> + 0 0 !id</actspec>
+              <control> if</control>
+              <actspec>   explorationGetBinding ?robot ?partner !command !id</actspec>
+              <control> then</control>
+              <actspec>   printText "ExplorationCommand: new command: !command new id: !id"</actspec>
+              <actspec>   performAction !command !id</actspec>
+              <control> endif</control>
+              <control>endwhile</control>
+              <actspec>retractFact ExplorationTaskSuccess</actspec>
+            </type>
+            <!-- End DiscourseExplorationCommand -->
+            <!-- Begin ExplorationCommand -->
+            <type>              
+              <name>ExplorationCommand</name>
+              <desc>?robot follows commands from ?partner</desc>
+              <taskname>Obey_Commands</taskname>
+              <benefit>500</benefit>
+              <cost>50</cost>
+              <!--<timeout>600</timeout>-->
+              <timeout>6000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!command</varname>
+                <vartype>action</vartype>
+              </var>
+              <var>
+                <varname>!id</varname>
+                <vartype>discourseTs</vartype>
+              </var>
+              <locks>motionLock transmitLock</locks>
+              <actspec>printText "In ExplorationCommand"</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   isFact ExplorationTaskSuccess</actspec>
+              <control> endnot</control>
+              <control>do</control>
+	      <!-- This is awkward: need !id to be 0 to initialize a new request -->
+	      <actspec> + 0 0 !id</actspec>
+              <control> if</control>
+              <!--
+              <actspec>   explorationGetBinding ?robot ?partner !command !id</actspec>
+              -->
+              <actspec>   oldExplorationGetBinding ?robot ?partner !command !id</actspec>
+              <control> then</control>
+              <!--
+              <actspec>   printText "ExplorationCommand: new command: !command new id: !id"</actspec>
+              <actspec>   performAction !command !id</actspec>
+              -->
+              <control> endif</control>
+              <control>endwhile</control>
+              <actspec>retractFact ExplorationTaskSuccess</actspec>
+            </type>
+            <!-- End ExplorationCommand -->
+            <!-- Begin explorationGetBinding -->
+            <type>              
+              <!-- Same as getBinding, but also monitors motion -->
+              <name>explorationGetBinding</name>
+              <taskname>Retrieve_Speech_Input</taskname>
+              <var>
+                <varname>?listener</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?speaker</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?binding</varname>
+                <vartype>entity</vartype>
+                <varrole>return</varrole>
+              </var>
+              <var>
+                <varname>?id</varname>
+                <vartype>discourseTs</vartype>
+                <varrole>return</varrole>
+              </var>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   newDiscourseGetBindingOfType ?listener ?speaker ?binding ?id</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <!--
+              <control> if</control>
+              <actspec>   stoppedMe ?listener</actspec>
+              <control> then</control>
+              <actspec>   sayTextNow ?listener ?speaker "There's something in the way."</actspec>
+              <control> endif</control>
+              -->
+              <control>endwhile</control>
+	      <actspec>printText "explorationGetBinding new binding: ?binding "</actspec>
+            </type>
+            <!-- End explorationGetBinding -->
+            <!-- Begin oldExplorationGetBinding -->
+            <type>              
+              <!-- Same as getBinding, but also monitors motion -->
+              <name>oldExplorationGetBinding</name>
+              <taskname>Retrieve_Speech_Input</taskname>
+              <var>
+                <varname>?listener</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?speaker</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?binding</varname>
+                <vartype>entity</vartype>
+                <varrole>return</varrole>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!timestamp</varname>
+                <vartype>visionTs</vartype>
+              </var>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   discourseGetBindingOfType ?listener ?speaker ?binding !timestamp</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   discourseIsBound !timestamp</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <!--
+              <control> if</control>
+              <actspec>   stoppedMe ?listener</actspec>
+              <control> then</control>
+              <actspec>   sayTextNow ?listener ?speaker "There's something in the way."</actspec>
+              <control> endif</control>
+              -->
+              <control>endwhile</control>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   execDiscourseResult !timestamp ?binding</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End oldExplorationGetBinding -->
+            <!-- Begin AnnounceTime -->
+            <type>              
+              <name>AnnounceTime</name>
+              <desc>?robot tells ?partner how much time remains</desc>
+              <benefit>1800</benefit>
+              <cost>0</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <timeout>5</timeout>
+              <taskname>Announce_Time</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?remaining</varname>
+                <vartype>long</vartype>
+              </var>
+              <actspec>sayTextNow ?robot ?partner "?remaining seconds left"</actspec>
+            </type>
+            <!-- End AnnounceTime -->
+            <!-- Begin upload -->
+            <type>              
+              <name>upload</name>
+              <desc>?robot moves to transmit point and uploads ?data</desc>
+              <benefit>1800</benefit>
+              <cost>0</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <timeout>180</timeout>
+              <taskname>Upload</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?datatype</varname>
+                <vartype>text</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!fieldStrength</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <actspec>moveTo ?robot 75 -75</actspec>
+              <actspec>printText "upload transmitting ?datatype"</actspec>
+              <control>if</control>
+              <actspec> doTransmit ?robot 400 !fieldStrength</actspec>
+              <control>then</control>
+              <actspec> assertFact ExplorationTaskSuccess</actspec>
+              <actspec>else</actspec>
+              <actspec> assertFact ExplorationTaskFailure</actspec>
+              <actspec> sayTextNow ?robot ?partner "Transmission failed"</actspec>
+              <actspec> sayTextNow ?robot ?partner "Field strength is only !fieldStrength"</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End upload -->
+            <!-- Begin testRun -->
+            <type>              
+              <name>testRun</name>
+              <desc>?robot goes</desc>
+              <benefit>1800</benefit>
+              <cost>0</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <timeout>50000</timeout>
+              <taskname>Go!</taskname>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>!x</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!y</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ex</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ey</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ax</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ay</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!dist</varname>
+                <vartype>double</vartype>
+              </var>
+              <actspec>startTraverse ?robot</actspec>
+              <actspec>while</actspec>
+              <actspec> not</actspec>
+              <actspec>  getNearestDoor ?robot !x !y !ex !ey !ax !ay !dist</actspec>
+              <actspec> endnot</actspec>
+              <actspec>do</actspec>
+              <actspec>endwhile</actspec>
+              <actspec>moveThroughRel ?robot</actspec>
+              <actspec>sleep 2000</actspec>
+              <actspec>stop ?robot</actspec>
+              <actspec>printText "Should be in the room"</actspec>
+              <actspec>timeTurn ?robot ${Math.PI}</actspec>
+              <actspec>moveThroughRel ?robot</actspec>
+              <actspec>timeTurn ?robot ${Math.PI/2}</actspec>
+              <actspec>startTraverse ?robot</actspec>
+            </type>
+            <!-- End testRun -->
+          </subtypes>
+        </type>
+      </subtypes>
+    </type>
+  </subtypes>
+</type>

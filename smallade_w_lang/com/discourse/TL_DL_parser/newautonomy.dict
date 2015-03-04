@@ -1,0 +1,22 @@
+transmit: S / NP , V : # x. transmit(?actor`x) , # x. x @ transmit : # x. transmit(?actor`x) , # x. x @ transmit
+send: S / NP : # x. transmit(?actor`x) : # x. transmit(?actor`x)
+prepare: S / NP : # x. prepare(?actor`x) : # x. prepare(?actor`x)
+get: S / NP : # x. reported(?actor`partner`x) : # x. report(?actor`partner`x)
+take: S / NP : # x. reported(?actor`partner`x) : # x. report(?actor`partner`x)
+stop: S : # x. x @ stopped(?actor) : # x. x @ stop(?actor)
+halt: S : # x. x @ stopped(?actor) : # x. x @ stop(?actor)
+move: S / NP : # x. moving(?actor`x) : # x. move(?actor`x)
+go: S / NP : # x. moving(?actor`x) : # x. move(?actor`x)
+turn: S / NP : # x. turning(?actor`x) : # x. turn(?actor`x)
+end: S / NP : # x. finished(?actor`x) : # x. finish(?actor`x)
+a: NP / N : # x. x : # x. x
+to: NP / V : # x. x : # x. x
+data: NP, N : # x. x @ data : # x. x @ data
+transmission: NP, N : # x. x @ transmission : # x. x @ transmission
+reading: NP, N : # x. x @ reading : # x. x @ reading
+left: NP, N : # x. x @ left : # x. x @ left
+right: NP, N : # x. x @ right : # x. x @ right
+forward: NP, N : # x. x @ forward : # x. x @ forward
+straight: NP, N : # x. x @ straight : # x. x @ straight
+back: NP, N : # x. x @ back : # x. x @ back
+survey: NP, N : # x. x @ survey : # x. x @ survey

@@ -1,0 +1,43 @@
+#!/bin/bash
+if [ $# -lt 1 ] ; then
+    echo "Usage: $0 <ID>"
+    exit
+fi
+REDHOST=192.168.0.2
+BLUEHOST=10.69.0.11
+REDARCHHOST=192.168.0.147
+BLUEARCHHOST=10.69.0.12
+#REDHOST=10.68.0.107
+#BLUEHOST=10.68.0.1
+#REDARCHHOST=10.68.0.2
+#BLUEARCHHOST=10.68.0.2
+# autonomy: "first" or "second"
+AUTON_RED="first"
+AUTON_BLUE="second"
+let odd=$1%2
+if [ ${odd} -eq 1 ] ; then
+    AUTON_RED="second"
+    AUTON_BLUE="first"
+fi
+# overall time limit
+LIMIT=360.0
+#LIMIT=15.0
+# delay for taking a reading
+DELAY=2.0
+# start moving
+MOVE="true"
+if [ ! -d logs ] ; then
+    mkdir logs
+fi
+
+architectures() {
+    rm -f /tmp/adepipe
+    mkfifo /tmp/adepipe
+    (./runadeserver com.simspeech.SimSpeechRecognitionServer -l ${BLUEARCHHOST} 1098 Blue2 -r ${BLUEHOST} 1098 Blue < /tmp/adepipe) &
+    (./runadeserver com.action.ActionManagerLinear -l ${BLUEARCHHOST} 1098 Blue -r ${BLUEHOST} 1098 Blue -field -server com.pr2.RosLRFServer -server com.pr2.PR2BaseServer -motion -dbfilesupp com/action/db/newautonomy.xml -server com.simspeech.SimSpeechProductionServer -server com.interfaces.NLPServer -agentname Blue -server com.fnir.FNIRServer -script Experiment Blue Bucky ${AUTON_BLUE} ${LIMIT} $DELAY $MOVE false --) &
+    ./runadeserver com.action.ActionManagerLinear -l ${REDARCHHOST} 1099 Red -r ${REDHOST} 1099 Red -field -server com.adesim.SimEraServer -motion -dbfilesupp com/action/db/newautonomy.xml -server com.simspeech.SimSpeechProductionServer -server com.interfaces.NLPServer -server com.survey.SurveyServer -agentname Red -server com.fnir.FNIRServer -script Experiment Red Bucky ${AUTON_RED} ${LIMIT} $DELAY $MOVE true --
+    echo Done.
+}
+
+architectures 2>&1 | tee /tmp/architectures.out
+# vi:tw=0

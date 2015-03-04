@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE type SYSTEM "action.dtd"> 
+<type>  
+  <name>entity</name>
+  <subtypes>
+    <type>      
+      <name>action</name>
+      <subtypes>
+        <type>          
+          <name>script</name>
+          <subtypes>
+            <!-- Begin testAGM -->
+            <type>              
+              <name>testAGM1</name>
+              <benefit>1800</benefit>
+              <cost>1300</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+	      <posaff>1.0</posaff>
+	      <negaff>0.0</negaff>
+              <timeout>330</timeout>
+              <desc>?robot does something 1</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+	      </var>
+	      <var>
+		<varname>!count</varname>
+		<vartype>integer</vartype>
+	      </var>
+              <locks>transmitLock</locks>
+	      <actspec>+ 0 0 !count</actspec>
+	      <control>while</control>
+              <actspec>  true</actspec>
+	      <control>do</control>
+	      <!-- Do something here (sleep?) and print something -->
+	      <actspec> sleep ?robot 1000</actspec>
+	      <!--
+	      <actspec> testAGM3 ?robot</actspec>
+	      -->
+	      <actspec> + !count 1 !count</actspec>
+	      <actspec> printText "Running testAGM1 !count"</actspec>
+	      <control> if</control>
+	      <actspec>   = !count 10</actspec>
+	      <control> then</control>
+	      <actspec>   setNegativeAffect ?robot 0.5</actspec>
+	      <control> endif</control>
+	      <control>endwhile</control>
+            </type>
+            <type>              
+              <name>testAGM2</name>
+              <benefit>200</benefit>
+              <cost>25</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+	      <posaff>0.0</posaff>
+	      <negaff>0.0</negaff>
+              <timeout>330</timeout>
+              <desc>?robot does something 2</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+	      </var>
+              <locks>transmitLock</locks>
+	      <control>while</control>
+              <actspec>  true</actspec>
+	      <control>do</control>
+	      <!-- Do something here (sleep?) and print something -->
+	      <actspec> sleep ?robot 1000</actspec>
+	      <!--
+	      <actspec> testAGM4 ?robot</actspec>
+	      -->
+	      <actspec> printText "Running testAGM2"</actspec>
+	      <control>endwhile</control>
+            </type>
+            <type>              
+              <name>testAGM3</name>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+	      <posaff>0.0</posaff>
+	      <negaff>0.0</negaff>
+              <timeout>330</timeout>
+              <desc>?robot does something 3</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+	      </var>
+              <locks>transmitLock</locks>
+	      <actspec>sleep ?robot 1000</actspec>
+            </type>
+            <type>              
+              <name>testAGM4</name>
+              <benefit>200</benefit>
+              <cost>25</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+	      <posaff>0.0</posaff>
+	      <negaff>0.0</negaff>
+              <timeout>330</timeout>
+              <desc>?robot does something 4</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+	      </var>
+              <locks>transmitLock</locks>
+	      <actspec>sleep ?robot 1000</actspec>
+            </type>
+            <!-- End testAGM -->
+            <!-- Begin testATM -->
+            <type>              
+              <name>testATM</name>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+	      <posaff>0.0</posaff>
+	      <negaff>0.0</negaff>
+              <timeout>330</timeout>
+              <desc>?robot does something 3</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+	      <control>while</control>
+              <actspec> true</actspec>
+	      <control>do</control>
+	      <actspec> choose</actspec>
+	      <actspec>   testATM1 ?robot</actspec>
+	      <actspec>   testATM2 ?robot</actspec>
+	      <actspec> endchoose</actspec>
+	      <control>endwhile</control>
+            </type>
+            <type>              
+              <name>testATM1</name>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+	      <posaff>0.0</posaff>
+	      <negaff>0.0</negaff>
+              <timeout>330</timeout>
+              <desc>?robot does something 4</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+	      <actspec>sleep ?robot 1000</actspec>
+	      <actspec>printText "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Chose testATM1"</actspec>
+	      <!-- need to trigger negative affect update here -->
+	      <actspec>incrementNegativeLocalAffect ?robot 0.05</actspec>
+            </type>
+            <type>              
+              <name>testATM2</name>
+              <benefit>200</benefit>
+              <cost>25</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+	      <posaff>0.0</posaff>
+	      <negaff>0.2</negaff>
+              <timeout>330</timeout>
+              <desc>?robot does something 5</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+	      <actspec>sleep ?robot 1000</actspec>
+	      <actspec>printText "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Chose testATM2"</actspec>
+	      <!-- need to trigger negative affect update here -->
+	      <actspec>incrementNegativeLocalAffect ?robot 0.05</actspec>
+            </type>
+            <!-- End testATM -->
+          </subtypes>
+        </type>
+      </subtypes>
+    </type>
+  </subtypes>
+</type>

@@ -1,0 +1,139 @@
+# ADE hosts file config/rudy.hosts
+# All of these entries are optional and will be filled with
+# default values, as found in the ade.ADEPreferences class
+# and the ade.ADEHostInfo.HostDefaultInfo enumeration.
+#
+# Format and valid options:
+# STARTHOST
+# ip           IP address or hostname
+# os           operating system name
+# cpus         number of CPUs (default=1)
+# cpumhz       CPU speeds (default=850)
+# memmb        available memory (default=256MB)
+# adehome      ADE home directory
+# tempdir      temporary directory (e.g., /tmp)
+# javadir      Java home directory
+# javabin      Java executable
+# javacompiler Java compiler
+# shell        command-line shell (e.g., /bin/sh)
+# shellargs    shell arguments (e.g., -c)
+# ping         ping command (e.g., /bin/ping)
+# pingargs     ping arguments (e.g., -c 2)
+# rsh          remote shell command (e.g., /bin/rsh)
+# rshargs      remote shell arguments (e.g., -X -A -n)
+# rcp          remote copy command (e.g., /bin/rcp)
+# rcpargs      remote copy arguments (e.g., -X -A -n)
+# ssh          ssh command (e.g., /bin/ssh)
+# sshargs      ssh arguments (e.g., -X)
+# scp          remote secure copy command (e.g., /bin/rcp)
+# scpargs      remote secure copy arguments (e.g., -A -n)
+# sshlogin     ssh login username
+# ps           process information command (e.g., /bin/ps)
+# psargs       process information command (e.g., -f)
+# devices      interfaces supported on host
+# ENDHOST
+STARTHOST
+ip 192.168.0.174
+os Linux
+javadir /usr/java/jdk1.6.0_24
+adehome /home/hrilab/ade-svn/ade
+sshlogin hrilab
+ENDHOST
+STARTHOST
+ip 192.168.0.175
+os Linux
+javadir /usr/lib/jvm/jdk-7-oracle-armhf/jre/
+adehome /home/hrilab/code/ade
+sshlogin hrilab
+ENDHOST
+STARTHOST
+ip 192.168.0.154
+os Linux
+javadir /usr/java/default/bin
+adehome /home/hrilab/ade-svn/ade
+sshlogin hrilab
+ENDHOST
+STARTHOST
+ip 192.168.0.150
+os Linux
+javadir /usr/java/jdk1.6.0_24/jre/
+adehome /home/hrilab/ade-svn/ade/
+sshlogin hrilab
+ENDHOST
+STARTHOST
+ip 192.168.0.155
+os Mac OS X
+javadir /System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
+adehome /Users/matt/code/ade
+sshlogin matt
+ENDHOST
+STARTHOST
+ip 192.168.0.162
+os Linux
+javadir /usr/lib/jvm/java-6-openjdk/
+adehome /home/matt/code/ade/
+sshlogin matt
+ENDHOST
+STARTHOST
+ip 192.168.0.164
+os Linux
+javadir /usr/lib/jvm/java-8-oracle/
+adehome /home/evankrause/hril/git/ade/
+sshlogin evankrause
+ENDHOST
+STARTHOST
+ip 192.168.0.165
+os Linux
+javadir /usr/lib/jvm/java-7-oracle/jre
+adehome /home/hrilab/ade-svn/ade/
+sshlogin hrilab
+ENDHOST
+STARTHOST
+ip 192.168.0.163
+os Linux
+javadir /usr/lib/jvm/java-6-sun-1.6.0.26
+adehome /home/evankrause/hril/git/ade/
+sshlogin evankrause
+ENDHOST
+STARTHOST
+ip 192.168.0.160
+os Linux
+javadir /usr/lib/jvm/java-6-openjdk
+adehome /home/cody/ade
+sshlogin ccanning
+ENDHOST
+STARTHOST
+ip 192.168.0.191
+os Linux
+javadir /usr/lib/jvm/java-7-openjdk-armhf
+adehome /home/hrilab/code/ade
+sshlogin hrilab
+ENDHOST
+STARTHOST
+ip 192.168.0.193
+os Linux
+javadir /usr/lib/jvm/java-8-oracle
+adehome /home/hrilab/ade
+sshlogin hrilab
+ENDHOST
+STARTHOST
+ip 192.168.0.166
+os Linux
+javadir /usr/lib/jvm/java-8-oracle
+adehome /home/hrilab/ade
+sshlogin hrilab
+ENDHOST
+STARTHOST
+ip 192.168.0.147
+os Linux
+javadir /usr/lib/jvm/java-7-openjdk-amd64
+adehome /home/pr2admin/ade-git/ade
+sshlogin pr2admin
+ENDHOST
+STARTHOST
+ip 10.69.0.11
+os Linux
+javadir /usr/lib/jvm/java-7-openjdk-amd64
+adehome /home/pr2admin/ade-git/ade
+sshlogin pr2admin
+ENDHOST

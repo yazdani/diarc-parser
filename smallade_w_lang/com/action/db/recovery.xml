@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE type SYSTEM "action.dtd"> 
+<type>  
+  <name>entity</name>
+  <subtypes>
+    <type>      
+      <name>action</name>
+      <subtypes>
+        <type>          
+          <name>script</name>
+          <subtypes>
+            <!-- Begin aamas07-recovery-command -->
+            <type>              
+              <!-- Kills Discourse after first autonomous explore -->
+              <name>aamas07-recovery-command</name>
+              <desc>?robot commands the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>3000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <actspec>assertFact killCommand</actspec>
+              <actspec>aamas07-recovery ?robot ?partner</actspec>
+            </type>
+            <!-- End aamas07-recovery-command -->
+            <!-- Begin aamas07-recovery-explore -->
+            <type>              
+              <!-- Kills Discourse during first autonomous explore -->
+              <name>aamas07-recovery-explore</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>3000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <actspec>assertFact killExplore</actspec>
+              <actspec>aamas07-recovery ?robot ?partner</actspec>
+            </type>
+            <!-- End aamas07-recovery-explore -->
+            <!-- Begin aamas07-recovery-kill -->
+            <type>              
+              <!-- For testing purposes: kills Discourse 5 seconds after start -->
+              <name>aamas07-recovery-kill</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>3000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>!wait</varname>
+                <vartype>discourseTs</vartype>
+              </var>
+              <actspec>+ 5000 0 ?wait</actspec>
+              <actspec>performAction aamas07-kill:!wait</actspec>
+              <actspec>aamas07-recovery ?robot ?partner</actspec>
+            </type>
+            <!-- End aamas07-recovery-kill -->
+            <!-- Begin aamas07-recovery -->
+            <type>              
+              <name>aamas07-recovery</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>3000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <!-- Local variables (if any) -->
+              <var>
+                <varname>!command</varname>
+                <vartype>action</vartype>
+              </var>
+              <var>
+                <varname>!wait</varname>
+                <vartype>discourseTs</vartype>
+              </var>
+              <!--
+              <actspec>+ 5000 0 !wait</actspec>
+              <actspec>performAction aamas07-kill:!wait</actspec>
+              --> 
+              <actspec>changeSphinx4Grammar ?speaker planet_command_limited</actspec>
+              <actspec>addFieldPoint ?robot -125 -50 450</actspec>
+              <actspec>sayTextNow ?robot ?partner "Ready to start, ?partner?"</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   isFact ExplorationTaskSuccess</actspec>
+              <control>   or</control>
+              <actspec>   isFact ExplorationTaskFailure</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control> if</control>
+              <actspec>   getBinding ?robot ?partner !command</actspec>
+              <control> then</control>
+              <actspec>   printText "command binding: !command"</actspec>
+              <actspec>   logText COMMAND "command binding: !command"</actspec>
+              <actspec>   performAction !command</actspec>
+              <actspec> else</actspec>
+              <actspec>   sayTextNow ?robot ?partner "?partner, !command is not a command."</actspec>
+              <control> endif</control>
+              <control>endwhile</control>
+              <control>if</control>
+              <actspec> isFact ExplorationTaskSuccess</actspec>
+              <control>then</control>
+              <actspec> sayTextNow ?robot ?partner "Transmission successful"</actspec>
+              <actspec> aamas07-return ?robot</actspec>
+              <actspec> actionSucceed</actspec>
+              <actspec>else</actspec>
+              <actspec> sayTextNow ?robot ?partner "Unrecoverable failure, returning to base"</actspec>
+              <actspec> aamas07-return ?robot</actspec>
+              <actspec> actionFail</actspec>
+              <control>endif</control>
+              <actspec>sayTextNow ?robot ?partner "This should never fire"</actspec>
+            </type>
+            <!-- End aamas07-recovery -->
+            <!-- Begin aamas07-kill -->
+            <type>              
+              <!-- Wait _delay_ seconds, then kill Discourse -->
+              <name>aamas07-kill</name>
+              <desc>Killing discourse after ?delay ms</desc>
+              <var>
+                <varname>?delay</varname>
+                <vartype>integer</vartype>
+              </var>
+              <actspec>sleep ?robot ?delay</actspec>
+              <actspec>logText "KILL" "Killing discourse"</actspec>
+              <actspec>kill dsi</actspec>
+            </type>
+            <!-- End aamas07-kill -->
+            <!-- Begin aamas07-return -->
+            <type>              
+              <!-- Return to home (e.g., after success, recovery from failure) -->
+              <name>aamas07-return</name>
+              <desc>?robot returns home</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <actspec>qstop ?robot</actspec>
+              <actspec>moveTo ?robot -105 175</actspec>
+              <!-- Need to add: turn away from home, back up to home -->
+              <!-- Home is -145 225 (approximately) -->
+              <actspec>backTo ?robot -145 215</actspec>
+              <actspec> logText "EXIT" "End aamas07-recover"</actspec>
+            </type>
+            <!-- End aamas07-return -->
+            <!-- Begin aamas07-explore -->
+            <type>              
+              <!-- Fixed action sequence with no calls to Discourse -->
+              <!-- (gives inf recovery chance to complete before arch notices) -->
+              <name>aamas07-explore</name>
+              <desc>?robot explores the surface for ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>300</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>!wait</varname>
+                <vartype>discourseTs</vartype>
+              </var>
+              <actspec>logText "EXPLORE" "aamas07-explore start"</actspec>
+              <control>if</control>
+              <actspec> isFact killExplore</actspec>
+              <control>then</control>
+              <actspec> + 5000 0 ?wait</actspec>
+              <actspec> performAction aamas07-kill:!wait</actspec>
+              <actspec> retractFact killExplore</actspec>
+              <control>endif</control>
+              <actspec>sayTextNow ?robot ?partner "Ready to begin exploring"</actspec>
+              <actspec>turnRel ?robot ${-Math.PI/2}</actspec>
+              <actspec>moveDist ?robot 50</actspec>
+              <actspec>turnRel ?robot ${Math.PI/2}</actspec>
+              <actspec>moveDist ?robot 50</actspec>
+              <actspec>turnRel ?robot ${Math.PI/2}</actspec>
+              <actspec>moveDist ?robot 50</actspec>
+              <!-- This is a square, but it's too time-consuming
+              <actspec>turnRel ?robot ${-Math.PI/2}</actspec>
+              <actspec>moveDist ?robot 50</actspec>
+              <actspec>turnRel ?robot ${Math.PI/2}</actspec>
+              <actspec>moveDist ?robot 50</actspec>
+              <actspec>turnRel ?robot ${Math.PI/2}</actspec>
+              <actspec>moveDist ?robot 50</actspec>
+              <actspec>turnRel ?robot ${Math.PI/2}</actspec>
+              <actspec>moveDist ?robot 50</actspec>
+              <actspec>turnRel ?robot ${Math.PI/2}</actspec>
+              --> 
+              <actspec>sayTextNow ?robot ?partner "OK, finished exploring"</actspec>
+              <control>if</control>
+              <actspec> isFact killCommand</actspec>
+              <control>then</control>
+              <actspec> + 17500 0 ?wait</actspec>
+              <actspec> performAction aamas07-kill:!wait</actspec>
+              <actspec> retractFact killCommand</actspec>
+              <control>endif</control>
+              <actspec>logText "EXPLORE" "aamas07-explore finish"</actspec>
+            </type>
+            <!-- End aamas07-explore -->
+          </subtypes>
+        </type>
+      </subtypes>
+    </type>
+  </subtypes>
+</type>

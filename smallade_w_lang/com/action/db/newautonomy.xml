@@ -1,0 +1,1623 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!--
+<!DOCTYPE type SYSTEM "action.dtd"> 
+-->
+<type>    
+  <name>entity</name>
+  <subtypes>
+    <type>            
+      <name>action</name>
+      <subtypes>
+        <type>                    
+          <name>script</name>
+          <subtypes>
+            <type>                            
+              <name>testmotion</name>
+              <actspec>move cbot straight</actspec>
+              <actspec>sleep cbot 1500</actspec>
+              <actspec>moveTo cbot 9.5 3.5</actspec>
+            </type>
+            <!-- Begin Practice -->
+            <type>                            
+              <name>Practice</name>
+              <desc>?robot helps ?partner locate the transmission point</desc>
+              <benefit>1800</benefit>
+              <cost>600</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <!-- total time -->
+              <timeout>330</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?wait</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!waitmillis</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!xmitX</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!xmitY</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!start</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!current</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!elapsed</varname>
+                <vartype>long</vartype>
+              </var>
+              <actspec>* ?wait 1000 !waitmillis</actspec>
+              <actspec>assertFactVal ReadingWait !waitmillis</actspec>
+              <actspec>assertFact ReadyToStart</actspec>
+              <actspec>assertFactVal TargetStrength 1200</actspec>
+              <actspec>set !xmitX 6.25</actspec>
+              <actspec>set !xmitY -2.5</actspec>
+              <actspec>assertFactVal xmitX !xmitX</actspec>
+              <actspec>assertFactVal xmitY !xmitY</actspec>
+              <actspec>addFieldPoint ?robot !xmitX !xmitY 12.0</actspec>
+              <actspec>sayTextNow ?robot ?partner "I am ready to practice."</actspec>
+              <actspec>getTimeOfDay !start</actspec>
+              <actspec>set !elapsed 0</actspec>
+              <control>while</control>
+              <!-- 300 seconds -->
+              <actspec> lt !elapsed 300000</actspec>
+              <control>do</control>
+              <actspec> sleep ?robot 100</actspec>
+              <actspec> getTimeOfDay !current</actspec>
+              <actspec> - !current !start !elapsed</actspec>
+              <control>endwhile</control>
+              <actspec>qstop ?robot</actspec>
+              <actspec>retractFact ReadyToStart</actspec>
+              <actspec>sayTextNow cbot partner "Okay, we have practiced enough."</actspec>
+            </type>
+            <!-- End Practice -->
+            <!-- Begin findQuadrant -->
+            <type>                            
+              <!-- find the quadrant for the fnirs experiment -->
+              <name>findQuadrant</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?quadrant</varname>
+                <vartype>integer</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!xcurr</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ycurr</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!distTo</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!distMax</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <!-- total time -->
+              <timeout>500000</timeout>
+              <actspec>getLocation ?robot !xcurr !ycurr</actspec>
+              <actspec>getDistanceFrom ?robot !xcurr !ycurr 9.5 3.5 !distMax</actspec>
+              <actspec>set ?quadrant 1</actspec>
+              <actspec>getDistanceFrom ?robot !xcurr !ycurr 3.25 3.0 !distTo</actspec>
+              <actspec>if</actspec>
+              <actspec> lt !distTo !distMax</actspec>
+              <actspec>then</actspec>
+              <actspec> set ?quadrant 2</actspec>
+              <actspec> set !distMax !distTo</actspec>
+              <actspec>endif</actspec>
+              <actspec>getDistanceFrom ?robot !xcurr !ycurr 2.75 -6.75 !distTo</actspec>
+              <actspec>if</actspec>
+              <actspec> lt !distTo !distMax</actspec>
+              <actspec>then</actspec>
+              <actspec> set ?quadrant 3</actspec>
+              <actspec> set !distMax !distTo</actspec>
+              <actspec>endif</actspec>
+              <actspec>getDistanceFrom ?robot !xcurr !ycurr 9.00 -7.0 !distTo</actspec>
+              <actspec>if</actspec>
+              <actspec> lt !distTo !distMax</actspec>
+              <actspec>then</actspec>
+              <actspec> set ?quadrant 4</actspec>
+              <actspec> set !distMax !distTo</actspec>
+              <actspec>endif</actspec>
+            </type>
+            <!-- End findQuadrant -->
+            <!-- Begin moveFieldPoint -->
+            <type>                            
+              <name>moveFieldPoint</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!quadrant</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!xmitX</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!xmitY</varname>
+                <vartype>double</vartype>
+              </var>
+              <!-- total time -->
+              <timeout>500000</timeout>
+              <actspec>findQuadrant ?robot !quadrant</actspec>
+              <actspec>removeFieldPoint ?robot 0</actspec>
+              <actspec>if</actspec>
+              <actspec> = !quadrant 1</actspec>
+              <actspec>then</actspec>
+              <actspec> set !xmitX 2.75</actspec>
+              <actspec> set !xmitY -6.75</actspec>
+              <actspec>elseif</actspec>
+              <actspec> = !quadrant 2</actspec>
+              <actspec>then</actspec>
+              <actspec> set !xmitX 9.0</actspec>
+              <actspec> set !xmitY -7.0</actspec>
+              <actspec>elseif</actspec>
+              <actspec> = !quadrant 3</actspec>
+              <actspec>then</actspec>
+              <actspec> set !xmitX 9.5</actspec>
+              <actspec> set !xmitY 3.5</actspec>
+              <actspec>else</actspec>
+              <actspec> set !xmitX 3.25</actspec>
+              <actspec> set !xmitY 3.0</actspec>
+              <actspec>endif</actspec>
+              <actspec>logText "moving field point to !xmitX !xmitY"</actspec>
+              <actspec>addFieldPoint ?robot !xmitX !xmitY 12.0</actspec>
+              <actspec>assertFactVal xmitX !xmitX</actspec>
+              <actspec>assertFactVal xmitY !xmitY</actspec>
+            </type>
+            <!-- End moveFieldPoint -->
+            <!-- Begin Experiment -->
+            <type>                            
+              <name>Experiment</name>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>3300000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?autonomy</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>?total</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?wait</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?move</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>?survey</varname>
+                <vartype>text</vartype>
+              </var>
+              <actspec>startADEServerLogging</actspec>
+              <!-- field point in quadrant 1, strength 25 at peak -->
+              <actspec>moveFieldPoint ?robot</actspec>
+              <!-- require to be within one meter ((25 - 1) * 100) -->
+              <actspec>assertFactVal TargetStrength 1200</actspec>
+              <!-- do condition 1 -->
+              <actspec>MissionHRINonAut ?robot ?partner ?total ?wait ?move</actspec>
+              <!-- do survey, or wait -->
+              <control>if</control>
+              <actspec> stringCompare ?survey true</actspec>
+              <control>then</control>
+              <actspec> ConditionSurvey 1</actspec>
+              <actspec> writeFile /tmp/adepipe "end survey"</actspec>
+              <control>else</control>
+              <actspec> waitSurvey ?robot</actspec>
+              <control>endif</control>
+              <!-- do condition 2 -->
+              <actspec>retractFact ExplorationTaskSuccess</actspec>
+              <actspec>retractFact ExplorationTaskFailure</actspec>
+              <control>if</control>
+              <actspec> stringCompare ?autonomy first</actspec>
+              <control>then</control>
+              <actspec> MissionHRIAdaptAut ?robot ?partner ?total ?wait ?move</actspec>
+              <control>else</control>
+              <actspec> MissionHRINonAut ?robot ?partner ?total ?wait ?move</actspec>
+              <control>endif</control>
+              <!-- do survey, or wait -->
+              <control>if</control>
+              <actspec> stringCompare ?survey true</actspec>
+              <control>then</control>
+              <actspec> ConditionSurvey 2</actspec>
+              <actspec> writeFile /tmp/adepipe "end survey"</actspec>
+              <control>else</control>
+              <actspec> waitSurvey ?robot</actspec>
+              <control>endif</control>
+              <!-- do condition 3 -->
+              <actspec>retractFact ExplorationTaskSuccess</actspec>
+              <actspec>retractFact ExplorationTaskFailure</actspec>
+              <control>if</control>
+              <actspec> stringCompare ?autonomy second</actspec>
+              <control>then</control>
+              <actspec> MissionHRIAdaptAut ?robot ?partner ?total ?wait ?move</actspec>
+              <control>else</control>
+              <actspec> MissionHRINonAut ?robot ?partner ?total ?wait ?move</actspec>
+              <control>endif</control>
+              <!-- do survey, or finish -->
+              <control>if</control>
+              <actspec> stringCompare ?survey true</actspec>
+              <control>then</control>
+              <actspec> ConditionSurvey 3</actspec>
+              <actspec> PostSurvey</actspec>
+              <control>endif</control>
+              <actspec>stopADEServerLogging</actspec>
+              <actspec>spin ?robot</actspec>
+            </type>
+            <!-- End Experiment -->
+            <!-- Begin TestAutonomy -->
+            <type>                            
+              <name>TestAutonomy</name>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>3300000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?total</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?wait</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?move</varname>
+                <vartype>text</vartype>
+              </var>
+              <actspec>startADEServerLogging</actspec>
+              <!-- field point in quadrant 1, strength 25 at peak -->
+              <actspec>moveFieldPoint ?robot</actspec>
+              <!-- require to be within one meter ((25 - 1) * 100) -->
+              <actspec>assertFactVal TargetStrength 1200</actspec>
+              <!-- do condition 1 -->
+              <actspec>MissionHRIAdaptAut ?robot ?partner ?total ?wait ?move</actspec>
+              <actspec>retractFact ExplorationTaskSuccess</actspec>
+              <actspec>retractFact ExplorationTaskFailure</actspec>
+              <actspec>stopADEServerLogging</actspec>
+            </type>
+            <!-- End TestAutonomy -->
+            <!-- Begin MissionHRINonAut -->
+            <type>                            
+              <name>MissionHRINonAut</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>3300000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?total</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?wait</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?move</varname>
+                <vartype>text</vartype>
+              </var>
+              <!--
+              <actspec>performAction CountCollisions:?robot</actspec>
+              -->
+              <actspec>moveFieldPoint ?robot</actspec>
+              <actspec>MetaExplorationTaskHRIAut ?robot ?partner ?total ?wait ?move</actspec>
+            </type>
+            <!-- End MissionHRINonAut -->
+            <!-- Begin MissionHRIAdaptAut -->
+            <type>                            
+              <!-- (the exploration task with adaptive autonomy based on fNIRS) -->
+              <name>MissionHRIAdaptAut</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>3300000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?total</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?wait</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?move</varname>
+                <vartype>text</vartype>
+              </var>
+              <actspec>performAction MonitorLoad:?robot:?partner</actspec>
+              <!--
+              <actspec>performAction CountCollisions:?robot</actspec>
+              -->
+              <actspec>moveFieldPoint ?robot</actspec>
+              <actspec>MetaExplorationTaskHRIAut ?robot ?partner ?total ?wait ?move</actspec>
+            </type>
+            <!-- End MissionHRIAdaptAut -->
+            <!-- Begin MissionHRIMaladaptAut -->
+            <type>                            
+              <!-- (the exploration task with maladaptive autonomy based on fNIRS) -->
+              <name>MissionHRIMaladaptAut</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>1200</cost>
+              <minurg>0.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>3300000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?total</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?wait</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?move</varname>
+                <vartype>text</vartype>
+              </var>
+              <actspec>performAction MonitorLoadMal:?robot:?partner</actspec>
+              <!--
+              <actspec>performAction CountCollisions:?robot</actspec>
+              -->
+              <actspec>moveFieldPoint ?robot</actspec>
+              <actspec>MetaExplorationTaskHRIAut ?robot ?partner ?total ?wait ?move</actspec>
+            </type>
+            <!-- End MissionHRIMaladaptAut -->
+            <!-- Begin MetaExplorationTaskHRIAut -->
+            <type>                            
+              <!-- (exploration wrapper for the autonomy task) -->
+              <!-- Monitors task progress, announces time remaining, etc. -->
+              <name>MetaExplorationTaskHRIAut</name>
+              <desc>?robot helps ?partner locate the transmission point</desc>
+              <benefit>1800</benefit>
+              <cost>600</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <timeout>6000000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?total</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>?wait</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>?move</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>!totalmillis</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!waitmillis</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!current</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!increment</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!target</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!remaining</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!total</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!minute</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!start</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!succ</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>!fail</varname>
+                <vartype>text</vartype>
+              </var>
+              <actspec>* ?wait 1000 !waitmillis</actspec>
+              <actspec>assertFactVal ReadingWait !waitmillis</actspec>
+              <actspec>* ?total 1000 !totalmillis</actspec>
+              <actspec>sayTextNow ?robot ?partner "Okay, ready to start."</actspec>
+              <actspec>assertFact ReadyToStart</actspec>
+              <actspec>getTimeOfDay !current</actspec>
+              <actspec>set !start !current</actspec>
+              <actspec>% !totalmillis 60000 !increment</actspec>
+              <actspec>+ !current !totalmillis !totalmillis</actspec>
+              <actspec>+ !current !increment !target</actspec>
+              <!-- announce time every minute (after initial announcement) -->
+              <actspec>set !increment 60000</actspec>
+              <actspec>set !minute -1</actspec>
+              <control>if</control>
+              <actspec> stringCompare ?move true</actspec>
+              <control>then</control>
+              <!-- start out moving -->
+              <actspec> qmove ?robot forward</actspec>
+              <control>endif</control>
+              <control>while</control>
+              <!-- total time -->
+              <actspec> lt !current !totalmillis</actspec>
+              <control> and</control>
+              <control> not</control>
+              <actspec>  isFact ExplorationTaskSuccess</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <actspec> sleep ?robot 2000</actspec>
+              <control> if</control>
+              <actspec>  isFact ExplorationTaskSuccess</actspec>
+              <control> then</control>
+              <actspec>  set !succ yes</actspec>
+              <control> else</control>
+              <actspec>  set !succ no</actspec>
+              <control> endif</control>
+              <control> if</control>
+              <actspec>  isFact ExplorationTaskFailure</actspec>
+              <control> then</control>
+              <actspec>  set !fail yes</actspec>
+              <control> else</control>
+              <actspec>  set !fail no</actspec>
+              <control> endif</control>
+              <!--
+              <actspec> printText "METHA ?robot !start : !succ !fail"</actspec>
+              -->
+              <actspec> getTimeOfDay !current</actspec>
+              <control> if</control>
+              <actspec>   ge !current !target</actspec>
+              <control> then</control>
+              <actspec>  - !totalmillis !current !remaining</actspec>
+              <control>  if</control>
+              <actspec>   gt !remaining 45000</actspec>
+              <control>  then</control>
+              <actspec>   AnnounceTime ?robot ?partner !remaining</actspec>
+              <actspec>   + !minute 1 !minute</actspec>
+              <control>   if</control>
+              <actspec>    = !minute 2</actspec>
+              <control>   or</control>
+              <actspec>    = !minute 4</actspec>
+              <control>   then</control>
+              <actspec>    moveFieldPoint ?robot</actspec>
+              <control>   endif</control>
+              <control>  endif</control>
+              <actspec>  + !target !increment !target</actspec>
+              <control> endif</control>
+              <control>endwhile</control>
+              <actspec>qstop ?robot</actspec>
+              <actspec>retractFact ReadyToStart</actspec>
+              <control>if</control>
+              <actspec> isFact ExplorationTaskSuccess</actspec>
+              <control>then</control>
+              <actspec> cancelAutonomy ?robot SUCCESS</actspec>
+              <actspec> qstop ?robot</actspec>
+              <actspec> logText "SUCCESS"</actspec>
+              <actspec> sayTextNow ?robot ?partner "?robot has located the tranmission point."</actspec>
+              <!--
+              <actspec> sayTextNow ?robot ?partner "We make a great team."</actspec>
+              -->
+              <actspec>else</actspec>
+              <actspec> cancelAutonomy ?robot FAILURE</actspec>
+              <actspec> qstop ?robot</actspec>
+              <actspec> assertFact ExplorationTaskFailure</actspec>
+              <actspec> logText "FAILURE"</actspec>
+              <actspec> sayTextNow ?robot ?partner "We failed to locate the drop off point."</actspec>
+              <actspec> sayTextNow ?robot ?partner "It was a good effort"</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End MetaExplorationTaskHRIAut -->
+            <!-- Begin MonitorLoad -->
+            <type>                            
+              <!-- (the exploration task with adaptive autonomy based on fNIRS) -->
+              <name>MonitorLoad</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>100</cost>
+              <minurg>1.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>3300000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>!load0</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!load</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!timeout</varname>
+                <vartype>visionTs</vartype>
+              </var>
+              <var>
+                <varname>!fs1</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <var>
+                <varname>!target</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <var>
+                <varname>!rg</varname>
+                <vartype>text</vartype>
+              </var>
+              <actspec>retrieveFactVal TargetStrength !target</actspec>
+              <actspec>+ 0.0 0.0 !load0</actspec>
+              <actspec>sleep ?robot 5000</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   isFact ExplorationTaskSuccess</actspec>
+              <control> or</control>
+              <actspec>   isFact ExplorationTaskFailure</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <actspec> getTeammateLoad ?robot !load</actspec>
+              <actspec> scaledFieldReading ?robot !fs1</actspec>
+              <!-- 
+              <control> if</control>
+              <actspec>   isFact AutonomyMode</actspec>
+              <control> then</control>
+              <actspec>   printText "?robot FS: !fs1 T: !target LD: !load L0: !load0 RG: yes"</actspec>
+              <control> else</control>
+              <actspec>   printText "?robot FS: !fs1 T: !target LD: !load L0: !load0 RG: no"</actspec>
+              <control> endif</control>
+              -->
+              <!-- store current load -->
+              <actspec> + !load 0.0 !load0</actspec>
+              <control> if</control>
+              <actspec>   gt !load 0.75</actspec>
+              <control> and</control>
+              <actspec>   lt !fs1 !target</actspec>
+              <control> then</control>
+              <control>   if</control>
+              <control>     not</control>
+              <actspec>       isFact AutonomyMode</actspec>
+              <control>     endnot</control>
+              <control>   then</control>
+              <actspec>     logText "autonomy mode enabled for: !load "</actspec>
+              <actspec>     performAction ReallyGoToXmitPoint:?robot</actspec>
+              <actspec>     assertFact AutonomyMode</actspec>
+              <control>   else</control>
+              <control>   endif</control>
+              <control> else</control>
+              <actspec>  cancelAutonomy ?robot !load</actspec>
+              <control> endif</control>
+              <actspec> sleep ?robot 500</actspec>
+              <control>endwhile</control>
+            </type>
+            <!-- End MonitorLoad -->
+            <!-- Begin MonitorLoadMal -->
+            <type>                            
+              <!-- (the exploration task with adaptive autonomy based on fNIRS) -->
+              <name>MonitorLoadMal</name>
+              <desc>?robot explores the surface with ?partner</desc>
+              <benefit>1800</benefit>
+              <cost>100</cost>
+              <minurg>1.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>3300000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>!load0</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!load</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!timeout</varname>
+                <vartype>visionTs</vartype>
+              </var>
+              <var>
+                <varname>!fs1</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <var>
+                <varname>!target</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <actspec>retrieveFactVal TargetStrength !target</actspec>
+              <actspec>+ 0.0 0.0 !load0</actspec>
+              <actspec>sleep ?robot 5000</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   isFact ExplorationTaskSuccess</actspec>
+              <control> or</control>
+              <actspec>   isFact ExplorationTaskFailure</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <actspec> getTeammateLoad ?robot !load</actspec>
+              <control> if</control>
+              <actspec>   lt !load 0.75</actspec>
+              <control> and</control>
+              <actspec>   ge !load0 0.75</actspec>
+              <control> then</control>
+              <actspec>   logText "autonomy mode enabled for: !load "</actspec>
+              <control> elseif</control>
+              <actspec>   ge !load 0.75</actspec>
+              <control> and</control>
+              <actspec>   lt !load0 0.75</actspec>
+              <control> then</control>
+              <actspec>   logText "autonomy mode disabled for: !load "</actspec>
+              <control> endif</control>
+              <actspec> + !load 0.0 !load0</actspec>
+              <actspec> scaledFieldReading ?robot !fs1</actspec>
+              <control> if</control>
+              <actspec>   lt !load 0.75</actspec>
+              <control> and</control>
+              <actspec>   lt !fs1 !target</actspec>
+              <control> then</control>
+              <control>   if</control>
+              <control>     not</control>
+              <actspec>       isFact AutonomyMode</actspec>
+              <control>     endnot</control>
+              <control>   then</control>
+              <!--
+              <actspec>     printText "starting reallygo"</actspec>
+              -->
+              <actspec>     performAction ReallyGoToXmitPoint:?robot</actspec>
+              <actspec>     assertFact AutonomyMode</actspec>
+              <control>   else</control>
+              <!--
+              <actspec>     printText "already reallygoing"</actspec>
+              -->
+              <control>   endif</control>
+              <control> else</control>
+              <actspec>  cancelAutonomy ?robot !load</actspec>
+              <control> endif</control>
+              <actspec> sleep ?robot 500</actspec>
+              <control>endwhile</control>
+            </type>
+            <!-- End MonitorLoadMal -->
+            <!-- Begin CountCollisions -->
+            <type>                            
+              <name>CountCollisions</name>
+              <benefit>1800</benefit>
+              <cost>0</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <timeout>50000000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>!collides</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!x</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!y</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!nx</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!ny</varname>
+                <vartype>double</vartype>
+              </var>
+              <actspec>set !collides 0</actspec>
+              <actspec>getLocation ?robot !x !y</actspec>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   isFact ExplorationTaskSuccess</actspec>
+              <control> or</control>
+              <actspec>   isFact ExplorationTaskFailure</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control> if</control>
+              <actspec>  getStall ?robot</actspec>
+              <control> then</control>
+              <actspec>  getLocation ?robot !nx !ny</actspec>
+              <control>  if</control>
+              <control>   not</control>
+              <actspec>    = !x !nx</actspec>
+              <control>   endnot</control>
+              <control>  or</control>
+              <control>   not</control>
+              <actspec>    = !y !ny</actspec>
+              <control>   endnot</control>
+              <control>  then</control>
+              <actspec>   + !collides 1 !collides</actspec>
+              <actspec>   sayTextNow ?robot Bucky "Yikes, collision!"</actspec>
+              <control>  endif</control>
+              <actspec>  set !x !nx</actspec>
+              <actspec>  set !y !ny</actspec>
+              <control> endif</control>
+              <actspec> sleep ?robot 500</actspec>
+              <control>endwhile</control>
+              <actspec>printText "counted !collides collisions"</actspec>
+              <actspec>logText "counted !collides collisions"</actspec>
+            </type>
+            <!-- End CountCollisions -->
+            <!-- Begin AnnounceTime -->
+            <type>                            
+              <name>AnnounceTime</name>
+              <desc>?robot tells ?partner how much time remains</desc>
+              <benefit>1800</benefit>
+              <cost>0</cost>
+              <minurg>0.5</minurg>
+              <maxurg>0.5</maxurg>
+              <timeout>5</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?remaining</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!seconds</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!minutes</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!rounded</varname>
+                <vartype>long</vartype>
+              </var>
+              <actspec>/ ?remaining 1000 !seconds</actspec>
+              <actspec>/ !seconds 60.0 !minutes</actspec>
+              <actspec>round !minutes !rounded</actspec>
+              <control>if</control>
+              <actspec> gt !rounded 1</actspec>
+              <control>then</control>
+              <actspec> sayTextNow ?robot ?partner "about !rounded minutes left"</actspec>
+              <control>else</control>
+              <actspec> sayTextNow ?robot ?partner "about !rounded minute left"</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End AnnounceTime -->
+            <!-- Begin ReallyGoToXmitPoint -->
+            <type>                            
+              <name>ReallyGoToXmitPoint</name>
+              <desc>find the transmission point</desc>
+              <benefit>1800</benefit>
+              <cost>400</cost>
+              <!-- for max priority -->
+              <minurg>1.0</minurg>
+              <maxurg>1.0</maxurg>
+              <timeout>2400000</timeout>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!xcoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!ycoord</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!fs1</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <var>
+                <varname>!fs2</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <var>
+                <varname>!actionID</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!wait</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!target</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <actspec>retrieveFactVal ReadingWait !wait</actspec>
+              <actspec>retrieveFactVal TargetStrength !target</actspec>
+              <!--
+              <control>if</control>
+              <actspec> getStall ?robot</actspec>
+              <control>then</control>
+              <actspec> qmove ?robot back</actspec>
+              <actspec> sleep ?robot 1000</actspec>
+              <actspec> qstop ?robot</actspec>
+              <control>endif</control>
+              -->
+              <control>while</control>
+              <control> not</control>
+              <actspec>  isFact ExplorationTaskSuccess</actspec>
+              <control> or</control>
+              <actspec>  isFact ExplorationTaskFailure</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <actspec> scaledFieldReading ?robot !fs1</actspec>
+              <control> if</control>
+              <actspec>  lt !fs1 !target</actspec>
+              <control> then</control>
+              <control>  if</control>
+              <actspec>   isFact AtTransmissionPoint</actspec>
+              <control>  then</control>
+              <actspec>   retractFact AtTransmissionPoint</actspec>
+              <control>  endif</control>
+              <actspec>  retrieveFactVal xmitX !xcoord</actspec>
+              <actspec>  retrieveFactVal xmitY !ycoord</actspec>
+              <actspec>  printText "!xcoord !ycoord"</actspec>
+              <actspec>  startMoveTo ?robot !xcoord !ycoord !actionID</actspec>
+              <control>  while</control>
+              <control>   not</control>
+              <actspec>    isFact ExplorationTaskSuccess</actspec>
+              <control>   or</control>
+              <actspec>    isFact ExplorationTaskFailure</actspec>
+              <control>   endnot</control>
+              <control>  and</control>
+              <actspec>   lt !fs1 !target</actspec>
+              <control>  do</control>
+              <actspec>   qstop ?robot</actspec>
+              <actspec>   sleep ?robot !wait</actspec>
+              <actspec>   scaledFieldReading ?robot !fs1</actspec>
+              <actspec>   retrieveFactVal xmitX !xcoord</actspec>
+              <actspec>   retrieveFactVal xmitY !ycoord</actspec>
+              <actspec>   startMoveTo ?robot !xcoord !ycoord !actionID</actspec>
+              <actspec>   sleep ?robot 5000</actspec>
+              <control>  endwhile</control>
+              <!--
+              <actspec>  assertFact AtTransmissionPoint</actspec>
+              -->
+              <actspec>  cancelMotion ?robot !actionID</actspec>
+              <actspec>  qstop ?robot</actspec>
+              <!--
+              <actspec>   sayTextNow ?robot ?partner "The signal is strong enough here"</actspec>
+              -->
+              <actspec> else</actspec>
+              <control>  if</control>
+              <control>   not</control>
+              <actspec>    isFact AtTransmissionPoint</actspec>
+              <control>   endnot</control>
+              <control>  then</control>
+              <actspec>   assertFact AtTransmissionPoint</actspec>
+              <control>  endif</control>
+              <control> endif</control>
+              <control>endwhile</control>
+            </type>
+            <!-- End ReallyGoToXmitPoint -->
+            <!-- Begin cancelAutonomy -->
+            <type>
+              <name>cancelAutonomy</name>
+              <desc>?robot returns to user control</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?cause</varname>
+                <vartype>text</vartype>
+              </var>
+              <control>if</control>
+              <actspec> isFact AutonomyMode</actspec>
+              <control>then</control>
+              <actspec> logText "autonomy mode disabled for: ?cause "</actspec>
+              <actspec> cancelAction ReallyGoToXmitPoint</actspec>
+              <actspec> retractFact AutonomyMode</actspec>
+              <actspec> qstop ?robot</actspec>
+              <!-- PWS: make sure this qmove is what we want here -->
+              <actspec> qmove ?robot forward</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End cancelAutonomy -->
+            <!-- Begin cancelUserReading -->
+            <type>
+              <name>cancelUserReading</name>
+              <desc>?robot returns to user control</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?cause</varname>
+                <vartype>text</vartype>
+              </var>
+              <control>if</control>
+              <actspec> isFact inUserReading</actspec>
+              <control>then</control>
+              <actspec> logText "cancel user reading for: ?cause "</actspec>
+              <actspec> cancelAction userReading</actspec>
+              <actspec> retractFact inUserReading</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End cancelUserReading -->
+            <!-- Begin userReading -->
+            <type>                                          
+              <!-- stop, take a reading, and report to ?partner -->
+              <name>userReading</name>
+              <desc>?robot asks for a reading</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?partner</varname>
+                <vartype>interactor</vartype>
+              </var>
+              <var>
+                <varname>?what</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>!fieldStrength</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <var>
+                <varname>!tv</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!rv</varname>
+                <vartype>double</vartype>
+              </var>
+              <var>
+                <varname>!wait</varname>
+                <vartype>long</vartype>
+              </var>
+              <var>
+                <varname>!target</varname>
+                <vartype>fieldStr</vartype>
+              </var>
+              <effects>
+                <atend>reported(?robot,?partner,?what)</atend>
+              </effects>
+              <control>if</control>
+              <actspec> isFact ReadyToStart</actspec>
+              <control>and</control>
+              <control> not</control>
+              <actspec>  isFact inUserReading</actspec>
+              <control> endnot</control>
+              <control>then</control>
+              <actspec> assertFact inUserReading</actspec>
+              <actspec> cancelAutonomy ?robot userReading</actspec>
+              <actspec> retrieveFactVal ReadingWait !wait</actspec>
+              <actspec> retrieveFactVal TargetStrength !target</actspec>
+              <actspec> getVels ?robot !tv !rv</actspec>
+              <actspec> qstop ?robot</actspec>
+              <actspec> sleep ?robot !wait</actspec>
+              <actspec> scaledFieldReading ?robot !fieldStrength</actspec>
+              <control> if</control>
+              <actspec>  ge !fieldStrength !target</actspec>
+              <control> then</control>
+              <actspec>  sayTextNow ?robot ?partner "Field strength is !fieldStrength"</actspec>
+              <actspec>  retractFact ReadyToStart</actspec>
+              <actspec>  assertFact ExplorationTaskSuccess</actspec>
+              <control> else</control>
+              <actspec>  setVels ?robot !tv !rv</actspec>
+              <actspec>  sayTextNow ?robot ?partner "Field strength is !fieldStrength"</actspec>
+              <control> endif</control>
+              <actspec> retractFact inUserReading</actspec>
+              <control>endif</control>
+            </type>
+            <!-- End userReading -->
+            <!-- Begin scaledFieldReading -->
+            <type>                                          
+              <name>scaledFieldReading</name>
+              <var>
+                <varname>?mover</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?fieldStrength</varname>
+                <vartype>fieldStr</vartype>
+                <varrole>return</varrole>
+              </var>
+              <actspec>fieldReading ?mover ?fieldStrength</actspec>
+              <actspec>/ ?fieldStrength 1 ?fieldStrength</actspec>
+            </type>
+            <!-- End scaledFieldReading -->
+            <!-- Begin move -->
+            <type>
+              <name>do-move</name>
+              <desc>?robot goes somewhere</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?direction</varname>
+                <vartype>direction</vartype>
+              </var>
+              <control>if</control>
+              <actspec> isFact ReadyToStart</actspec>
+              <control>then</control>
+              <actspec> cancelAutonomy ?robot move</actspec>
+              <actspec> cancelUserReading ?robot move</actspec>
+              <actspec> move ?robot ?direction</actspec>
+              <control>endif</control>
+              <effects>
+                <atend override="true">moving(?robot,?direction)</atend>
+              </effects>
+            </type>
+            <!-- End move -->
+            <!-- Begin turn -->
+            <type>
+              <name>do-turn</name>
+              <desc>?robot turns somewhere</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?direction</varname>
+                <vartype>direction</vartype>
+              </var>
+              <control>if</control>
+              <actspec> isFact ReadyToStart</actspec>
+              <control>then</control>
+              <actspec> cancelAutonomy ?robot turn</actspec>
+              <actspec> cancelUserReading ?robot turn</actspec>
+              <actspec> move ?robot ?direction</actspec>
+              <control>endif</control>
+              <effects>
+                <atend override="true">turning(?robot,?direction)</atend>
+              </effects>
+            </type>
+            <!-- End turn -->
+            <!-- Begin stop -->
+            <type>                                          
+              <name>do-stop</name>
+              <desc>?robot stops</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <control>if</control>
+              <actspec> isFact ReadyToStart</actspec>
+              <control>then</control>
+              <actspec> cancelAutonomy ?robot stop</actspec>
+              <!-- PWS: should stop cancel user reading?
+              <actspec> cancelUserReading ?robot stop</actspec>
+              -->
+              <actspec> stop ?robot</actspec>
+              <control>endif</control>
+              <effects>
+                <atend override="true">stopped(?robot)</atend>
+              </effects>
+            </type>
+            <!-- End stop -->
+            <!-- Begin EndSurvey -->
+            <type>                            
+              <name>EndSurvey</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>?survey</varname>
+                <vartype>text</vartype>
+              </var>
+              <!-- total time -->
+              <timeout>500000</timeout>
+              <actspec>assertFact SurveyComplete</actspec>
+              <effects>
+                <atend>finished(?robot,survey)</atend>
+              </effects>
+            </type>
+            <!-- End EndSurvey -->
+            <!-- Begin WaitSurvey -->
+            <type>                            
+              <name>WaitSurvey</name>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <!-- total time -->
+              <timeout>5000000</timeout>
+              <control>while</control>
+              <control> not</control>
+              <actspec>  isFact SurveyComplete</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <actspec> sleep ?robot 100</actspec>
+              <control>endwhile</control>
+              <actspec>retractFact SurveyComplete</actspec>
+            </type>
+            <!-- End WaitSurvey -->
+            <!-- Begin ConditionSurvey -->
+            <type>                            
+              <name>ConditionSurvey</name>
+              <var>
+                <varname>?number</varname>
+                <vartype>integer</vartype>
+              </var>
+              <!-- Local variables -->
+              <var>
+                <varname>!response</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!textresponse</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>!counter</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!redx</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!redy</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!bluex</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!bluey</varname>
+                <vartype>integer</vartype>
+              </var>
+              <!-- total time -->
+              <timeout>5000000</timeout>
+              <actspec>+ 0 0 !response</actspec>
+              <actspec>+ 0 1 !counter</actspec>
+              <actspec>set !redx 660</actspec>
+              <actspec>set !redy 150</actspec>
+              <actspec>set !bluex 660</actspec>
+              <actspec>set !bluey 630</actspec>
+              <!-- item 1 -->
+              <actspec>SurveyTextColor black</actspec>
+              <actspec>SurveyGeometry 660 390</actspec>
+              <actspec>SurveySliderItem "Mental Demand: How much mental and perceptual activity was required (e.g., thinking, deciding, calculating, remembering, looking, searching, etc.)? Was the task easy or demanding, simple or complex, exacting or forgiving?" 1 10 "Low" "High" !response</actspec>
+              <actspec>logText "Survey ?number Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <!-- item 2 -->
+              <actspec>SurveySliderItem "Physical Demand: How much physical activity was required (e.g., pushing, pulling, turning, controlling, activating, etc.)? Was the task easy or demanding, slow or brisk, slack or strenuous, restful or laborious?" 1 10 "Low" "High" !response</actspec>
+              <actspec>logText "Survey ?number Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <!-- item 3 -->
+              <actspec>SurveySliderItem "Temporal Demand: How much time pressure did you feel due to the rate of pace at which the tasks or task elements occurred? Was the pace slow and leisurely or rapid and frantic?" 1 10 "Low" "High" !response</actspec>
+              <actspec>logText "Survey ?number Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <!-- item 4 -->
+              <actspec>SurveySliderItem "Performance: How successful do you think you were in accomplishing the goals of the task set by the experimenter (or yourself)? How satisfied were you with your performance in accomplishing these goals?" 1 10 "Low" "High" !response</actspec>
+              <actspec>logText "Survey ?number Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <!-- item 5 -->
+              <actspec>SurveySliderItem "Effort: How hard did you have to work (mentally and physically) to accomplish your level of performance?" 1 10 "Low" "High" !response</actspec>
+              <actspec>logText "Survey ?number Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <!-- item 6 -->
+              <actspec>SurveySliderItem "Frustration: How insecure, discouraged, irritated, stressed and annoyed versus secure, gratified, content, relaxed and complacent did you feel during the task?" 1 10 "Low" "High" !response</actspec>
+              <actspec>logText "Survey ?number Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <!-- item 7 -->
+              <actspec>SurveyTextColor red</actspec>
+              <actspec>SurveyGeometry !redx !redy</actspec>
+              <actspec>SurveySliderItem "This robot was helpful." 1 9 "Strongly Disagree" "Strongly Agree" !response</actspec>
+              <actspec>logText "Survey ?number Condition 1 Item !counter response: !response "</actspec>
+              <actspec>SurveyTextColor blue</actspec>
+              <actspec>SurveyGeometry !bluex !bluey</actspec>
+              <actspec>SurveySliderItem "This robot was helpful." 1 9 "Strongly Disagree" "Strongly Agree" !response</actspec>
+              <actspec>logText "Survey ?number Condition 2 Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <!-- item 8 -->
+              <actspec>SurveyTextColor red</actspec>
+              <actspec>SurveyGeometry !redx !redy</actspec>
+              <actspec>SurveySliderItem "This robot was capable." 1 9 "Strongly Disagree" "Strongly Agree" !response</actspec>
+              <actspec>logText "Survey ?number Condition 1 Item !counter response: !response "</actspec>
+              <actspec>SurveyTextColor blue</actspec>
+              <actspec>SurveyGeometry !bluex !bluey</actspec>
+              <actspec>SurveySliderItem "This robot was capable." 1 9 "Strongly Disagree" "Strongly Agree" !response</actspec>
+              <actspec>logText "Survey ?number Condition 2 Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <!-- item 9 -->
+              <actspec>SurveyTextColor red</actspec>
+              <actspec>SurveyGeometry !redx !redy</actspec>
+              <actspec>SurveySliderItem "This robot was cooperative." 1 9 "Strongly Disagree" "Strongly Agree" !response</actspec>
+              <actspec>logText "Survey ?number Condition 1 Item !counter response: !response "</actspec>
+              <actspec>SurveyTextColor blue</actspec>
+              <actspec>SurveyGeometry !bluex !bluey</actspec>
+              <actspec>SurveySliderItem "This robot was cooperative." 1 9 "Strongly Disagree" "Strongly Agree" !response</actspec>
+              <actspec>logText "Survey ?number Condition 2 Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <!-- item 10 -->
+              <actspec>SurveyTextColor red</actspec>
+              <actspec>SurveyGeometry !redx !redy</actspec>
+              <actspec>SurveySliderItem "This robot acted like a member of the team." 1 9 "Strongly Disagree" "Strongly Agree" !response</actspec>
+              <actspec>logText "Survey ?number Condition 1 Item !counter response: !response "</actspec>
+              <actspec>SurveyTextColor blue</actspec>
+              <actspec>SurveyGeometry !bluex !bluey</actspec>
+              <actspec>SurveySliderItem "This robot acted like a member of the team." 1 9 "Strongly Disagree" "Strongly Agree" !response</actspec>
+              <actspec>logText "Survey ?number Condition 2 Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <!-- item 11 -->
+              <actspec>SurveyTextColor red</actspec>
+              <actspec>SurveyGeometry !redx !redy</actspec>
+              <actspec>SurveySliderItem "This robot was easy to interact with." 1 9 "Strongly Disagree" "Strongly Agree" !response</actspec>
+              <actspec>logText "Survey ?number Condition 1 Item !counter response: !response "</actspec>
+              <actspec>SurveyTextColor blue</actspec>
+              <actspec>SurveyGeometry !bluex !bluey</actspec>
+              <actspec>SurveySliderItem "This robot was easy to interact with." 1 9 "Strongly Disagree" "Strongly Agree" !response</actspec>
+              <actspec>logText "Survey ?number Condition 2 Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <!-- item 12 -->
+              <actspec>SurveyTextColor red</actspec>
+              <actspec>SurveyGeometry !redx !redy</actspec>
+              <actspec>SurveySliderItem "This robot was annoying." 1 9 "Strongly Disagree" "Strongly Agree" !response</actspec>
+              <actspec>logText "Survey ?number Condition 1 Item !counter response: !response "</actspec>
+              <actspec>SurveyTextColor blue</actspec>
+              <actspec>SurveyGeometry !bluex !bluey</actspec>
+              <actspec>SurveySliderItem "This robot was annoying." 1 9 "Strongly Disagree" "Strongly Agree" !response</actspec>
+              <actspec>logText "Survey ?number Condition 2 Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+            </type>
+            <!-- End ConditionSurvey -->
+            <!-- Begin PostSurvey -->
+            <type>                            
+              <name>PostSurvey</name>
+              <var>
+                <varname>!response</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!textresponse</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>!counter</varname>
+                <vartype>integer</vartype>
+              </var>
+              <!-- total time -->
+              <timeout>5000000</timeout>
+              <actspec>+ 0 0 !response</actspec>
+              <actspec>+ 0 1 !counter</actspec>
+              <actspec>SurveyTextColor black</actspec>
+              <actspec>SurveyGeometry 660 390</actspec>
+              <!-- NASA weighting items -->
+              <actspec>SurveyText "For each of the following items, click on the factor that represents the more important contributor to workload for the robot navigation task you just completed." "Proceed"</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Physical Demand (how much physical activity was required, e.g., pushing, pulling, turning, controlling, activating, etc? was the task easy or demanding, slow or brisk, slack or strenuous, restful or laborious?) or Frustration (how insecure, discouraged, irritated, stressed and annoyed versus secure, gratified, content, relaxed and complacent did you feel during the task?)" "Physical_Demand Frustration" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Performance (how successful do you think you were in accomplishing the goals of the task set by the experimenter or yourself? how satisfied were you with your performance in accomplishing these goals?) or Temporal Demand (how much time pressure did you feel due to the rate of pace at which the tasks or task elements occurred? was the pace slow and leisurely or rapid and frantic?)" "Performance Temporal_Demand" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Effort (how hard did you have to work mentally and physically to accomplish your level of performance?) or Performance (how successful do you think you were in accomplishing the goals of the task set by the experimenter or yourself? how satisfied were you with your performance in accomplishing these goals?)" "Effort Performance" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Frustration (how insecure, discouraged, irritated, stressed and annoyed versus secure, gratified, content, relaxed and complacent did you feel during the task?) or Mental Demand (how much mental and perceptual activity was required, e.g., thinking, deciding, calculating, remembering, looking, searching, etc? was the task easy or demanding, simple or complex, exacting or forgiving?)" "Frustration Mental_Demand" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Temporal Demand (how much time pressure did you feel due to the rate of pace at which the tasks or task elements occurred? was the pace slow and leisurely or rapid and frantic?) or Frustration (how insecure, discouraged, irritated, stressed and annoyed versus secure, gratified, content, relaxed and complacent did you feel during the task?)" "Temporal_Demand Frustration" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Physical Demand (how much physical activity was required, e.g., pushing, pulling, turning, controlling, activating, etc? was the task easy or demanding, slow or brisk, slack or strenuous, restful or laborious?) or Performance (how successful do you think you were in accomplishing the goals of the task set by the experimenter or yourself? how satisfied were you with your performance in accomplishing these goals?)" "Physical_Demand Performance" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Mental Demand (how much mental and perceptual activity was required, e.g., thinking, deciding, calculating, remembering, looking, searching, etc? was the task easy or demanding, simple or complex, exacting or forgiving?) or Effort (how hard did you have to work mentally and physically to accomplish your level of performance?)" "Mental_Demand Effort" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Physical Demand (how much physical activity was required, e.g., pushing, pulling, turning, controlling, activating, etc? was the task easy or demanding, slow or brisk, slack or strenuous, restful or laborious?) or Temporal Demand (how much time pressure did you feel due to the rate of pace at which the tasks or task elements occurred? was the pace slow and leisurely or rapid and frantic?)" "Physical_Demand Temporal_Demand" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Temporal Demand (how much time pressure did you feel due to the rate of pace at which the tasks or task elements occurred? was the pace slow and leisurely or rapid and frantic?) or Mental Demand (how much mental and perceptual activity was required, e.g., thinking, deciding, calculating, remembering, looking, searching, etc? was the task easy or demanding, simple or complex, exacting or forgiving?)" "Temporal_Demand Mental_Demand" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Mental Demand (how much mental and perceptual activity was required, e.g., thinking, deciding, calculating, remembering, looking, searching, etc? was the task easy or demanding, simple or complex, exacting or forgiving?) or Physical Demand (how much physical activity was required, e.g., pushing, pulling, turning, controlling, activating, etc? was the task easy or demanding, slow or brisk, slack or strenuous, restful or laborious?)" "Mental_Demand Physical_Demand" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Effort (how hard did you have to work mentally and physically to accomplish your level of performance?) or Physical Demand (how much physical activity was required, e.g., pushing, pulling, turning, controlling, activating, etc? was the task easy or demanding, slow or brisk, slack or strenuous, restful or laborious?)" "Effort Physical_Demand" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Frustration (how insecure, discouraged, irritated, stressed and annoyed versus secure, gratified, content, relaxed and complacent did you feel during the task?) or Effort (how hard did you have to work mentally and physically to accomplish your level of performance?)" "Frustration Effort" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Temporal Demand (how much time pressure did you feel due to the rate of pace at which the tasks or task elements occurred? was the pace slow and leisurely or rapid and frantic?) or Effort (how hard did you have to work mentally and physically to accomplish your level of performance?)" "Temporal_Demand Effort" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Performance (how successful do you think you were in accomplishing the goals of the task set by the experimenter or yourself? how satisfied were you with your performance in accomplishing these goals?) or Frustration (how insecure, discouraged, irritated, stressed and annoyed versus secure, gratified, content, relaxed and complacent did you feel during the task?)" "Performance Frustration" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Which factor represents the more important contributor to workload for the task: Performance (how successful do you think you were in accomplishing the goals of the task set by the experimenter or yourself? how satisfied were you with your performance in accomplishing these goals?) or Mental Demand (how much mental and perceptual activity was required, e.g., thinking, deciding, calculating, remembering, looking, searching, etc? was the task easy or demanding, simple or complex, exacting or forgiving?)" "Performance Mental_Demand" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+
+              <!-- demographic/personal -->
+              <actspec>SurveyText "Please respond to the following questions about you." "Proceed"</actspec>
+              <actspec>SurveyRadioItem "Sex: " "Male Female" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyTextItem "Age: " !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Are you a native English speaker?" "Yes No" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Are you " "Left_Handed Right_Handed" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Are you a student?" "Yes No" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+
+              <control>if</control>
+              <actspec> stringCompare !textresponse Yes</actspec>
+              <control>then</control>
+              <actspec> SurveyRadioItem "Degree you are currently working toward: " "Bachelors Masters MS-PhD_or_PhD" !textresponse</actspec>
+              <actspec> logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec> + 1 !counter !counter</actspec>
+              <actspec> SurveyTextItem "What is your major?" !textresponse</actspec>
+              <actspec> logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec> + 1 !counter !counter</actspec>
+              <actspec> logText "Post Survey Item !counter response: current student "</actspec>
+              <actspec> + 1 !counter !counter</actspec>
+              <actspec> logText "Post Survey Item !counter response: current student "</actspec>
+              <actspec> + 1 !counter !counter</actspec>
+              <control>else</control>
+              <actspec> logText "Post Survey Item !counter response: not student "</actspec>
+              <actspec> + 1 !counter !counter</actspec>
+              <actspec> logText "Post Survey Item !counter response: not student "</actspec>
+              <actspec> + 1 !counter !counter</actspec>
+              <actspec> SurveyRadioItem "What is your last degree?" "Bachelors Masters PhD" !textresponse</actspec>
+              <actspec> logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec> + 1 !counter !counter</actspec>
+              <actspec> SurveyTextItem "What is your profession?" !textresponse</actspec>
+              <actspec> logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec> + 1 !counter !counter</actspec>
+              <control>endif</control>
+              <actspec>SurveyRadioItem "Do you have normal vision or corrected-to-normal vision?" "Normal Corrected" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Do you have any history of head injury (head/brain surgery, major concussion, etc?)" "Yes No" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyTextItem "How many hours of sleep did you have last night?" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Compared to your average sleeping time is this " "A_lot_less less equal more a_lot_more" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Are you feeling well today?" "Yes No" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Do you have a headache?" "Yes No" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Have you had any caffeinated drinks today?" "Yes No" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyTextItem "If yes, how many?" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyRadioItem "Compared to an average day is this " "A_lot_less less equal more a_lot_more" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveyTextItem "Do you have any comments about the study in general?" !textresponse</actspec>
+              <actspec>logText "Post Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <!-- Attitudes towards autonomous robots -->
+              <actspec>SurveyText "For each of the following items, please indicate how confident you are that the statement is true." "Proceed"</actspec>
+              <actspec>SurveySliderItem "Robots are, or soon will be, capable of making their own decisions." 1 9 "Not Confident" "Very Confident" !response</actspec>
+              <actspec>logText "Autonomy Survey Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveySliderItem "Robots have, or soon will have, their own desires, preferences, intentions, and future goals." 1 9 "Not Confident" "Very Confident" !response</actspec>
+              <actspec>logText "Autonomy Survey Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveySliderItem "Robots are, or soon will be, able to choose to obey or to disobey human commands in certain situations." 1 9 "Not Confident" "Very Confident" !response</actspec>
+              <actspec>logText "Autonomy Survey Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveySliderItem "Robots should be capable of making their own decisions." 1 9 "Not Confident" "Very Confident" !response</actspec>
+              <actspec>logText "Autonomy Survey Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveySliderItem "Robots should have their own desires, preferences, intentions, and future goals." 1 9 "Not Confident" "Very Confident" !response</actspec>
+              <actspec>logText "Autonomy Survey Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              <actspec>SurveySliderItem "Robots should be able to choose to obey or to disobey human commands in certain situations." 1 9 "Not Confident" "Very Confident" !response</actspec>
+              <actspec>logText "Autonomy Survey Item !counter response: !response "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+
+              <actspec>SurveyText "Thank you for participating in this study." "Finish"</actspec>
+            </type>
+            <!-- End PostSurvey -->
+            <!-- Begin PreSurvey -->
+            <type>                            
+              <name>PreSurvey</name>
+              <var>
+                <varname>!response</varname>
+                <vartype>integer</vartype>
+              </var>
+              <var>
+                <varname>!textresponse</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>!counter</varname>
+                <vartype>integer</vartype>
+              </var>
+              <!-- total time available -->
+              <timeout>5000000</timeout>
+              <actspec>set !response 0</actspec>
+              <actspec>set !counter 1</actspec>
+              <!-- set color and location of survey items -->
+              <actspec>SurveyTextColor black</actspec>
+              <actspec>SurveyGeometry 660 390</actspec>
+
+              <actspec>SurveyTextItem "Please enter your subject code." !textresponse</actspec>
+              <actspec>logText "Pre Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              
+              <!-- Initials -->
+              
+              <actspec>SurveyTextItem "Please enter your initials" !textreponse</actspec>
+              <actspec>logText "Pre Survey Item !counter response: !textresponse "</actspec>
+            
+              <!-- Participant Survey Questions (that Erin had)-->
+
+              <actspec>SurveyTextItem "What is your subject code? (ask researchers for code)" !textresponse</actspec>
+              <actspec>logText "Pre Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+
+              <actspec>SurveyTextItem "Enter age: " !textresponse</actspec>
+              <actspec>logText "Pre Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+
+              <actspec>SurveyRadioItem "Sex: " "Male Female" !textresponse</actspec>
+              <actspec>logText "Pre Survey Item !counter response: !textresponse "</actspec>
+              <actspec>+ 1 !counter !counter</actspec>
+              
+
+              
+              <!-- <actspec>+ 1 !counter !counter</actspec> -->
+              <!--
+        	  For text items, provide the question:
+
+              <actspec>SurveyTextItem "..." !textresponse</actspec>
+
+              For radio items, provide the question and a space-delimited
+              string of the possible responses (if you need a space in an
+              option, you can use '_' and a space will be substituted, e.g.,
+              Very_Much will be presented as a radio button with the text "Very
+              Much"):
+
+              <actspec>SurveyRadioItem "..." "Yes No" !textresponse</actspec>
+
+              For slider items, provide the question, lower and upper bounds,
+              and labels for the scale:
+
+              <actspec>SurveySliderItem "..." 1 9 "Agree" "Disagree" !response</actspec>
+
+              OR, provide a statement, the question, lower and upper bounds,
+              and labels for the scale:
+
+              <actspec>SurveySliderItem2 "..." "..." 1 9 "Agree" "Disagree" !response</actspec>
+              -->
+              <!-- <actspec>SurveyTextItem "Please enter your age:" !textresponse</actspec> -->
+              <!-- log the response and increment the counter -->
+              <!-- <actspec>logText "Pre Survey Item !counter response: !textresponse "</actspec> -->
+              <!--	      <actspec>+ 1 !counter !counter</actspec> -->
+            </type>
+            <!-- End PreSurvey -->
+          </subtypes>
+        </type>
+      </subtypes>
+    </type>
+  </subtypes>
+</type>

@@ -1,0 +1,353 @@
+#!/bin/bash
+
+if [ $# -eq 1 ] && [[ $1 =~ "help" ]] ; then
+    cat << \EOF
+./runadecomponent -r <addr> : specify registry IP
+	       -f <file> : component config file to use
+	       -cp <dir> : specify java classpath
+	       -mx.*
+	       -D.*
+	       -XX.*	 : java VM arguments
+	       -.*	 : additional component-specific arguments
+
+The script will try to guess values for the local IP address and registry
+IP address (if not provided).
+
+Examples:
+
+./runadecomponent com/simspeech/SimSpeechGuiComponent
+    start the GUI speech component, using the local host as the registry IP
+
+./runadecomponent com/simspeech/SimSpeechGuiComponent -r 192.168.0.254
+    start the GUI speech component, using 192.168.0.254 as the registry IP
+
+./runadecomponent com/simspeech/SimSpeechGuiComponent -config com/simspeech/config/default
+    start the GUI speech component, passing the "-config" argument to the component
+
+EOF
+    exit
+elif [ $# -gt 0 ] && [[ $1 =~ "help" ]] ; then
+    if [ $2 == "mmi" ] ; then
+    	cat << \EOF
+Sample MMIComponent invocation:
+
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:com/mmi ./runadecomponent com.mmi.MMIComponent -Djava.library.path=com/mmi
+
+EOF
+    elif [ $2 == "vision" ] ; then
+    	cat << \EOF
+Sample VisionComponent invocation:
+
+./runadecomponent com/vision/VisionComponent -nopantilt -cp ../vision/trunk -Djava.library.path=../vision/trunk/JNIversion
+
+EOF
+    elif [ $2 == "wheelchair" ] ; then
+    	cat << \EOF
+Sample WheelchairComponent invocation:
+
+./runadecomponent com/wheelchair/WheelchairComponent -Djava.library.path=../wheelchair/JNI/
+
+EOF
+    elif [ $2 == "reddy" ] ; then
+	RXTX=`locate RXTXcomm.jar`
+	echo "Sample ReddyComponent invocation:"
+	echo
+	echo "./runadecomponent com/reddy/ReddyComponent -cp $RXTX -port /dev/ttyUSB0"
+	echo
+	echo "(That classpath won't be the correct location for RXTXcomm.jar on all systems;"
+	echo "try \"locate RXTXcomm.jar\" to find it locally.)"
+	echo
+    fi
+    exit
+fi
+component=$1
+component=`echo $component | sed "s/\//./g"`
+if [ -f ADEENV ] ; then
+    . ./ADEENV
+else
+    echo
+    echo "ERROR STARTING COMPONENT: "$component
+    echo
+    echo "You need to compile the ADE system first (e.g., ./mkade small)."
+    echo
+    echo "Exiting."
+    exit
+fi
+if [ ! -e $JAVA ] ; then
+    echo
+    echo "ERROR STARTING COMPONENT: "$component
+    echo
+    echo "$JAVA not found."
+    echo
+    echo "Please edit ./ADEENV (or delete it so it can be regenerated)"
+    echo
+    echo "Exiting."
+    exit
+fi
+if [ ! -e .runadecomponent ] ; then
+    cat << \EOF
+This is runadecomponent, a convenience script for starting an individual ADE
+component from the command line, provided as an alternative to the officially
+supported method of specifying the entire java command yourself.  It will
+try to fill in required information when possible, but it is NOT GUARANTEED
+to work for any given environment or component configuration.  Note that this
+is particularly true for non-Linux environments, such as Windows, where it
+is all but certain to fail.  However, the script itself should be a good
+resource for figuring out what kinds of information you'll need to provide
+when starting your component yourself.
+
+The script is designed to accept and appropriately pass on command-line
+arguments, so you are free to override the defaults it would normally
+use.  Note that, unlike when you call java directly, all arguments,
+including VM directives, should be given AFTER the class name.  The script
+tries to make sure they're passed to java correctly--but NO GUARANTEES.
+
+Again, this script is intended to make starting a component easier than it
+would otherwise be; its assumptions and guesses are appropriate for many
+environments, but not all.  You are free to construct your own command line
+to start your JVM if the function of this script does not appeal to you.
+
+Please press <ENTER> to acknowledge this message and continue (this message
+should not be repeated after the first run in a given directory): 
+EOF
+    read junk
+    touch .runadecomponent
+fi
+# default build target is "build"; define alternative target in ADEENV
+# (e.g., TARGET="." to compile in place)
+: ${TARGET:="build"}
+if [ ! -d $TARGET ] ; then
+    mkdir $TARGET
+fi
+export TARGET
+
+#cp=core/ADEcore.jar:$TARGET:build:jars/visionJNI.jar:jars/SapaReplan.jar:jars/vecmath.jar:$UCP
+cp=.:$TARGET:build:jars/visionJNI.jar:jars/SapaReplan.jar:jars/vecmath.jar:$UCP
+if ( echo $component | grep -q ".*Impl$" ) ; then
+    echo "ERROR: component names should no longer be specified with the Impl suffix."
+    exit
+fi
+shift
+if [[ $component =~ "com.vision.VisionComponent" ]] ; then
+    #preargs="-Djava.library.path=../vision/trunk/JNIversion "
+    #export LD_LIBRARY_PATH=../vision/trunk/JNIversion:../vision/trunk/JNIversion/imageProcessor/vlfeat/bin/glx:../vision/trunk/JNIversion/imageProcessor/vlfeat/bin/a64:/usr/local/lib:../vision/trunk/JNIversion/AM:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=../vision/native/build/lib:../vision/native/imgproc/vlfeat/bin/glx:../vision/native/imgproc/vlfeat/bin/a64:/usr/local/lib:$LD_LIBRARY_PATH
+cp=$cp:jars/vecmath.jar:jars/commons-math3-3.0.jar:com/rosade_core/lib/apache_xmlrpc_client-0.0.0-SNAPSHOT.jar:com/rosade_core/lib/apache_xmlrpc_common-0.0.0-SNAPSHOT.jar:com/rosade_core/lib/apache_xmlrpc_server-0.0.0-SNAPSHOT.jar:com/rosade_core/lib/clojure-1.4.0.jar:com/rosade_core/lib/clostache-1.3.1.jar:com/rosade_core/lib/commons-pool-1.6.jar:com/rosade_core/lib/com.springsource.org.apache.commons.codec-1.3.0.jar:com/rosade_core/lib/com.springsource.org.apache.commons.httpclient-3.1.0.jar:com/rosade_core/lib/com.springsource.org.apache.commons.io-1.4.0.jar:com/rosade_core/lib/com.springsource.org.apache.commons.lang-2.4.0.jar:com/rosade_core/lib/com.springsource.org.apache.commons.logging-1.1.1.jar:com/rosade_core/lib/com.springsource.org.apache.commons.net-2.0.0.jar:com/rosade_core/lib/dnsjava-2.1.1.jar:com/rosade_core/lib/forms-1.2.1.jar:com/rosade_core/lib/guava-12.0.jar:com/rosade_core/lib/j18n-1.0.1.jar:com/rosade_core/lib/jsr305-1.3.9.jar:com/rosade_core/lib/junit-3.8.2.jar:com/rosade_core/lib/miglayout-3.7.4.jar:com/rosade_core/lib/netty-3.5.2.Final.jar:com/rosade_core/lib/rosjava-0.0.0-SNAPSHOT.jar:com/rosade_core/lib/rosjava_bootstrap-0.0.0-SNAPSHOT.jar:com/rosade_core/lib/rosjava_messages-0.0.0-SNAPSHOT.jar:com/rosade_core/lib/rsyntaxtextarea-2.0.3.jar:com/rosade_core/lib/seesaw-1.4.2.jar:com/rosade_core/lib/swingx-action-1.6.3.jar:com/rosade_core/lib/swingx-autocomplete-1.6.3.jar:com/rosade_core/lib/swingx-common-1.6.3.jar:com/rosade_core/lib/swingx-core-1.6.3.jar:com/rosade_core/lib/swingx-painters-1.6.3.jar:com/rosade_core/lib/swingx-plaf-1.6.3.jar:com/rosade_core/lib/tools.cli-0.2.2.jar:com/rosade_core/lib/ws-commons-util-1.0.1.jar:com/rosade_core/lib/xml-apis-1.0.b2.jar
+
+elif [[ $component =~ "com.vision.calibration.VisionCalibrationComponent" ]] ; then
+    #preargs="-Djava.library.path=../vision/trunk/JNIversion "
+    export LD_LIBRARY_PATH=../vision/trunk/JNIversion:../vision/trunk/JNIversion/imageProcessor/vlfeat/bin/glx:../vision/trunk/JNIversion/imageProcessor/vlfeat/bin/a64:/usr/local/lib:../vision/trunk/JNIversion/AM:$LD_LIBRARY_PATH
+    cp=$cp:jars/vecmath.jar
+elif [[ $component =~ "com.vision.SwissRangerComponent" ]] ; then
+    #preargs="-Djava.library.path=../vision/trunk/JNIversion "
+    export LD_LIBRARY_PATH=../vision/trunk/JNIversion/capture/MDS:$LD_LIBRARY_PATH
+elif [[ $component =~ "com.wheelchair.WheelchairComponent" ]] ; then
+    export LD_LIBRARY_PATH=./com/wheelchair/JNI:$LD_LIBRARY_PATH
+    preargs="-Djava.library.path=$LD_LIBRARY_PATH "
+elif [[ $component =~ "com.vision.VideoSendComponent" ]] ; then
+    export LD_LIBRARY_PATH=../vision/trunk/JNIversion:../vision/trunk/JNIversion/imageProcessor/vlfeat/bin/glx:../vision/trunk/JNIversion/imageProcessor/vlfeat/bin/a64:/usr/local/lib:../vision/trunk/JNIversion/AM:$LD_LIBRARY_PATH
+elif [[ $component =~ "com.pr2.PR2BaseComponent" ]] ; then
+    cp=$cp:`grep ros.runtime.classpath com/ros/ade_move_base_goal/ros.properties | cut -f 2 -d =`
+elif [[ $component =~ "com.pr2.RosLRFComponent" ]] ; then
+    cp=$cp:`grep ros.runtime.classpath com/ros/ade_base_scan_sub/ros.properties | cut -f 2 -d =`
+elif [[ $component =~ "com.festival.FestivalComponent" ]] ; then
+    args="-exe ../festival/bin/festival --libdir ../festival/lib --component ../festival/lib/init.scm "
+elif [[ $component =~ "com.sphinx4.Sphinx4Component" ]] ; then
+    preargs="-Djava.library.path=../aiml/ainebot/lib -mx512m -XX:+UseSerialGC "
+    cp=$cp:jars/sphinx4.jar:jars/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar
+elif [[ $component =~ "com.nao.Nao" ]] ; then
+    echo "********************************************************************************"
+    echo "Assuming NaoQi distribution can be found in ../NaoQiAcademics; install it there"
+    echo "or symlink to it."
+    echo "********************************************************************************"    
+    AL_DIR=`pwd`
+    export AL_DIR=`dirname $AL_DIR`/NaoQiAcademics
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:com/nao:$AL_DIR/lib/naoqi:$AL_DIR/lib
+    preargs="-Djava.library.path=$LD_LIBRARY_PATH:./com/nao:$AL_DIR/modules/lib:$AL_DIR/extern/c/linux/lib "
+    #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:com/nao:$AL_DIR/modules/lib:$AL_DIR/extern/c/linux/lib
+    cp=$cp:.:com/nao/jna.jar
+elif [[ $component =~ "com.mds.Liquid" ]] ; then
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:com/mds
+    preargs="-Djava.library.path=$LD_LIBRARY_PATH "
+    cp=$cp:jars/jna.jar
+elif [[ $component =~ "com.mds.MDS" ]] ; then
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:com/mds
+    preargs="-Djava.library.path=$LD_LIBRARY_PATH "
+    cp=$cp:jars/jna.jar
+elif [[ $component =~ "com.mds.simulator.MdsCalibrationComponent" ]] ; then
+    cp=$cp:jars/commons-math-2.2.jar:jars/vecmath.jar
+elif [[ $component =~ "com.mds.simulator.MdsSimComponent" ]] ; then
+    cp=$cp:jars/commons-math-2.2.jar:jars/vecmath.jar
+elif [[ $component =~ "com.tts.MaryTTSComponent" ]] ; then
+    preargs="-Dmary.base=jars/ "
+    cp=$cp:jars/marytts-lang-en-5.0-SNAPSHOT.jar:jars/marytts-component-5.0-SNAPSHOT-jar-with-dependencies.jar:jars/voice-cmu-slt-hsmm-5.0-SNAPSHOT.jar
+elif [[ $component =~ "com.robotsim.calibration.leng.CalibrationComponent" ]] ; then
+    cp=$cp:jars/protobuf-java-2.4.1.jar:jars/protobuf-java-format-1.2.jar:jars/commons-math-2.2.jar:jars/vecmath.jar
+elif [[ $component =~ "com.lsm.LSM" ]] ; then
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:com/lsm:.
+    echo $LD_LIBRARY_PATH
+    preargs="-Djava.library.path=$LD_LIBRARY_PATH "
+    cp=$cp:jars/jna.jar
+elif [[ $component =~ "com.nsim.speechrec.nsimSpeechrecComponent" ]] ; then
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:com/nsim/speechrec:.
+    echo $LD_LIBRARY_PATH
+    preargs="-Djava.library.path=$LD_LIBRARY_PATH "
+    cp=$cp:com/nsim/speechrec/jna.jar
+elif [[ $component =~ "com.discourse.MinkDiscourseComponent" ]] ; then
+    preargs="-Xms8G "
+    cp=$cp:com/discourse/jar/weka.jar:com/discourse/jar/postaipc-0.8.5.jar:com/discourse/jar/clipc-0.2.jar:.
+elif [[ ${component:0:10} =~ "com.carmen" ]] ; then
+    if test "${CARMEN_ROOT+set}" != set; then
+        echo "You must set CARMEN_ROOT to base of carmen installation. Exiting."
+        exit
+    fi
+    preargs="-Djava.library.path=com/carmen:com/carmen/wrap "
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:com/carmen/wrap
+    cp=$cp:com/carmen:com/carmen/Carmen.jar
+elif [[ $component =~ "com.lsm_wordrec.lsm_wordrec_Component" ]] ; then
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:com/lsm_wordrec
+    cp=$cp:com/lsm_wordrec/jna.jar:com/lsm_wordrec/jcommon-1.0.16.jar:com/lsm_wordrec/jfreechart-1.0.13.jar:com/lsm_wordrec 
+elif [[ $component =~ "com.sensory_integration.sensory_integration_Component" || $component =~ "com.sensory_integration.si_experiments_Component" || $component =~ "com.sensory_integration.av_si_Component" ]] ; then
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:com/sensory_integration
+    cp=$cp:com/sensory_integration/jna.jar:com/sensory_integration
+elif [[ $component =~ "com.lsm.lsmComponent" ]] ; then
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:com/lsm
+    cp=$cp:jars/jna.jar:com/lsm
+elif [[ $component =~ "com.cart.CartComponent" ]] ; then
+    cp=$cp:jars/json.jar
+elif [[ $component =~ "com.grid.analyzer.AnalysisComponent" ]]; then
+    cp=$cp:com/grid/analyzer/cobra.jar:com/grid/analyzer/js.jar
+fi
+# treat the local and registry addresses specially, since we need to make
+# sure they get set
+addr=
+reg=
+largs=
+rargs=
+in_bypass=0
+while [ $# -gt 0 ] ; do
+    arg=$1
+    if [ $in_bypass -eq 1 ] ; then
+        if [ $arg = "--" ] ; then
+            in_bypass=0
+        fi
+	args=$args$arg" "
+    else
+        if [ $arg = "--xargs" ] ; then
+            in_bypass=1
+            args=$args$arg" "
+        elif [ $arg = "-r" ] ; then
+            shift
+            reg=$1
+            rargs="-r "$1
+            # following the convention of ADEComponent for port and name
+            if [ ! -z $2 ] && [[ $2 != -* ]] ; then
+                shift
+                rargs=$rargs" "$1
+                if [ ! -z $2 ] && [[ $2 != -* ]] ; then
+                    shift
+                    rargs=$rargs" "$1
+                fi
+            fi
+        elif [ $arg = "-l" ] ; then
+            shift
+            addr=$1
+            largs="-l "$1
+            # following the convention of ADEComponent for port and name
+            if [ ! -z $2 ] && [[ $2 != -* ]] ; then
+                shift
+                largs=$largs" "$1
+                if [ ! -z $2 ] && [[ $2 != -* ]] ; then
+                    shift
+                    largs=$largs" "$1
+                fi
+            fi
+        elif [[ $arg =~ "-XX" ]] ; then
+            # Special case to match garbage collection argument (e.g., Sphinx4Component)
+            preargs=$preargs$arg" "
+        elif [[ $arg =~ "-mx" ]] ; then
+            # Special case to match heap size argument (e.g., Sphinx4Component)
+            preargs=$preargs$arg" "
+        elif [[ $arg =~ "-D" ]] ; then
+            preargs=$preargs$arg" "
+        elif [ $arg = "-cp" ] || [ $arg = "-classpath" ] ; then
+            shift
+            cp=$cp:$1
+        else
+            args=$args$1" "
+        fi
+    fi
+    shift
+done
+componentclass=`echo $component | sed "s/\./\//g"`".class"
+componentsource=`echo $component | sed "s/\./\//g"`".java"
+if [ ! -e $componentclass ] ; then
+    let i=0
+    for j in `echo $cp | sed "s/:/ /g"` ; do
+        # check if it's a jar
+        if [[ $j == *.jar ]] ; then
+            if ( jar tvf $j | grep -q $componentclass ) ; then
+                let i=1
+                break
+            fi
+        else
+            if [ -e $j"/"$componentclass ] ; then
+                let i=1
+                break
+            fi
+        fi
+    done
+    if [ $i -lt 1 ] ; then
+        echo
+        echo "ERROR STARTING COMPONENT: "$component
+        echo
+        if [ -e $componentsource ] ; then
+            cat << \EOF
+Can't find component class though the source files are available.
+Please ensure the files are compiled and try again.
+EOF
+        else 
+            cat << \EOF
+Can't find component class.  Please recall that the class name must be the
+first argument to runadecomponent, before even any Java VM directives.
+EOF
+        fi
+        echo
+        echo "Exiting."
+        exit
+    fi
+fi
+if [ -z $addr ] ; then
+    # assumes class C network
+    if [ $reg ] ; then
+        # assume it's on the same net as the registry
+        net=`echo $reg | cut -f -3 -d .`
+        addr=`/sbin/ifconfig | grep "inet addr" | grep $net | head -n 1 | awk '{ print $2 }' | cut -f 2 -d :`
+    fi
+    if [ -z $addr ] ; then
+        addr=127.0.0.1
+    fi
+    largs="-l "$addr
+fi
+if [ -z $addr ] ; then
+    echo
+    echo "ERROR STARTING COMPONENT: "$component
+    echo
+    cat << \EOF
+Could not determine local address--is it possible there's no network
+interface up?  Please check your system configuration and provide the
+correct address using the "-l" parameter.
+EOF
+    echo
+    echo "Exiting."
+    exit
+fi
+if [ -z $reg ] ; then
+    echo "No registry supplied, assuming local registry ($addr)."
+    reg=$addr
+    rargs="-r "$reg
+fi
+preargs=$preargs"-Djava.net.preferIPv4Stack -Djava.rmi.server.hostname="$addr" -cp "$cp
+cmd=$JAVA" "$preargs" -Dcomponent="$component" ade.ADEComponentImpl "$largs" "$rargs" "$args
+echo $cmd
+$cmd

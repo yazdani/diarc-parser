@@ -1,0 +1,1038 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- {could not get instruction text from com/adesim/config/SIM_CONFIG_HEADER.txt} -->
+
+<config>
+    <world bounded="false">
+        <shape>
+            <rect x="-15.842699999999999" y="-5.6427000000000005" xLength="31.6954" yLength="10.9854" />
+        </shape>
+    </world>
+    <init-robot-positions>
+        <position x="-3.3075524815215367" y="-0.022627952444892685" theta="6.2345145281277645" />
+    </init-robot-positions>
+    <wall>
+        <shape zLength="2.5">
+            <poly>
+                <pt x="-15.842699999999999" y="-5.6427000000000005" />
+                <pt x="15.8527" y="-5.6427000000000005" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <poly>
+                <pt x="15.8527" y="-5.6427000000000005" />
+                <pt x="15.8527" y="5.3427" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <poly>
+                <pt x="15.8527" y="5.3427" />
+                <pt x="-15.842699999999999" y="5.3427" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <poly>
+                <pt x="-15.842699999999999" y="5.3427" />
+                <pt x="-15.842699999999999" y="-5.6427000000000005" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.842699999999999" y="-5.6427000000000005" xLength="0.10769999999999946" yLength="10.9854" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="15.745000000000001" y="-5.6427000000000005" xLength="0.10769999999999946" yLength="10.9854" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.842699999999999" y="-5.6427000000000005" xLength="31.6954" yLength="0.10770000000000035" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.842699999999999" y="5.234999999999999" xLength="31.6954" yLength="0.10770000000000035" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.725" y="-0.71" xLength="0.13000000000000078" yLength="0.19999999999999996" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.735" y="-0.51" xLength="0.15000000000000036" yLength="0.08000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.685" y="-0.43" xLength="0.05000000000000071" yLength="0.86" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.735" y="0.43" xLength="0.15000000000000036" yLength="0.08000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.725" y="0.51" xLength="0.13000000000000078" yLength="0.19999999999999996" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.595" y="-0.835" xLength="0.5299999999999994" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.059999999999999" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-14.985" y="-0.795" xLength="0.7899999999999991" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-14.2" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-14.125" y="-0.835" xLength="4.27" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-9.86" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-9.785" y="-0.795" xLength="0.7899999999999991" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-8.989999999999998" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-8.91" y="-0.835" xLength="0.3000000000000007" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-8.61" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-8.535" y="-0.795" xLength="0.79" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-7.75" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-7.675" y="-0.835" xLength="3.25" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-4.42" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-4.345000000000001" y="-0.795" xLength="0.79" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.56" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.48" y="-0.835" xLength="0.2999999999999998" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.18" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.105" y="-0.795" xLength="0.79" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-2.31" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-2.235" y="-0.835" xLength="3.25" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="1.01" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="1.095" y="-0.795" xLength="0.79" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="1.88" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="1.96" y="-0.835" xLength="0.2999999999999998" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="2.26" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="2.335" y="-0.795" xLength="0.79" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="3.12" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="3.205" y="-0.835" xLength="3.25" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="6.45" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="6.525" y="-0.795" xLength="0.79" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="7.31" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="7.39" y="-0.835" xLength="0.2999999999999998" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="7.69" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="7.775" y="-0.795" xLength="0.7900000000000009" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="8.56" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="8.635" y="-0.835" xLength="3.25" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="11.89" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="11.965" y="-0.795" xLength="0.7899999999999991" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="12.75" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="12.83" y="-0.835" xLength="0.3000000000000007" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="13.13" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="13.205" y="-0.795" xLength="0.7900000000000009" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="13.99" y="-0.845" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="14.07" y="-0.835" xLength="1.5199999999999996" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.600000000000001" y="0.7050000000000001" xLength="0.27999999999999936" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.315" y="0.6950000000000001" xLength="0.05000000000000071" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-15.265" y="0.745" xLength="0.6099999999999994" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-14.655000000000001" y="0.6950000000000001" xLength="0.05000000000000071" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-14.605" y="0.7050000000000001" xLength="1.17" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-13.44" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-13.355" y="0.745" xLength="0.7100000000000009" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-12.649999999999999" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-12.57" y="0.7050000000000001" xLength="0.09999999999999964" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-12.469999999999999" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-12.39" y="0.745" xLength="0.7599999999999998" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-11.639999999999999" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-11.56" y="0.7050000000000001" xLength="1.6999999999999993" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-9.86" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-9.785" y="0.745" xLength="0.7899999999999991" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-8.989999999999998" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-8.91" y="0.7050000000000001" xLength="0.3000000000000007" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-8.61" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-7.675" y="0.7050000000000001" xLength="3.25" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-4.42" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-4.345000000000001" y="0.745" xLength="0.79" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.56" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.48" y="0.7050000000000001" xLength="0.2999999999999998" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.18" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.100000000000001" y="0.745" xLength="0.79" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-2.31" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-2.235" y="0.7050000000000001" xLength="3.25" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="1.01" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="1.88" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="1.96" y="0.7050000000000001" xLength="0.2999999999999998" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="2.26" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="2.330000000000001" y="0.745" xLength="0.79" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="3.12" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="3.205" y="0.7050000000000001" xLength="3.25" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="6.45" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="7.31" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="7.39" y="0.7050000000000001" xLength="0.2999999999999998" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="7.69" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="7.770000000000001" y="0.745" xLength="0.7900000000000009" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="8.56" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="8.635" y="0.7050000000000001" xLength="3.25" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="11.89" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="12.75" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="12.83" y="0.7050000000000001" xLength="0.3000000000000007" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="13.13" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="13.200000000000001" y="0.745" xLength="0.7900000000000009" yLength="0.050000000000000044" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="13.99" y="0.6950000000000001" xLength="0.08000000000000007" yLength="0.15000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="14.07" y="0.7050000000000001" xLength="1.5199999999999996" yLength="0.13" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="15.595" y="0.51" xLength="0.13000000000000078" yLength="0.19999999999999996" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="15.585" y="0.43" xLength="0.15000000000000036" yLength="0.08000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="15.635" y="-0.43" xLength="0.05000000000000071" yLength="0.86" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="15.585" y="-0.51" xLength="0.15000000000000036" yLength="0.08000000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="15.595" y="-0.71" xLength="0.13000000000000078" yLength="0.19999999999999996" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-12.705" y="-5.535" xLength="0.13000000000000078" yLength="4.83" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-12.704999999999998" y="-5.535" xLength="4.01" yLength="0.1299999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-8.825" y="-5.535" xLength="0.13000000000000078" yLength="4.83" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-12.58" y="-5.41" xLength="0.9399999999999995" yLength="0.9399999999999995" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-11.645" y="-5.41" xLength="0.8900000000000006" yLength="0.8399999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-9.66" y="-3.96" xLength="0.8399999999999999" yLength="0.48" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-9.66" y="-2.5100000000000002" xLength="0.8399999999999999" yLength="0.08000000000000007" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-9.280000000000001" y="-2.43" xLength="0.46000000000000085" yLength="0.6600000000000001" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-12.58" y="-1.545" xLength="1.3200000000000003" yLength="0.71" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-11.26" y="-1.3900000000000001" xLength="1.3000000000000007" yLength="0.56" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-8.865" y="-5.535" xLength="0.13000000000000078" yLength="4.83" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-8.860000000000001" y="-5.535" xLength="21.92" yLength="0.1299999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="12.935" y="-5.535" xLength="0.13000000000000078" yLength="4.83" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-6.875" y="-5.41" xLength="19.81" yLength="0.17999999999999972" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-6.880000000000001" y="-5.2299999999999995" xLength="0.45999999999999996" yLength="0.28000000000000025" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-6.42" y="-5.2299999999999995" xLength="0.09999999999999964" yLength="0.3600000000000003" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-6.32" y="-5.2299999999999995" xLength="0.45999999999999996" yLength="0.28000000000000025" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-5.859999999999999" y="-5.23" xLength="4.34" yLength="0.5600000000000005" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-1.52" y="-5.2299999999999995" xLength="0.45999999999999996" yLength="0.28000000000000025" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-1.06" y="-5.2299999999999995" xLength="0.09999999999999998" yLength="0.3600000000000003" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-0.96" y="-5.2299999999999995" xLength="0.46" yLength="0.28000000000000025" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-0.5" y="-5.23" xLength="2.08" yLength="0.5800000000000001" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="1.5750000000000002" y="-5.235" xLength="2.21" yLength="0.41000000000000014" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="3.7899999999999996" y="-5.2299999999999995" xLength="0.4600000000000004" yLength="0.28000000000000025" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="4.25" y="-5.2299999999999995" xLength="0.09999999999999964" yLength="0.3600000000000003" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="4.35" y="-5.2299999999999995" xLength="0.45999999999999996" yLength="0.28000000000000025" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="4.81" y="-5.225" xLength="2.08" yLength="0.4299999999999997" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="6.885" y="-5.2299999999999995" xLength="0.15000000000000036" yLength="0.28000000000000025" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="9.145000000000001" y="-5.2299999999999995" xLength="0.33000000000000007" yLength="0.28000000000000025" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="9.48" y="-5.225" xLength="0.46000000000000085" yLength="0.79" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="9.94" y="-5.2299999999999995" xLength="0.09999999999999964" yLength="0.8600000000000003" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="10.04" y="-5.225" xLength="0.46000000000000085" yLength="0.79" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="10.495000000000001" y="-5.2299999999999995" xLength="0.33000000000000007" yLength="0.28000000000000025" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-6.244999999999999" y="-1.29" xLength="0.71" yLength="0.45999999999999996" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-5.53" y="-1.545" xLength="2.08" yLength="0.71" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.4499999999999997" y="-1.49" xLength="2.34" yLength="0.66" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-1.115" y="-1.065" xLength="0.79" yLength="0.22999999999999998" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-0.32000000000000006" y="-1.47" xLength="2.08" yLength="0.64" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="1.755" y="-1.725" xLength="2.41" yLength="0.89" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="4.5" y="-1.5699999999999998" xLength="0.6399999999999997" yLength="0.74" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="5.14" y="-0.93" xLength="0.47999999999999954" yLength="0.09999999999999998" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="5.62" y="-1.8050000000000002" xLength="2.08" yLength="0.97" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="10.04" y="-1.32" xLength="0.46000000000000085" yLength="0.48" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="12.895000000000001" y="-5.23" xLength="0.13000000000000078" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="12.9" y="-5.235" xLength="2.84" yLength="0.1299999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="15.615" y="-5.23" xLength="0.13000000000000078" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="15.16" y="-5.11" xLength="0.46000000000000085" yLength="0.7400000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-11.615" y="0.6800000000000002" xLength="0.13000000000000078" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-5.995" y="0.6800000000000002" xLength="0.1299999999999999" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-11.61" y="5.045" xLength="5.74" yLength="0.1299999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-11.485" y="0.8050000000000002" xLength="1.17" yLength="4.27" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-10.315" y="4.085" xLength="1.5700000000000003" yLength="0.9699999999999998" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-8.74" y="4.615" xLength="0.09999999999999964" yLength="0.4299999999999997" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-6.460000000000001" y="4.31" xLength="0.45999999999999996" yLength="0.7400000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-6.095000000000001" y="0.7100000000000004" xLength="0.1299999999999999" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.375" y="0.7100000000000004" xLength="0.1299999999999999" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-6.09" y="5.1049999999999995" xLength="2.84" yLength="0.1299999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-5.970000000000001" y="4.37" xLength="0.45999999999999996" yLength="0.7400000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.6799999999999997" y="2.355" xLength="0.2999999999999998" yLength="1.8300000000000005" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-5.97" y="0.835" xLength="1.3200000000000003" yLength="1.27" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.415" y="0.7100000000000004" xLength="0.1299999999999999" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-0.6950000000000001" y="0.7100000000000004" xLength="0.13" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-3.41" y="5.1049999999999995" xLength="2.84" yLength="0.1299999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-1.1500000000000001" y="4.37" xLength="0.45999999999999996" yLength="0.7400000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-0.655" y="0.7100000000000004" xLength="0.13" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="2.065" y="0.7100000000000004" xLength="0.1299999999999999" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-0.6499999999999999" y="5.1049999999999995" xLength="2.84" yLength="0.1299999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="-0.53" y="4.37" xLength="0.46" yLength="0.7400000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="2.025" y="0.7100000000000004" xLength="0.1299999999999999" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="4.744999999999999" y="0.7100000000000004" xLength="0.1299999999999999" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="2.0300000000000002" y="5.1049999999999995" xLength="2.84" yLength="0.1299999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="4.289999999999999" y="4.37" xLength="0.45999999999999996" yLength="0.7400000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="4.7749999999999995" y="0.7100000000000004" xLength="0.1299999999999999" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="7.494999999999999" y="0.7100000000000004" xLength="0.1299999999999999" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="4.78" y="5.1049999999999995" xLength="2.84" yLength="0.1299999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="4.8999999999999995" y="4.37" xLength="0.45999999999999996" yLength="0.7400000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="7.465" y="0.7100000000000004" xLength="0.1299999999999999" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="10.185" y="0.7100000000000004" xLength="0.13000000000000078" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="7.470000000000001" y="5.1049999999999995" xLength="2.84" yLength="0.1299999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="9.73" y="4.37" xLength="0.46000000000000085" yLength="0.7400000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="10.215" y="0.7100000000000004" xLength="0.13000000000000078" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="12.935" y="0.7100000000000004" xLength="0.13000000000000078" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="10.22" y="5.1049999999999995" xLength="2.84" yLength="0.1299999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="10.34" y="4.37" xLength="0.46000000000000085" yLength="0.7400000000000002" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="12.895000000000001" y="0.7100000000000004" xLength="0.13000000000000078" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="15.615" y="0.7100000000000004" xLength="0.13000000000000078" yLength="4.52" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="12.9" y="5.1049999999999995" xLength="2.84" yLength="0.1299999999999999" />
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="2.5">
+            <rect x="15.16" y="4.37" xLength="0.46000000000000085" yLength="0.7400000000000002" />
+        </shape>
+    </wall>
+    <door name="Door824" openFraction="0.0" x="-8.5" y="0.75" width="0.8" thickness="0.04" closed_angle="0.0" pivot_angle="1.7" />
+    <door name="Door830" openFraction="1.0" x="1.95" y="0.75" width="0.85" thickness="0.04" closed_angle="3.1415" pivot_angle="-1.7">
+        <action>
+            <pushDoor/>
+        </action>
+    </door>
+    <box name="box1" open="false">
+        <color name="red" />
+        <shape zLength="0.3">
+            <rect x="1.2" y="4.9" xLength="0.19999999999999996" yLength="0.20000000000000018" />
+        </shape>
+    </box>
+    <box name="box2" open="false">
+        <color name="blue" />
+        <shape zLength="0.3">
+            <rect x="6.5" y="4.9" xLength="0.20000000000000018" yLength="0.20000000000000018" />
+        </shape>
+    </box>
+</config>

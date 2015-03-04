@@ -1,0 +1,16 @@
+The Segway server depends on the ft245 Linux kernel module.  This can be
+downloaded from http://sourceforge.net/projects/ftdi-usb-ft245/.  However,
+there are (minor) changes that need to be made to the source in order for
+the module to recognize the Segway interface when it's plugged in, so it may
+be easiest to use the modified version in com/segway/ft245.tgz.
+
+To compile the module, you need to have the kernel source in /usr/src.
+Unpack the module source and (maybe as root?) make the module.  Copy ft245.ko
+to /lib/modules/`uname -r`/kernel/drivers/usb/serial.  Run depmod.  To get
+the permissions correct, add:
+    
+    KERNEL=="ft245*", MODE="0666"
+
+to the file /etc/udev/local.rules.  Then run "udevcontrol reload_rules"
+(optional on some systems?).  Plug in the Segway device, and the kernel
+module should load and the file /dev/ft2450 should be created.

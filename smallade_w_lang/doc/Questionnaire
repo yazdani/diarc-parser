@@ -1,0 +1,10 @@
+java ade/StartADE -l 172.30.1.12 -f config/rudyquestionnaire.config -k rudy.hosts
+
+java -Djava.rmi.server.hostname=172.30.1.11 com/action/ActionManagerLinearImpl -l 172.30.1.11 -r 172.30.1.11 -laser -sphinx -discourse -vision -f actionconfig.questionnaire2 -subject Paul | tee -a action.out
+
+Or, for speech only (no movement):
+
+java ade/StartADE -l 172.30.1.12 -f config/rudyquestionnairestationary.config -k rudy.hosts
+
+java -Djava.rmi.server.hostname=172.30.1.11 com/tt/TTServerImpl -r 172.30.1.12 -l 172.30.1.11 -fest -sonic2 -tlaser -f ttconfigQuestionnaire2 | tee ttout
+

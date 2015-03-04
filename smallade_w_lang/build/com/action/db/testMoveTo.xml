@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<type>  
+  <name>entity</name>
+  <subtypes>
+    <type>
+      <name>action</name>
+      <subtypes>
+        <type>
+          <name>script</name>
+          <subtypes>
+            <!-- Begin testMoveTo -->
+            <type>
+              <name>testMoveTo</name>
+              <desc>?robot moves somewhere</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <var>
+                <varname>!xorig</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!yorig</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!heading</varname>
+                <vartype>coordinate</vartype>
+              </var>
+              <var>
+                <varname>!headingTo</varname>
+                <vartype>coordinate</vartype>
+              </var>
+                <effects>
+                    <atend>testedMoveTo(?robot)</atend>
+                </effects>
+              <actspec>moveTo ?robot 1.0 1.5</actspec>
+              <actspec>sleep ?robot 2000</actspec>
+              <actspec>getLocation ?robot !xorig !yorig</actspec>
+              <actspec>printText "x: !xorig y: !yorig"</actspec>
+              <actspec>getHeading ?robot !heading</actspec>
+              <actspec>getHeadingFromRel ?robot !xorig !yorig 0.1 0.5 !heading !headingTo</actspec>
+              <actspec>printText "headingTo: !headingTo"</actspec>
+              <actspec>turnRel ?robot !headingTo</actspec>
+              <actspec>moveTo ?robot -1.25 1.85</actspec>
+              <actspec>backTo ?robot -1.5 2.1</actspec>
+              <actspec>getLocation ?robot !xorig !yorig</actspec>
+              <actspec>printText "x: !xorig y: !yorig"</actspec>
+              <actspec>moveTo ?robot -1.5 -0.5</actspec>
+              <actspec>sleep ?robot 2000</actspec>
+              <actspec>getLocation ?robot !xorig !yorig</actspec>
+              <actspec>printText "x: !xorig y: !yorig"</actspec>
+              <actspec>moveTo ?robot -1.25 1.85</actspec>
+              <actspec>getLocation ?robot !xorig !yorig</actspec>
+              <actspec>printText "x: !xorig y: !yorig"</actspec>
+              <!-- Home is -145 225 (approximately) -->
+              <actspec>backTo ?robot -1.5 2.1</actspec>
+            </type>
+            <!-- End testMoveTo -->
+            <!-- Begin testTurn -->
+            <type>              
+              <name>testTurn</name>
+              <desc>?robot moves somewhere</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+              <actspec>turnRel ?robot ${-Math.PI*2/3}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/3}</actspec>
+              <actspec>turnRel ?robot ${-Math.PI*5/6}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/4}</actspec>
+              <actspec>turnRel ?robot ${-Math.PI*2/3}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/2}</actspec>
+              <actspec>turnRel ?robot ${-Math.PI*11/12}</actspec>
+            </type>
+            <!-- End testTurn -->
+            <!-- Begin beginPatrol -->
+            <type>              
+              <name>beginPatrol</name>
+              <desc>?robot moves somewhere</desc>
+              <var>
+                <varname>?robot</varname>
+                <vartype>actor</vartype>
+              </var>
+	      <timeout>6000</timeout>
+              <control>while</control>
+              <control> not</control>
+              <actspec>   gpsready ?robot</actspec>
+              <control> endnot</control>
+              <control>do</control>
+              <control>endwhile</control>
+              <actspec>moveTo ?robot 4.856748 268.962020</actspec>
+              <actspec>moveTo ?robot 4.856748 270.962020</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/12}</actspec>
+	      <!--
+	      <actspec>moveTo ?robot -33.039549 323.442211</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+              <actspec>moveTo ?robot 5.856748 268.962020</actspec>
+              <actspec>turnRel ?robot ${-Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${-Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${-Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${-Math.PI/12}</actspec>
+	      -->
+              <actspec>moveTo ?robot -11.308960 269.602112</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+              <actspec>turnRel ?robot ${Math.PI/6}</actspec>
+            </type>
+            <!-- End beginPatrol -->
+            <type>
+              <name>printstuff</name>
+              <var>
+                <varname>?a</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>?b</varname>
+                <vartype>text</vartype>
+              </var>
+              <var>
+                <varname>?c</varname>
+                <vartype>text</vartype>
+              </var>
+              <actspec>printText "now printing ?a ?b ?c"</actspec>
+              <actspec>printText "now printing ?a(?b,?c)"</actspec>
+              <actspec>printText "now printing ?a ?b ?c."</actspec>
+              <actspec>printText "now printing ?a! ?b? ?c."</actspec>
+            </type>
+          </subtypes>
+        </type>
+      </subtypes>
+    </type>
+  </subtypes>
+</type>

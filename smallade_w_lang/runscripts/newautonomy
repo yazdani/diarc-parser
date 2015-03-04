@@ -1,0 +1,17 @@
+#!/bin/bash
+# x,y of drop off location
+DROPX=5.0
+DROPY=12.0
+# overall time limit
+LIMIT=303.0
+# delay for taking a reading
+DELAY=1.0
+# autonomy: "Adapt" or "Non"
+AUTON=Adapt
+. ./ADEENV
+$JAVA -Dcomponent=ade.ADERegistryImpl -Djava.net.preferIPv4Stack -Djava.rmi.server.hostname=127.0.0.1 -cp core/ADEcore.jar:core/Action.jar:.:jars/visionJNI.jar:jars/SapaReplan.jar: ade.ADEServerImpl -l 127.0.0.1 -o 127.0.0.1 -f config/newautonomy.config &
+REG=$!
+sleep 5
+$JAVA -Djava.net.preferIPv4Stack -Djava.rmi.server.hostname=127.0.0.1 -cp core/ADEcore.jar:core/Action.jar:.:jars/visionJNI.jar:jars/SapaReplan.jar: -Dcomponent=com.action.ActionManagerLinearImpl ade.ADEServerImpl -l 127.0.0.1 -r 127.0.0.1 -field -server com.interfaces.NLPServer -server com.interfaces.LaserServer -motion -dbfilesupp com/action/db/newautonomy.xml -server com.simspeech.SimSpeechProductionServer -server com.fnir.FNIRServer -script MissionHRI${AUTON}Aut robot Bucky $DROPX $DROPY $LIMIT $DELAY --
+kill $REG
+echo Done.

@@ -1,0 +1,2 @@
+#!/bin/bash
+./runaderegistry -k config/sphinx_manyears.hosts -f config/sphinx_manyears2.config -l 127.0.0.1

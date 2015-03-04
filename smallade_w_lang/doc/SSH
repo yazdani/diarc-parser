@@ -1,0 +1,261 @@
+Documentation: Setting up ssh facilities
+Comment: Required for distributed ADE use
+Author: Jim Kramer, Paul Schermerhorn
+Last updated: September 5, 2006
+Copyright Airolab 2006
+
+Introduction:
+=============
+ADE relies on SSH (and related programs) to provide mechanisms for secure
+and automatic distribution (i.e., login to remote hosts to execute servers).
+This document describes the installation of SSH and the related programs
+required to make use of ADE's distributed computing and failure recovery.
+In particular, this document covers:
+
+1. SSH Installation (client and server)
+- 1.a. Overview
+- 1.b. Linux machines
+- 1.c. Mac OS X machines
+- 1.d. Windows machines
+2. Passwordless Login
+- 2.a. Overview
+- 2.b. Generating SSH keys
+- 2.c. Starting an SSH agent
+- 2.d. Remote logins with multiple user IDs
+3. References
+
+
+1. SSH Installation
+===================
+1.a. Overview
+-------------
+SSH, short for "secure shell", is a program that allows secure connections
+to remote computers. An ssh "client" connects to a remote computer, while
+an ssh "server" accepts client connections, authenticating them via a key
+exchange, giving the client access to services (e.g., access to files, the
+ability to execute programs, etc.) on the remote machine. UNIX-like
+systems (e.g., Linux) generally include SSH and related programs, thus
+sections 1.a. and 1.b. will be extremely brief. On Windows machines, SSH
+availability and installation is more problematic; Microsoft does not supply
+a standard SSH client or server. While ADE can be used in a stand-alone
+manner on Windows machines, distributed functionality requires both an SSH
+client and server on each machine used in an ADE network.
+
+1.b. Linux machines:
+--------------------
+Using your distributions package manager, install the SSH packages (you will
+need root permissions).
+
+On Debian: apt-get install openssh-client openssh-server
+On RedHat: yum install openssh
+
+1.c. Max OS X machines:
+-----------------------
+TODO
+
+1.d. Windows machines:
+----------------------
+Cygwin is software that provides a Linux-like emulation layer to Windows
+machines and includes both an ssh client and server. See http://www.cygwin.com
+for download and installation instructions.
+
+
+
+2. Passwordless Login
+=====================
+2.a. Overview
+-------------
+Automatic distribution relies on enabling logins that do not require
+password entry, so you must generate encryption keys, set up the SSH
+passphrase(s), start an SSH agent, and add the passphrase(s) to the
+agent. SSH supports two protocols, 1 and 2. For security reasons, you
+should use protocol 2, which is the default in newer versions of SSH.
+For details on the encryption process, see 3. References.
+
+
+2.b. Key generation
+-------------------
+In order to create the SSH key, the "ssh-keygen" utility is used (see
+"man ssh-keygen" for details; "-t rsa" specifies an SSH protocol 2 key).
+The resultant files (e.g., "~/.ssh/id_rsa") can then be copied to "~/.ssh"
+on each remote host to allow for passphrase login authentication. For an
+example, we will use two hosts for the user called "username":
+
+Host Name  | IP address
+========================
+localhost  | 192.168.0.1
+shannon    | 192.168.0.2
+
+Prompts will be shown as "username@<hostname>:~/$", where <hostname> will
+be replaced by the hostname, the "~/" represents the user's home directory,
+and the "$" is the user prompt. An easy way to set up SSH and generate the
+keys is to do the following:
+
+First, from your local host, generate a protocol 2 public/private key pair.
+You will see a message that the key pair is being generated, then be asked
+for a file name, then a passphrase. Key generation will take a short amount
+of time, dependent on your CPU speed and the number of bits to use for the
+key (which can be changed from the default using the "-b <number>" switch;
+a decent keylength to use is 2048 bits). The output will appear like this:
+
+username@localhost:~/$ ssh-keygen -t rsa
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/username/.ssh/id_rsa):
+
+Press <enter> to choose the default file. You will then be asked for a
+passphrase, then to enter it again for confirmation. After entering the
+passphrase, the name of the file containing the private key is printed,
+then the name of the file containing the public key, then the key
+"fingerprint". Although you can enter an empty passphrase, there is a
+security risk involved--it is important to recognize that the passphrase
+you enter will authenticate you on *any* machine on which the keys are
+copied. TO BE SECURE, BE SURE TO ENTER A ROBUST PASSPHRASE. In addition,
+make sure to never use your passphrase on an unencrypted channel. Output
+similar to the following will appear as you do this (first three lines
+are repeated from the key generation above):
+
+username@localhost:~/$ ssh-keygen -t rsa
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/username/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/username/.ssh/id_rsa.
+Your public key has been saved in /home/username/.ssh/id_rsa.pub.
+The key fingerprint is:
+<colon separated hexidecimal numbers> username@localhost
+username@localhost:~/$ 
+
+With the keys generated, the public key must be copied to each of the remote
+hosts to which you will login. Because SSH maintains a list of known hosts,
+we take care of the initial configuration now by logging in to the remote
+machine(s), then logging *back* into the local machine from the remote
+machine. You will be asked to verify the authenticity of the hosts; answer
+"yes", then enter your password. For instance:
+
+username@localhost:~/$ ssh username@192.168.0.2
+The authenticity of host '192.168.0.2 (192.168.0.2)' can't be established.
+RSA key fingerprint is <colon separated hexidecimal numbers>.
+Are you sure you want to continue connecting (yes/no)? 
+Warning: Permanently added '192.168.0.4' (RSA) to the list of known hosts.
+Password:
+Linux shannon 2.6.12-1-k7 #1 Tue Sep 27 13:22:07 UTC 2005 i686 GNU/Linux
+username@shannon:~/$
+
+Now, log *back* into the local host, essentially repeating the same steps:
+
+username@shannon:~/$ ssh 192.168.0.1
+The authenticity of host '192.168.0.1 (192.168.0.1)' can't be established.
+RSA key fingerprint is <colon separated hexidecimal numbers>.
+Are you sure you want to continue connecting (yes/no)? 
+Warning: Permanently added '192.168.0.2' (RSA) to the list of known hosts.
+Password:
+Linux localhost 2.6.12-1-k7 #1 Tue Sep 27 13:24:21 UTC 2005 i686 GNU/Linux
+username@localhost:~/$
+
+Now, log out of both hosts:
+username@localhost:~/$ logout
+Connection to 192.168.0.1 closed.
+username@shannon:~/$ logout
+Connection to 192.168.0.2 closed.
+username@localhost:~/$ 
+
+Now we put the public key into a file called "authorized_keys", both locally
+and on the remote machine. One way to do this that will not overwrite the
+file that contains the keys is to use file redirection; use the following
+commands (substituting your username and the IP address of the remote host,
+of course), entering your password when prompted:
+
+username@localhost:~/$ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+username@localhost:~/$ ssh username@192.168.0.2 'cat >> ~/.ssh/authorized_keys' < ~/.ssh/id_rsa.pub
+Password:
+username@localhost:~/$ 
+
+Repeat the above steps (logging onto the remote host, logging back to the
+local host, logging out of both, then copying the public key to the remote
+host) for each remote host. With the public/private key pairs copied, the
+next step is to establish an "ssh-agent" that keeps track of keys and allows
+automatic login to remote hosts.
+
+
+
+2.c. Starting an ssh-agent
+--------------------------
+If all remote logins will use the same user ID as on the current host, only
+one passphrase must be added to the agent. The SSH agent should be started,
+which will run in the background and supply the pasphrase when needed. The
+correct invocation of "ssh-agent" is shell-dependent (see "man ssh-agent" for
+details; typically "eval `ssh-agent`" will work (note the backticks)). For
+instance, using the same hosts as in 2.b.:
+
+username@localhost:~/$ eval `ssh-agent`
+Agent pid 18906
+username@localhost:~/$ 
+
+The final step, once the SSH key and passphrase have been created and
+distributed and the SSH agent has been started is to add the key to the
+agent.  This is done using "ssh-add" (see "man ssh-add" for details):
+
+username@localhost:~/$ ssh-add
+Enter passphrase for /home/username/.ssh/id_rsa:
+Identity added: /home/username/.ssh/id_rsa (/home/username/.ssh/id_rsa)
+username@localhost:~/$ 
+
+To make sure the agent is set up properly, log in to the remote machine.
+Assuming it is set up properly, you will *not* be prompted for a password:
+
+username@localhost:~/$ ssh username@192.168.0.2
+Linux shannon 2.6.12-1-k7 #1 Tue Sep 27 13:35:44 UTC 2005 i686 GNU/Linux
+username@shannon:~/$ 
+
+However, this only sets up authentication from localhost to shannon. Try
+logging back into localhost:
+
+username@shannon:~/$ ssh username@192.168.0.1
+Password: 
+Linux shannon 2.6.12-1-k7 #1 Tue Sep 27 13:36:02 UTC 2005 i686 GNU/Linux
+username@localhost:~/$ logout
+Connection to 192.168.0.1 closed.
+username@shannon:~/$ logout
+Connection to 192.168.0.2 closed.
+username@localhost:~/$ 
+
+As you can see, you were prompted for a password (note that we've closed
+both opened ssh connections). To keep this from happening, SSH agents have
+the ability to "forward" authentication, which passes the challenge/response
+to previous hosts. One way to enable authentication forwarding is to use the
+"-A" switch, like so:
+
+username@localhost:~/$ ssh -A username@192.168.0.2
+Linux shannon 2.6.12-1-k7 #1 Tue Sep 27 13:39:17 UTC 2005 i686 GNU/Linux
+username@shannon:~/$ ssh -A username@192.168.0.1
+Linux localhost 2.6.12-1-k7 #1 Tue Sep 27 13:39:33 UTC 2005 i686 GNU/Linux
+username@localhost:~/$ logout
+Connection to 192.168.0.1 closed.
+username@shannon:~/$ logout
+Connection to 192.168.0.2 closed.
+username@localhost:~/$ 
+
+
+
+2.d. Remote Logins with Multiple User IDs
+-----------------------------------------
+Using multiple user IDs on remote machines requires only a few extra steps.
+SSH keys must be created for each remote account, as described above.  Then
+each key file (e.g., "~/.ssh/id_rsa") needs to be copied to "~/.ssh" on the
+local machine (make sure to give each a unique filename, e.g.,
+"~/.ssh/id_rsa-foo-bar").  Start the SSH agent as above, then add each key
+by specifying the filename to "ssh-add" (e.g., "ssh-add
+~/.ssh/id_rsa-foo-bar").  The agent will then contain the keys for all
+remote hosts, and will negotiate the login for each using the appropriate
+one.
+
+
+
+3. References
+=============
+http://www.cygwin.com/
+http://www.securityfocus.com/infocus/1810
+http://www.securityfocus.com/infocus/1812
+http://www-128.ibm.com/developerworks/library/l-keyc.html
+http://www.unixwiz.net/techtips/ssh-agent-forwarding.html
+

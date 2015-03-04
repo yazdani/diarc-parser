@@ -1,0 +1,91 @@
+and: (S / S) | S :# x # y. <> y,# x # y. <> x & <> y : # x # y. x , # x # y. x || y  
+or: (S / S) | S : # x # y. <> x | <> y : # x # y. x. y.
+but: (S / S) | S : # x # y. x U y : # x # y. x ; y
+until: (S / S) | S : # x # y. x U y : # x # y. x ; y
+before: (S / S) | S : # x # y. <>(y & <> x) : # x # y. x ; y
+while: (S / S[c]) | S[c] , (S / S[c]) / S[c] : # x # y. x & y : # x # y. x || y
+always: (S / S[c]) | S[c] , (S / S[c]) / S[c] : # x. [] x : # x. x
+when: (S / S[c]) | S[c] , (S / S[c]) / S[c] : # x # y. [] (x => y) : # x # y. x || y
+within: (S | (S / NP)/ S) | S , (S / S) / S : # x E x : # x. 
+during: (S | (S / NP)/ S) | S , (S / S) / S : # x E x : # x. 
+do-not:  S / (S / NP), (S/N)/(S/NP) : # x. - x : # x. - x
+go: (S / NP), (S[c] / NP) : # x. at(x), # x. <> at(x) : # x. go-to(x) , # x. go-to(x)
+pass by: (S / NP), (S[c] / NP) : # x. at(x), # x. <> at(x) : # x. go-to(x) , # x. go-to(x)
+reach: (S / NP), (S[c] / NP) : # x. at(x), # x. <> at(x) : # x. go-to(x) , # x. go-to(x)
+stay: (S / NP), (S[c] / NP) : # x. [] at(x), # x. [] x : # x. stay-at(x) , # x. go-to(x)
+detect: (S / NP), (S[c] / NP) : # x. detect(x) : # x. detect(x)
+clean: (S / NP), (S[c] / NP) : # x. clean(x) : # x. clean(x)
+check: (S / NP), (S[c] / NP) : # x. check(x) : # x. check(x)
+speak: S, S[v] : # x. x @ speak : # x. x @ speak
+wait: S, S[v] : # x. x @ wait : # x. x @ wait
+is: (S / NP) | NP : # x. x : # x. x
+turn: S / NP, (S[c] / NP) : # x. x : # x. turn(x)
+turn-on: S / NP, (S[c] / NP) : # x. on(x) : # x. turn-on(x)
+get: S / NP, (S[c] / NP) : # x. <> get(x) :  # x. get(x)
+open: S / NP, (S[c] / NP) : # x. open(x) : # x. open(x)
+close: S / NP, (S[c] / NP) : # x. close(x) : # x. close(x)
+report: (S / PP[of]) / NP : # x # y.  report(x`y) : # x # y. report(x`y) 
+a: NP/N : # x. x : # x. x
+to: NP/NP : # x. x : # x. x
+the: NP/N, NP/NP : # x. x : # x. x
+any: NP/N : # x. x : # x. x
+oldone: NP/N : # x. x : # x. x
+have: (S / NP) | NP : # x # y. timeout(y) : # x. # y timeout(y)
+all: NP/N[p] : # x. x : # x. x
+some: NP/N[p] : # x. x : # x. x
+in: NP/N[loc] : # x. in(x) : # x. in(x)
+of: PP[of] / NP : # x. x : # x. x
+immediately: (S / N) / (S / NP), S/S[v] : # x. O x : # x. x
+eventually: (S / N) / (S / NP), S/S[v] : # x. <> x : # x. x
+then: (S / N) / (S / NP), S/S[v] : # x. <> x : # x. x
+keep: (S / (S / NP)) / N, S/NP : # x. [] x : # x. x
+maintain: (S / (S / NP)) / N, S/NP : # x. [] x : # x. x
+you:  NP : # x. x : # x. x
+ever:  (S | (S / (S / NP))) / S : # x. [] x : # x. x
+Room1: NP, N, N[loc] : # x. x @ room1 : # x. x @ room1
+Room2: NP, N, N[loc] : # x. x @ room2 : # x. x @ room2
+Room3: NP, N, N[loc] : # x. x @ room3 : # x. x @ room3
+Room4: NP, N, N[loc] : # x. x @ room4 : # x. x @ room4
+Room5: NP, N, N[loc] : # x. x @ room5 : # x. x @ room5
+Room6: NP, N, N[loc] : # x. x @ room6 : # x. x @ room6
+Room7: NP, N, N[loc] : # x. x @ room7 : # x. x @ room7
+Door1: NP, N, N[loc] : # x. x @ door1 : # x. x @ door1
+Door2: NP, N, N[loc] : # x. x @ door2 : # x. x @ door2
+Door3: NP, N, N[loc] : # x. x @ door3 : # x. x @ door3
+Door4: NP, N, N[loc] : # x. x @ door4 : # x. x @ door4
+Door5: NP, N, N[loc] : # x. x @ door5 : # x. x @ door5
+Door6: NP, N, N[loc] : # x. x @ door6 : # x. x @ door6
+Door7: NP, N, N[loc] : # x. x @ door7 : # x. x @ door7
+one: NP/N : # x. one-x : # x. one-x
+two: NP/N : # x. two-x : # x. two-x
+three: NP/N : # x. three-x : # x. three-x
+four: NP/N : # x. four-x : # x. four-x
+five: NP/N : # x. five-x : # x. five-x
+six: NP/N : # x. six-x : # x. six-x
+seven: NP/N : # x. seven-x : # x. seven-x
+Corridor1: NP, N, N[loc] : # x. x @ corridor1 : # x. x @ corridor1
+Corridor2: NP, N, N[loc] : # x. x @ corridor2 : # x. x @ corridor2
+Corridor3: NP, N, N[loc] : # x. x @ corridor3 : # x. x @ corridor3
+Corridor4: NP, N, N[loc] : # x. x @ corridor4 : # x. x @ corridor4
+Corridor5: NP, N, N[loc] : # x. x @ corridor5 : # x. x @ corridor5
+Corridor6: NP, N, N[loc] : # x. x @ corridor6 : # x. x @ corridor6
+Corridor7: NP, N, N[loc] : # x. x @ corridor7 : # x. x @ corridor7
+hit: NP, N : # x. x @ hit : # x. x @ hit
+end: NP/PP[of] : # x. end-of(x) : # x. end-of(x)
+minute: NP, N : # x. x @ minute : # x. x @ minute
+minutes: NP, N : # x. x @ minutes : # x. x @ minutes
+foyer: NP, N : # x. x @ foyer : # x. x @ foyer
+hallway: N, NP : # x. x @ hallway : # x. x @ hallway
+around: NP : # x. x @  : # x. x @ -180
+light: NP, N : # x. x @ light : # x. x @ light
+break: NP, N : # x. x @ break : # x. x @ break
+blue-box:  NP, N : # x. x @ blue-box : # x. x @ blue-box
+blue-boxes:  NP[p], N[p] : # x. x @ blue-boxes : # x. x @ blue-boxes
+door: NP, N : # x. x @ door : # x. x @ door
+corridor: NP, N : # x. x @ corridor : # x. x @ corridor
+location: NP, N : # x. x @ location : # x. x @ location
+recharge-station:  NP, N, N[loc] : # x. x @ recharge-station : # x. x @ recharge-station
+breakroom:  NP, N, N[loc] : # x. x @ breakroom : # x. x @ breakroom
+on: NP, N : # x. on(x) : # x. on(x)
+occupied: NP, N : # x. x @ occupied : # x. x @ occupied
+detected: NP : # x. detected(x) : # x. detected(x)

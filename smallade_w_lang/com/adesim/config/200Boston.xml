@@ -1,0 +1,825 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!-- comments are enclosed within standard xml comment brackets (like this line) --> 
+
+<!-- GENERAL NOTES:  
+
+    * The coordinate system is Euclidean.  NOTE THAT THIS IS DIFFERENT FROM
+      THE SCREEN COORDINATE SYSTEM, WHERE Y grows DOWN, not up!  all numbers
+      can be doubles. 
+    * The Z dimension, to the extent that it is used, points UPWARDS.
+    * All measurements are in METERS and RADIANS
+    * The entire configuration MUST BE ENCLOSED within the <config> tag.
+    
+    
+  A note about NUMERICAL PARAMETERS:
+    * Expressions are EVALUATED.  Therefore, you can write things like
+      x="5.32 * 6"
+    * Note that you do NOT need to put a decimal after division - though you
+      can if it makes you feel better.
+    * You can use the constant PI.  I.e.: theta="PI / 4"
+    * You can use the built-in constant RAND which is very handy, but
+      OVERLOADED WITH MEANING:
+      * For angles, RAND is anywhere between 0 and 2*PI.  Hence, if you set
+        the robot's theta to RAND, it will face in any possible direction.
+      * Everywhere else, RAND is a number between 0 and 1.  Hence, you can
+        set the fraction by which a door is open to RAND.  Or the position
+        of a block as "x = 3 + (4*RAND)"
+    * Finally, constants are NOT cASe SenSitiVE.  Write them as awkwardly as
+      you wish...
+    
+  possible tokens: 
+    <world [*opt* bounded="true/false" (true by default)]>
+      <shape> {particular_shape} <shape>
+    </world>.  
+
+    * Note that EACH FILE MUST SPECIFY WORLD DIMENSIONS.
+    * Bounded refers to whether the simulation should automatically put in
+      walls at the world's edge, so that the robot does not drive off
+      into nothingness.  It is true by default.
+
+    shape_and_optional_actions are just comprised of a SINGLE shape node,
+    and optional actions.  let's start with shape:  
+
+    <shape [*opt* z="0"] [*opt* zLength="°"] [*opt* rotation="0"] >
+      {particular_shape}
+    </shape> 
+    
+    the particular shape can be: 
+
+    <rect [*opt* x="0"] [*opt* y="0"] [*opt* center="False"] xLength="" yLength="" />  
+    
+    where (x,y) is bottom left coordinate, UNLESS center="True" is
+    specified, in which case (x,y) is the CENTER (useful for placing
+    percepts, i.e., boxes and blocks).
+    
+    <poly>
+      <pt x="" y=""/>
+      <pt x="" y=""/>
+      ...
+    </poly>
+    
+    for a polygon.
+
+    the actions can be OPTIONALLY surrounded by an 
+    
+    <actions>
+      {action_item}[s]
+    </actions>
+    
+    node, but that is for backwards compatibility only;  they can also just
+    reside within the shape.  a shape can have zero, one, or many actions.
+
+    an action_item can be one of the following: 
+
+    <action> <message text="" /> </action> 
+
+    <action> <exit/> </action> 
+    
+    <action> <remove/> </action>
+    
+    <action> <push/> </action>
+      (to bulldoze the object in same direction as robot is moving, but
+      bounded by walls).
+    
+    <action> <pushDoor/> </action>
+      (ONLY APPLICABLE TO PUSHING DOORS OPEN/CLOSED).
+    
+    the actions will be executed (IN ORDER) whenever one of the robot lines
+    intersects one of the lines of the shape. 
+
+    objects can be: 
+
+    <wall>    {shape_and_optional_actions}   </wall> 
+
+    <door [*opt* name=""] openFraction="[0 through 1.0]" 
+          x="" y="" width="" thickness="" closed_angle="" pivot_angle=""/>
+      {optional_actions}
+    </door>
+    
+    where (x,y) specify pivot point, the closed angle refers to the angle of
+    the door when closed (relative to the pivot point, where east = 0,
+    north = PI/2, etc), and pivot_angle refers to the angle difference
+    (typically +/- ~PI/2.0) relative to the closed_angle that the door
+    should swing to when opened.  Note that pivot_angle of magnitude PI or
+    greater may cause problems when used in conjunction with a pushDoor
+    action.
+    
+    <landmark [*opt* name=""] [*opt* laserable="false"]>
+      {shape_and_optional_actions}
+    </landmark>  
+    
+    <block [*opt* name=""] [*opt* laserable="true"] >
+      [*opt* {color}] {shape_and_optional_actions}
+    </block>.
+    
+    <box [*opt* name=""]>
+      [*opt* {color}] {shape_and_optional_actions} [*opt* {contains}]
+    </box>.
+            
+    the color node is of one of two forms:
+    
+    <color name="" />
+    
+    where "name" is any color name specified within
+    com.adesim.ColorConverter.java.
+    
+    <color red="" green="" blue="" />
+    
+    where red, green, and blue are ints 0-255.  When the sim is asked for
+    colors by name, it will use the ColorConverter to find the closest named
+    color for the specified RGB.
+        
+    the <contains> node allows to specify objects that are, at startup,
+    present inside of boxes or in the robot's possession (see
+    <init-robot-positions> below).  It looks like this:
+    
+    <contains>
+      {block} (see specs above)
+      ...
+    </contains>
+    
+    note that in the case of contained objects, x and y really don't matter,
+    as they'll be put in the middle of the box (if contained in a box), or
+    outstretched in front of the robot (in case of robot).
+    
+    for rectangular objects, feel free to omit the "x" and "y" attributes
+    altogether; for polygons, create the shape using the x-s and y-s, but
+    know that your polygon will be moved anyway (which means you can
+    construct the polygon with whatever coordinate shift is easiest for you)
+
+    it is also possible to *optionally* specify an initial starting position
+    for the robot(s):
+    
+    <init-robot-positions>
+      <position x="" y ="" theta="">
+        [*opt* {contains}]
+      </position> (for first robot that joins the simulation)
+      <position x="" y ="" theta=""/> (for second robot)
+      ...
+    </init-robot-positions>
+
+    where (x,y) are the coordinates, and theta is the robot's angle, in
+    radians or "rand", with 0 facing right, and the angle growing
+    counter-clockwise.  Note that if a particular initial position is
+    explicitly specified on the command line, it WILL override the
+    init-robot spec. 
+-->
+
+<config>
+    <world bounded="false">
+        <shape>
+            <rect x="-18.0" y="-9.0" xLength="36.0" yLength="18.0" />
+        </shape>
+    </world>
+    <init-robot-positions>
+        <position x="11.5" y ="-5.5" theta="3*PI/2">
+        </position>
+    </init-robot-positions>
+    <box name="medkit0">
+        <color name="white"/>
+        <shape zLength="0.2">
+            <!--
+            <rect x="-2.6" y="0.5" center="True" xLength="0.3" yLength="0.2"/>
+            -->
+            <rect x="-9.0" y="4.0" center="True" xLength="0.3" yLength="0.2"/>
+        </shape> 
+    </box>.
+    <!--
+    <box name="medkit1">
+        <color name="red"/>
+        <shape zLength="0.2">
+            <rect x="-13.6" y="1.0" center="True" xLength="0.3" yLength="0.2"/>
+        </shape> 
+    </box>.
+    -->
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-17.27" y="-1.67" />
+                <pt x="-17.33" y="-1.67" />
+                <pt x="-17.33" y="-9.0" />
+                <pt x="-17.27" y="-9.0" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-17.33" y="-1.67" />
+                <pt x="-17.33" y="-1.73" />
+                <pt x="-17.07" y="-1.73" />
+                <pt x="-17.07" y="-1.67" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-17.07" y="-1.47" />
+                <pt x="-17.13" y="-1.47" />
+                <pt x="-17.13" y="-1.73" />
+                <pt x="-17.07" y="-1.73" />
+            </poly>
+        </shape>
+    </wall>
+    <!-- PWS: this is the bit blocking off the hallway -->
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-15.53" y="-1.5" />
+                <pt x="-15.47" y="-1.5" />
+                <pt x="-15.47" y="-3.47" />
+                <pt x="-15.53" y="-3.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-15.47" y="-3.47" />
+                <pt x="-15.53" y="-3.47" />
+                <pt x="-15.53" y="-9.0" />
+                <pt x="-15.47" y="-9.0" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-15.53" y="-3.47" />
+                <pt x="-15.53" y="-3.53" />
+                <pt x="-12.17" y="-3.53" />
+                <pt x="-12.17" y="-3.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-12.17" y="-3.53" />
+                <pt x="-12.23" y="-3.53" />
+                <pt x="-12.23" y="-3.27" />
+                <pt x="-12.17" y="-3.27" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-12.23" y="-3.27" />
+                <pt x="-12.23" y="-3.33" />
+                <pt x="-11.47" y="-3.33" />
+                <pt x="-11.47" y="-3.27" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-11.47" y="-3.27" />
+                <pt x="-11.53" y="-3.27" />
+                <pt x="-11.53" y="-3.53" />
+                <pt x="-11.47" y="-3.53" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-11.47" y="-3.47" />
+                <pt x="-11.47" y="-3.53" />
+                <pt x="-4.77" y="-3.53" />
+                <pt x="-4.77" y="-3.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-4.77" y="-3.53" />
+                <pt x="-4.83" y="-3.53" />
+                <pt x="-4.83" y="-3.27" />
+                <pt x="-4.77" y="-3.27" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-4.83" y="-3.27" />
+                <pt x="-4.83" y="-3.33" />
+                <pt x="-4.07" y="-3.33" />
+                <pt x="-4.07" y="-3.27" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-4.07" y="-3.27" />
+                <pt x="-4.13" y="-3.27" />
+                <pt x="-4.13" y="-3.53" />
+                <pt x="-4.07" y="-3.53" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-4.13" y="-3.47" />
+                <pt x="-4.13" y="-3.53" />
+                <pt x="2.43" y="-3.53" />
+                <pt x="2.43" y="-3.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="2.37" y="-3.53" />
+                <pt x="2.43" y="-3.53" />
+                <pt x="2.43" y="-3.27" />
+                <pt x="2.37" y="-3.27" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="2.37" y="-3.27" />
+                <pt x="2.37" y="-3.33" />
+                <pt x="3.33" y="-3.33" />
+                <pt x="3.33" y="-3.27" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="3.27" y="-3.27" />
+                <pt x="3.33" y="-3.27" />
+                <pt x="3.33" y="-3.53" />
+                <pt x="3.27" y="-3.53" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="3.27" y="-3.47" />
+                <pt x="3.27" y="-3.53" />
+                <pt x="10.03" y="-3.53" />
+                <pt x="10.03" y="-3.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="9.97" y="-3.53" />
+                <pt x="10.03" y="-3.53" />
+                <pt x="10.03" y="-3.27" />
+                <pt x="9.97" y="-3.27" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="9.97" y="-3.27" />
+                <pt x="9.97" y="-3.33" />
+                <pt x="10.73" y="-3.33" />
+                <pt x="10.73" y="-3.27" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="10.67" y="-3.27" />
+                <pt x="10.73" y="-3.27" />
+                <pt x="10.73" y="-3.53" />
+                <pt x="10.67" y="-3.53" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="10.67" y="-3.47" />
+                <pt x="10.67" y="-3.53" />
+                <pt x="10.93" y="-3.53" />
+                <pt x="10.93" y="-3.47" />
+            </poly>
+        </shape>
+    </wall>
+    <door name="door0" openFraction="0.95" x="11.9" y="-3.5" width="1.0" thickness="0.04" closed_angle="PI" pivot_angle="PI">
+        <action>
+            <pushDoor/>
+        </action>
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="10.67" y="-3.47" />
+                <pt x="10.73" y="-3.47" />
+                <pt x="10.73" y="-7.53" />
+                <pt x="10.67" y="-7.53" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="10.67" y="-7.47" />
+                <pt x="10.67" y="-7.53" />
+                <pt x="15.73" y="-7.53" />
+                <pt x="15.73" y="-7.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="15.67" y="-3.47" />
+                <pt x="15.73" y="-3.47" />
+                <pt x="15.73" y="-7.53" />
+                <pt x="15.67" y="-7.53" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="11.87" y="-3.47" />
+                <pt x="11.87" y="-3.53" />
+                <pt x="16.03" y="-3.53" />
+                <pt x="16.03" y="-3.47" />
+            </poly>
+        </shape>
+    </wall>
+    <door name="door1" openFraction="0.0" x="17.0" y="-3.5" width="1.0" thickness="0.04" closed_angle="PI" pivot_angle="0">
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="16.97" y="-3.47" />
+                <pt x="16.97" y="-3.53" />
+                <pt x="17.43" y="-3.53" />
+                <pt x="17.43" y="-3.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="17.37" y="-3.53" />
+                <pt x="17.43" y="-3.53" />
+                <pt x="17.43" y="-3.27" />
+                <pt x="17.37" y="-3.27" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="17.37" y="-3.27" />
+                <pt x="17.37" y="-3.33" />
+                <pt x="17.63" y="-3.33" />
+                <pt x="17.63" y="-3.27" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="17.57" y="-3.33" />
+                <pt x="17.63" y="-3.33" />
+                <pt x="17.63" y="-0.47" />
+                <pt x="17.57" y="-0.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="15.73" y="-1.47" />
+                <pt x="15.73" y="-1.53" />
+                <pt x="11.87" y="-1.53" />
+                <pt x="11.87" y="-1.47" />
+            </poly>
+        </shape>
+    </wall>
+    <door name="door2" openFraction="0.0" x="10.9" y="-1.5" width="1.0" thickness="0.04" closed_angle="0" pivot_angle="0.0">
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="10.93" y="-1.47" />
+                <pt x="10.93" y="-1.53" />
+                <pt x="8.87" y="-1.53" />
+                <pt x="8.87" y="-1.47" />
+            </poly>
+        </shape>
+    </wall>
+    <door name="door3" openFraction="0.0" x="7.9" y="-1.5" width="1.0" thickness="0.04" closed_angle="0" pivot_angle="0.0">
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="7.93" y="-1.47" />
+                <pt x="7.93" y="-1.53" />
+                <pt x="7.27" y="-1.53" />
+                <pt x="7.27" y="-1.47" />
+            </poly>
+        </shape>
+    </wall>
+    <door name="door4" openFraction="0.0" x="6.3" y="-1.5" width="1.0" thickness="0.04" closed_angle="0" pivot_angle="0.0">
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="6.33" y="-1.47" />
+                <pt x="6.33" y="-1.53" />
+                <pt x="2.47" y="-1.53" />
+                <pt x="2.47" y="-1.47" />
+            </poly>
+        </shape>
+    </wall>
+    <door name="door5" openFraction="0.0" x="0.4" y="-1.5" width="1.0" thickness="0.04" closed_angle="PI" pivot_angle="0.0">
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="1.53" y="-1.47" />
+                <pt x="1.53" y="-1.53" />
+                <pt x="0.37" y="-1.53" />
+                <pt x="0.37" y="-1.47" />
+            </poly>
+        </shape>
+    </wall>
+    <door name="door6" openFraction="0.0" x="1.5" y="-1.5" width="1.0" thickness="0.04" closed_angle="0" pivot_angle="0.0">
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-0.83" y="-1.47" />
+                <pt x="-0.83" y="-1.53" />
+                <pt x="-0.57" y="-1.53" />
+                <pt x="-0.57" y="-1.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-0.67" y="-1.53" />
+                <pt x="-0.73" y="-1.53" />
+                <pt x="-0.73" y="-0.37" />
+                <pt x="-0.67" y="-0.37" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-0.73" y="-0.37" />
+                <pt x="-0.73" y="-0.43" />
+                <pt x="1.23" y="-0.43" />
+                <pt x="1.23" y="-0.37" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="1.17" y="-0.43" />
+                <pt x="1.23" y="-0.43" />
+                <pt x="1.23" y="8.33" />
+                <pt x="1.17" y="8.33" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="1.23" y="8.27" />
+                <pt x="1.23" y="8.33" />
+                <pt x="-16.53" y="8.33" />
+                <pt x="-16.53" y="8.27" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-16.47" y="8.33" />
+                <pt x="-16.53" y="8.33" />
+                <pt x="-16.53" y="-1.53" />
+                <pt x="-16.47" y="-1.53" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-16.53" y="2.47" />
+                <pt x="-16.53" y="2.53" />
+                <pt x="-13.17" y="2.53" />
+                <pt x="-13.17" y="2.47" />
+            </poly>
+        </shape>
+    </wall>
+    <door name="door7" openFraction="0.0" x="-13.2" y="2.5" width="1.0" thickness="0.04" closed_angle="0.0" pivot_angle="PI/2">
+        <action>
+            <pushDoor/>
+        </action>
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-12.23" y="2.47" />
+                <pt x="-12.23" y="2.53" />
+                <pt x="-11.47" y="2.53" />
+                <pt x="-11.47" y="2.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-11.47" y="-1.53" />
+                <pt x="-11.53" y="-1.53" />
+                <pt x="-11.53" y="-1.27" />
+                <pt x="-11.47" y="-1.27" />
+            </poly>
+        </shape>
+    </wall>
+    <door name="door8" openFraction="0.0" x="-11.5" y="-1.3" width="1.0" thickness="0.04" closed_angle="PI/2" pivot_angle="-PI/2">
+        <action>
+            <pushDoor/>
+        </action>
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-11.47" y="-0.33" />
+                <pt x="-11.53" y="-0.33" />
+                <pt x="-11.53" y="2.73" />
+                <pt x="-11.47" y="2.73" />
+            </poly>
+        </shape>
+    </wall>
+    <door name="door9" openFraction="1.0" x="-11.5" y="2.7" width="1.0" thickness="0.04" closed_angle="PI/2" pivot_angle="PI/2">
+        <action>
+            <pushDoor/>
+        </action>
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-11.47" y="3.67" />
+                <pt x="-11.53" y="3.67" />
+                <pt x="-11.53" y="8.33" />
+                <pt x="-11.47" y="8.33" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-4.87" y="-1.53" />
+                <pt x="-4.93" y="-1.53" />
+                <pt x="-4.93" y="-1.27" />
+                <pt x="-4.87" y="-1.27" />
+            </poly>
+        </shape>
+    </wall>
+    <door name="door10" openFraction="0.0" x="-4.9" y="-1.3" width="1.0" thickness="0.04" closed_angle="PI/2" pivot_angle="PI/2">
+        <action>
+            <pushDoor/>
+        </action>
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-4.87" y="-0.33" />
+                <pt x="-4.93" y="-0.33" />
+                <pt x="-4.93" y="8.33" />
+                <pt x="-4.87" y="8.33" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-1.87" y="-1.53" />
+                <pt x="-1.93" y="-1.53" />
+                <pt x="-1.93" y="1.03" />
+                <pt x="-1.87" y="1.03" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-1.87" y="0.97" />
+                <pt x="-1.87" y="1.03" />
+                <pt x="-2.03" y="1.03" />
+                <pt x="-2.03" y="0.97" />
+            </poly>
+        </shape>
+    </wall>
+    <door name="door11" openFraction="0.0" x="-2.0" y="1.0" width="1.0" thickness="0.04" closed_angle="PI" pivot_angle="-PI/2">
+        <action>
+            <pushDoor/>
+        </action>
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-2.97" y="0.97" />
+                <pt x="-2.97" y="1.03" />
+                <pt x="-4.93" y="1.03" />
+                <pt x="-4.93" y="0.97" />
+            </poly>
+        </shape>
+    </wall>
+    <door  name="door12" openFraction="1.0" x="-1.8" y="-1.5" width="1.0" thickness="0.04" closed_angle="0.0" pivot_angle="PI/2">
+        <color name="green"/>
+        <action>
+            <pushDoor/>
+        </action>
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-1.77" y="-1.47" />
+                <pt x="-1.77" y="-1.53" />
+                <pt x="-2.03" y="-1.53" />
+                <pt x="-2.03" y="-1.47" />
+            </poly>
+        </shape>
+    </wall>
+    <door  name="door13" openFraction="0.95" x="-3.0" y="-1.5" width="1.0" thickness="0.04" closed_angle="0.0" pivot_angle="PI">
+        <action>
+            <pushDoor/>
+        </action>
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-2.97" y="-1.47" />
+                <pt x="-2.97" y="-1.53" />
+                <pt x="-12.23" y="-1.53" />
+                <pt x="-12.23" y="-1.47" />
+            </poly>
+        </shape>
+    </wall>
+    <door  name="door14" openFraction="0.95" x="-13.2" y="-1.5" width="1.0" thickness="0.04" closed_angle="0.0" pivot_angle="PI">
+        <action>
+            <pushDoor/>
+        </action>
+    </door>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="-13.17" y="-1.47" />
+                <pt x="-13.17" y="-1.53" />
+                <pt x="-17.13" y="-1.53" />
+                <pt x="-17.13" y="-1.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="17.57" y="-0.47" />
+                <pt x="17.57" y="-0.53" />
+                <pt x="18.03" y="-0.53" />
+                <pt x="18.03" y="-0.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="18.03" y="1.47" />
+                <pt x="18.03" y="1.53" />
+                <pt x="15.67" y="1.53" />
+                <pt x="15.67" y="1.47" />
+            </poly>
+        </shape>
+    </wall>
+    <wall>
+        <shape zLength="3.0">
+            <poly>
+                <pt x="15.67" y="1.53" />
+                <pt x="15.73" y="1.53" />
+                <pt x="15.73" y="-1.53" />
+                <pt x="15.67" y="-1.53" />
+            </poly>
+        </shape>
+    </wall>
+</config>

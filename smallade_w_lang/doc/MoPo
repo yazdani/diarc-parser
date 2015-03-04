@@ -1,0 +1,86 @@
+Contents:
+--------------------------------------------------------------------------------
+1. Player source code modifications
+2. Java client for Player source code modifications
+3. Mapping
+
+================================================================================
+1. Player source code modifications
+--------------------------------------------------------------------------------
+We use CVS versions of player and stage from mid-summer 2007; if it's
+necessary to install from source, keep in mind that the player driver for the
+Sick LMS-200 was broken (a fixed version is in com/mopo/player/sicklms200.cc;
+search for PWS to see what I did).  I'll also check in an archive of the source
+in /var/svn/projects/rudy/playerstage; see README-ADE in each subdirectory for
+notes (if any).
+
+================================================================================
+2. Java client for Player source code modifications
+--------------------------------------------------------------------------------
+The Java interface classes are packaged in a jar file (javaclient2.jar).  That
+needs to be placed in the classpath for MoPo to work.  The interface to
+player's amcl localizer was broken; see com/mopo/player/LocalizeInterface.java
+for the fix.  Check out /var/svn/projects/rudy/playerstage for full source (in
+java-player subdirectory) and notes in README-ADE for install help.
+
+================================================================================
+3. Mapping
+--------------------------------------------------------------------------------
+The mapper is called "pmaptest" and it operates on a log generated while 
+driving the robot around the space to be mapped, so the first step is, 
+naturally enough, to generate the log file.  I created a Player config file 
+for this purpose: ~/ade-svn/ade/com/mopo/player/logger.cfg.  So you will 
+start Player from one command line:
+
+player ~/ade-svn/ade/com/mopo/player/logger.cfg
+
+and then start "playerjoy" from another.  Use playerjoy to drive around the 
+space for a while.  Try to make sure the laser can "see" into corners, etc.  
+I'd maybe try to drive around the space a couple of times, once clockwise, 
+once counter-clockwise.  I don't have enough experience to tell you for sure 
+whether more driving around is always better.
+
+That config file creates the log file "pmap.log" in the current working 
+directory.  You can create the map like so:
+
+pmaptest -g --num_samples 10 --grid_width 5 --grid_height 6 --grid_scale \
+    0.025 --robot_x 0.75 --robot_y 1.25 --robot_rot -130 ~/pmap.log
+
+Here's a rundown on the args above:
+
+    -g disables the GUI.  Remove it if you want to see pmap trying to
+	reconcile the multiple "views" it gets from the log file.
+
+    --num_samples is the number of particles; theoretically, the more the
+	better, but I've found diminishing returns above 10.
+
+    --grid_width, --grid_height is the (rough) size of the room.  I've
+	rounded up to the nearest meter when I've made maps.
+
+    --grid_scale is the number of meters per pixel in the generated map.
+
+    --robot_x, --robot_y is the starting position in the room of the robot,
+	relative to the center of the grid (i.e., the center of the room 
+	plus whatever padding you gave the grid_width and grid_height).
+
+    --robot_rot is the starting angle of the robot; 0 degrees is facing
+	east.
+
+    the final argument is the log file.
+
+See http://robotics.usc.edu/~ahoward/pmap/group__pmap__test.html for 
+additional (equally poor) documentation.
+
+The output of that command will be two pgm files, coarse.pgm and fine.pgm.  
+The latter is the final product, but may need cleaning up (e.g., there may 
+be a few particles in the empty spaces that need to be cut out).
+
+It should be possible, if you're careful enough, to crate a map using gimp.
+I've modified maps successfully this way, but YMMV.
+
+NOTE: pmaptest will not be compiled if the development libraries it depends
+on are not present/detected, but there will be no message to that effect.
+The most likely culprits are gsl and glut, and on FC7 I had to create a
+pkg-config file for gsl (gsl.pc) to get the Player configuration script to
+agree that gsl was installed.
+================================================================================

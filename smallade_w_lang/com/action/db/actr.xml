@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE type SYSTEM "action.dtd"> 
+<type>  
+  <name>entity</name>
+  <subtypes>
+    <type>      
+      <name>action</name>
+      <subtypes>
+        <type>          
+          <name>script</name>
+          <subtypes>
+            <!-- Begin IcarusInterpreter -->
+             <type>              
+	      <!-- Loop reading messages and executing actions as requested -->
+	      <name>ACTInterpreter</name>
+	      <var>
+		<varname>?agent</varname>
+		<vartype>actor</vartype>
+	      </var>
+	      <timeout>600000000</timeout>
+	      <control>while</control>
+	      <actspec> true</actspec>
+	      <control>do</control>
+	      <actspec> sleep ?agent 100</actspec>
+	      <control>endwhile</control>
+            </type>
+            <type>              
+	      <!-- Loop reading messages and executing actions as requested -->
+	      <name>IcarusInterpreter</name>
+	      <var>
+		<varname>?agent</varname>
+		<vartype>actor</vartype>
+	      </var>
+	      <timeout>600000000</timeout>
+	      <control>while</control>
+	      <actspec> true</actspec>
+	      <control>do</control>
+	      <actspec> sleep ?agent 100</actspec>
+	      <control>endwhile</control>
+            </type>
+            <!-- End IcarusInterpreter -->
+            <!-- Begin jACT-RInterpreter -->
+            <type>              
+	      <!-- Loop reading messages and executing actions as requested -->
+	      <name>ACTInterpreter</name>
+	      <var>
+		<varname>?agent</varname>
+		<vartype>actor</vartype>
+	      </var>
+	      <timeout>600000000</timeout>
+	      <control>while</control>
+	      <actspec> true</actspec>
+	      <control>do</control>
+	      <actspec> sleep ?agent 100</actspec>
+	      <control>endwhile</control>
+            </type>
+            <!-- End jACT-RInterpreter -->
+          </subtypes>
+        </type>
+      </subtypes>
+    </type>
+  </subtypes>
+</type>

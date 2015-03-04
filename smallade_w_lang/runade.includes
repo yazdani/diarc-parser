@@ -1,0 +1,17 @@
+ade/gui/sysview/dialogs/configFileHelpText.txt
+com/**/*.class
+edu/
+utilities/**/*.class
+com/action/db/newautonomy.xml
+com/simspeech/config/newautonomy
+com/simspeech/config/newautonomy2
+com/discourse/TL_DL_parser/newautonomy.dict
+com/adesim/**/*.gif
+com/adesim/**/*.png
+com/adesim/config/boxblock.xml
+com/adesim/config/eigenmann8alt.xml
+com/adesim/config/eigenmann8.xml
+com/adesim/config/boring.xml
+com/adesim/config/SIM_CONFIG_HEADER.txt
+com/adesim/robot/images/*
+runade.list

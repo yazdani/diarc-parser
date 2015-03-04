@@ -1,0 +1,319 @@
+Contents:
+--------------------------------------------------------------------------------
+1. Intro
+2. Pitfalls
+3. Compiling the system
+4. Running ADE
+5. Writing an ADE server
+6. Miscellaneous notes
+
+================================================================================
+1. Intro
+--------------------------------------------------------------------------------
+This is an attempt to provide a quick-and-dirty introduction to ADE as of
+May 2008.  There's a lot of documentation in the docs directory, but some of
+it may be out of date.  Check there if you have questions, but don't be
+surprised if some of what you find is no longer apropos.
+
+You need to get your hands on the ADE distribution, probably in one of two
+ways: svn checkout or tarball.  If you're doing an svn checkout, see
+INSTALL-SVN in this directory for more details.  If you've got a tarball,
+you've probably already unpacked what you need, since you're reading this.
+
+There is a series of example servers in com/test that demonstrate a number
+of features of ADE.  Have a look, then take a step back and breathe.
+Frankly, even I get a little overwhelmed when I look at them for too long.  
+This document is an attempt to explain the basic features that I use 
+frequently, probably with reference to examples of useful ADE servers that 
+I've written.
+
+================================================================================
+2. Pitfalls
+--------------------------------------------------------------------------------
+
+ADE is typically installed for the standard lab user (still named "airolab"
+at present), and there are several places at which paths and usernames need 
+to be changed to reflect your local geography/fauna.  There are a number of 
+hardcoded paths, but in general we've tried to keep them relative whenever 
+possible, so if you install the supporting packages (e.g., Festival, Sphinx) 
+in the same parent directory as ADE, a lot of it should just work out.
+
+If you want to use the registry's capabilities for starting servers, you'll 
+need a functioning ssh passphrase/agent setup.  See the file SSH in this
+directory for information on how to get this set up.
+
+I don't use Windows, so I'm of absolutely no use to you if you want to get 
+ADE working there.  Moreover, although most (all?) of ADE proper should be 
+platform-agnostic, many of the supporting packages are not.  You might try 
+the Cygwin environment--let me know how it goes.  The instructions below are 
+all tailored to Linux environments.  I've tried to add some intelligence to 
+the compile script to fill in some blanks for you, provide warnings if 
+requirements aren't satisfied, etc., so my guess is that it'll work for many 
+Linux distributions (Debian/Ubuntu and RedHat/Fedora are tested).
+
+ADE servers use themselves as their credentials when making calls.  That is,
+the infrastructure requires the caller to be of a recognized ADE server
+type, otherwise calls (i.e., to other servers, or to register with an
+ADERegistry) will fail.  Usually that's pretty straightforward, but there
+are times when a valid ADE server is not recognized because of a deficient
+classpath at invocation time.  One obvious point at which can arise is when a
+server is started without a fully-specified classpath; the server will fail
+to register because it can't send a copy of itself across to the registry.
+A little less obvious is the case in which a valid ADE server fails to make
+connections because the registry was started without certain elements of the
+server's classpath.  This happens when there's something in the server's
+remote API (e.g., a return value or parameter) that the registry can't
+recognize.  The short version of the preceding is this: if you're having
+trouble registering or obtaining a reference to some other server, one thing
+to check is the classpaths of the respective servers AND the registry.
+
+================================================================================
+3. Compiling the system
+--------------------------------------------------------------------------------
+
+The current version of ADE works with Sun Java 1.6.  Other versions 
+may work, but I know there are problems with some of the gcj versions.
+
+I have never tried to compile ADE using any of the IDEs (Eclipse, NetBeans, 
+etc.) available for Linux.  The approach currently used is a shell script:
+
+mkade
+    This is the main compilation script for the ADE framework (note that
+    "./mkade" tries to compile *all* ADE servers, some of which have not been
+    updated recently and, therefore, might not compile--you may want to use
+    "./mkade small" instead, which compiles only a subset of the system).
+    When the paths are correct, you can simply type "./mkade small" in the
+    top-level ADE directory to compile the system.
+
+    - Type "./mkade help" for a description of other options.
+
+    - The first time you run mkade, you may be asked a couple of questions
+      about where to find your java installation.
+
+    - Make sure the RXTXcomm.jar file is in the classpath.
+
+    - Other servers have similar requirements, which I've tried to detect
+      and add informative warning or error messages when the script notices 
+      something missing.
+
+================================================================================
+4. Running ADE
+--------------------------------------------------------------------------------
+
+There are a couple of approaches to running ADE.  The first approach is to 
+create a config file and have the ADE registry start the servers you want.  
+More on that below.  The second way, which I find more useful when testing, 
+is to start the registry and servers separately (each in its own terminal); 
+that way you can see the output of each of the servers individually.  I've 
+provided a couple of scripts to make starting the registry and servers a 
+little easier:
+
+runaderegistry
+runadeserver
+    These are convenience scripts for starting ADE.  They do some things to
+    try to figure out the address to use when starting and parse additional
+    arguments.  Type "./runaderegistry help" and "./runadeserver help" for a
+    description of options and some examples.
+
+    - You may want to adjust the IP addresses the script uses to guess RMI
+      args, etc., if they do not match your system and you're tired of
+      providing them on the command line.
+
+    - An alternative to adding hosts to a hosts file (see below) is to pass
+      the host IP addresses on the command line using the "-o <hosts>"
+      parameter, where <hosts> is a space-delimited list of the addresses
+      that the registry should accept as legitimate.
+
+If you want the registry to start your servers for you, you need to tell it 
+something about the servers you need as well as the host machines available 
+on which to run them.  These are specified in files that are (by convention) 
+placed in the config directory.  I'll list here the syntax elements, but 
+keep in mind that many of them are optional, so the typical config and host 
+files are not so complicated:
+
+config/<name>.config
+config/<name>.hosts
+    In the "config" directory are the files that specify ADE instance
+    configurations and host capabilities.  Each ".config" file consists of a
+    list of ADE servers to be started by the ADE registry, with details
+    about how to start each.  Most of these items are optional and will be
+    filled with default values. At a minimum, the 'host,' 'type,' and
+    'startdirectory' items should be listed, and 'serverargs" and
+    'userclasspath' are typically needed, as well.
+    
+    Format and valid options:
+    STARTSERVER
+    host           IP address or hostname
+    port           the RMI port (default=1099)
+    type           server class (e.g., com.test.TestServerImpl)
+    name           assigned name (optional)
+    conn           number of connections supported (default=10)
+    tmout          reaper period
+    acc            access rights
+    startdirectory fully qualified directory
+    userclasspath  server-specific classpath (space delimited)
+    javavmargs     server-specific java vm arguments (space delimited, no
+		   leading dash)
+    serverargs     server-specific command-line arguments
+    restarts       number of recovery attempts (default=0)
+    configfile     configuration file (optional)
+    credentials    additional permissions
+    ENDSERVER
+
+    Hosts are specified similarly in ".hosts" files, with information about
+    what capabilities each has.  All of these entries are optional (except, 
+    I suppose, the IP address) and will be filled with default values.
+    
+    Format and valid options:
+    STARTHOST
+    ip           IP address or hostname
+    os           operating system name
+    cpus         number of CPUs (default=1)
+    cpumhz       CPU speeds (default=850)
+    memmb        available memory (default=256MB)
+    adehome      ADE home directory
+    tempdir      temporary directory (e.g., /tmp)
+    javadir      Java home directory
+    javabin      Java executable
+    javacompiler Java compiler
+    shell        command-line shell (e.g., /bin/sh)
+    shellargs    shell arguments (e.g., -c)
+    ping         ping command (e.g., /bin/ping)
+    pingargs     ping arguments (e.g., -c 2)
+    rsh          remote shell command (e.g., /bin/rsh)
+    rshargs      remote shell arguments (e.g., -X -A -n)
+    rcp          remote copy command (e.g., /bin/rcp)
+    rcpargs      remote copy arguments (e.g., -X -A -n)
+    ssh          ssh command (e.g., /bin/ssh)
+    sshargs      ssh arguments (e.g., -X)
+    scp          remote secure copy command (e.g., /bin/rcp)
+    scpargs      remote secure copy arguments (e.g., -A -n)
+    sshlogin     ssh login username
+    ps           process information command (e.g., /bin/ps)
+    psargs       process information command (e.g., -f)
+    devices      interfaces supported on host
+    ENDHOST
+
+    See the examples in the "config" directory for ideas of the kinds of
+    options that are commonly needed.
+
+    - In the ."config" files, the "startdirectory" path should be adjusted,
+      along with the "host" and "userclasspath" settings, as needed
+
+    - In the ".hosts" files, the "adehome" path and "sshlogin" name should
+      be adjusted
+
+================================================================================
+5. Writing an ADE server
+--------------------------------------------------------------------------------
+
+I'll go into some detail below on the implementation of a couple of servers
+that we actually use, but it's also worth noting that in com.template there
+is a set of ADE server template files that you can use as a starting place.
+There's a brief list in the comments there of what needs to be
+changed/replaced in your own servers.
+
+I'm going to use the com.audio package as an example.  This is actually a 
+pair of ADE servers, one of which records audio from a microphone (the 
+AudioRecorderServer) and the other of which (the AudioPlayerServer) plays 
+audio received from an AudioRecorderServer (this is useful if you want to 
+record audio on one machine and play it on another).  If you list the 
+com/audio directory, you'll see that there are (at least) two .java files 
+for each server: the interface and the implementation.  ADE uses the 
+interface files to dynamically determine the services offered by the 
+implementation.  So, there's an AudioRecorderServer.java and an 
+AudioRecorderServerImpl.java (likewise for the player).
+
+If you look in AudioRecorderServer.java, you'll see an empty interface--the 
+recorder does not offer any services to other servers.  In 
+AudioPlayerServer.java, though, you'll find the playAudio method, which is 
+what the recorder server calls to play the audio it has recorded.  Whatever 
+methods you want to be remotely invokable by other servers have to appear in 
+the interface file.  Moreover, whether you want to offer services or not, 
+you need an interface specification that extends ADEServer.
+
+Most of the heavy lifting is done in the implementation files.  These must 
+extend ADEServerImpl (or another class that does so) and must implement your 
+interface (e.g., AudioRecorderServerImpl extends ADEServerImpl and 
+implements AudioRecorderServer).  ADEServerImpl is an abstract class, so 
+there are several methods that you must implement in your server.  In many 
+cases, these can be copied from one ADE server to the next, with minor 
+modifications to tailor them to the current context.  In 
+AudioRecorderServerImpl.java, these methods are right after the field 
+specifications.  Of note here:
+
+    - serverConnectReact and serverDownReact specify how the server should
+      react to connection and loss of connection, respectively, to a server 
+      to which it has acquired a reference.  In this case, the "React" is to 
+      set the "gotPlayer" boolean, which indicates whether it's worthwhile 
+      attempting to send data to the player.
+
+    - localshutdown gives you a chance to clean up any resources before
+      exiting; this will be called when the server is killed.
+
+    - parseadditionalargs and additionalUsageInfo allow you to add
+      command-line parameters that can influence the behavior of the system.  
+      In this case you can specify which device to record from, whether to 
+      save the audio locally, etc.  You can/should add a usage line to 
+      additionalUsageInfo for each argument in parseadditionalargs.
+
+      VERY IMPORTANT: remember that any fields you want to set in 
+      parseadditionalargs need to be declared static, because 
+      parseadditionalargs is called from the (static) main context.
+
+You need to implement each of the methods specified in the interface.
+AudioPlayerServerImpl.java implements the playAudio method.  To call a
+method in a server for which you have a reference, use the "call" method,
+which takes the reference as an argument, the remote method's name as a
+String, and whatever arguments are needed by the remote method.  The example
+of "call" in AudioRecorderServerImpl.java should give the idea.  Return
+values come back as Objects, so you'll probably need to cast the results.
+
+Remote calls time out after a few seconds.  If you need the call to wait 
+longer, you can precede the reference argument with a timeout argument.
+
+The "call" method will throw an exception if your reference is bad or if 
+something goes wrong on the other side.  This ADECallException needs to be 
+caught, allowing you to do whatever recovery is necessary.
+
+Often, an ADE server will have one or more threads operating continuously.  
+the recorder server can have as many as three, depending on the options 
+passed at runtime: a minimum of one thread that does the recording, and two 
+optional threads, one that can write the audio data locally and one that 
+will pass it on to a remote player.  Naturally, as with any threaded system, 
+you'll have to think about synchronization; even when there's only one 
+thread, any remote calls your server accepts will execute in their own 
+threads.
+
+Finally, there's the implementation class constructor, which is used to do 
+whatever initialization is required by the server.  In the examples here, 
+there's a lot of sound device configuration, etc.  It is also here that you 
+will typically request references to any remote servers that are needed.  
+The player does not request any server references, but the recorder usually 
+does request an AudioPlayerServerImpl reference.
+
+That's pretty much it.  The main method has to call the ADEServerImpl main, 
+because that's what calls parseadditionalargs, registers with the ADE 
+registry, constructs the server object, etc.
+
+================================================================================
+6. Miscellaneous notes
+--------------------------------------------------------------------------------
+
+- There is a LoggerServer, but it's pretty much deprecated in favor of
+  ADEServerLogging, a facility built into the ADEServerImpl.  To start 
+  logging, call setADEServerLogging(true) (setADEServerLogging(false) to 
+  stop it).  This will inform the registry that you want to start logging, 
+  which will in turn cause all currently registered servers to begin 
+  logging.  Note that logging control has to be done *after* the server is
+  registered, which should be done by the time the constructor is finished,
+  but no guarantees.  The canLogIt method will log its argument if logging
+  has been started.  Note that, at this moment log closing isn't handled
+  implicitly, so you'll need to explicitly turn off logging before exiting
+  or risk losing whatever log messages are being buffered.  If you're seeing
+  log files of size 0 (or multiples of the block size), you probably need to 
+  call setADEServerLogging(false) before you kill the system.
+
+  See ADEServerLogger in this directory for (a few) more details.
+
+- 

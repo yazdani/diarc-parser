@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="../.." default="Parallel_ENV_QUAD_PIONEER">
+		
+	<target name="Env_Sim_Action_trio">
+		<exec executable="./mkade">
+			<arg value="adesim"/>
+		</exec>
+		
+		<parallel>
+			<!-- env -->
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.ADESimEnvironmentServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+				<arg line="-l 127.0.0.1 -r 127.0.0.1 -g Environment -view 3323 -cfg com/adesim/config/experimental.xml"/>
+	            <classpath refid="ADE.classpath"/>
+	        </java>
+			
+			
+			<!-- sim -->		
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.SimPioneerServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1 -defTV 0.1"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+			
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.sample.SampleActionServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1 -simpio"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+		</parallel>
+	</target>
+	
+	<target name="Parallel_ENV_QUAD_PIONEER">
+		<exec executable="./mkade">
+			<arg value="adesim"/>
+		</exec>
+		
+		<parallel>
+			<!-- env -->
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.ADESimEnvironmentServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+				<arg line="-l 127.0.0.1 -r 127.0.0.1 -g Environment -view 3323 -cfg com/adesim/config/experimental.xml"/>
+	            <classpath refid="ADE.classpath"/>
+	        </java>
+			
+			
+			<!-- sims -->		
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.SimPioneerServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+			
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.SimARDroneServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+		</parallel>
+	</target>
+		
+	<target name="Parallel_ENV_SINGLE_ACTOR">
+		<exec executable="./mkade">
+			<arg value="adesim"/>
+		</exec>
+		
+		<parallel>
+			<!-- env -->
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.ADESimEnvironmentServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+				<arg line="-l 127.0.0.1 -r 127.0.0.1 -g Environment -cfg com/adesim/config/experimental.xml"/>
+				<classpath refid="ADE.classpath"/>
+	        </java>
+			
+			
+			<!-- sims -->		
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.SimPioneerServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+		</parallel>
+	</target>
+	
+	<target name="Parallel_Env_GUI_Two_Actors">
+		<exec executable="./mkade">
+			<arg value="adesim"/>
+		</exec>
+		
+		<parallel>
+			<!-- env -->
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.ADESimEnvironmentServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+				<arg line="-l 127.0.0.1 -r 127.0.0.1 -g Environment -view 3323 -cfg com/adesim/config/experimental.xml"/>
+	            <classpath refid="ADE.classpath"/>
+	        </java>
+			
+			
+			<!-- sims -->
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+				<sleep seconds="2"/>
+	            <jvmarg line="-Dcomponent=com.adesim.SimPioneerServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+			
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+				<sleep seconds="4"/>
+	            <jvmarg line="-Dcomponent=com.adesim.SimPioneerServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+		</parallel>
+	</target>
+	
+	
+	<target name="Parallel_Env_GUI_Two_Actors_GUI">
+		<exec executable="./mkade">
+			<arg value="adesim"/>
+		</exec>
+		
+		<parallel>
+			<!-- env -->
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.ADESimEnvironmentServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1 -g Environment -view 3323 -edit 33333 -cfg com/adesim/config/experimental.xml"/>
+				<!-- <arg line="-l 127.0.0.1 -r 127.0.0.1 -g Environment -view 3323 -cfg com/adesim/config/assignment3a.xml"/> -->
+	            <classpath refid="ADE.classpath"/>
+	        </java>
+			
+			
+			<!-- sims -->
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.SimPioneerServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1 -g Environment -view 3323"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+			
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.SimPioneerServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+				<arg line="-l 127.0.0.1 -r 127.0.0.1 -g Environment -view 3323"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+		</parallel>	
+	</target>
+	
+
+	
+	<target name="Parallel_Env_GUI_3_actors_and_action_no_GUI">
+		<echo message="THIS WILL ONLY WORK IF YOU'RE STARTING OFF WITH A BRAND NEW REGISTRY!!!"/>
+		<echo/>
+		<echo/>
+		
+		<exec executable="./mkade">
+			<arg value="adesim"/>
+		</exec>
+		
+		<parallel>
+			<!-- env -->
+	        <java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.ADESimEnvironmentServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1 -g Environment -view 3323 -cfg com/adesim/config/eigenmann8.xml"/>
+	            <classpath refid="ADE.classpath"/>
+	        </java>
+			
+
+			<!-- sims -->
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.SimPioneerServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+			
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.SimPioneerServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+			
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.SimPioneerServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+			
+			
+			<!-- action servers -->
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.sample.SampleActionServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1 -simpio SimPioneerServer1"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.sample.SampleActionServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1 -server com.adesim.SimPioneerServer SimPioneerServer2"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+			<java classname="ade.ADEServerImpl" failonerror="true" fork="yes">
+	            <jvmarg line="-Dcomponent=com.adesim.sample.SampleActionServerImpl -Djava.rmi.server.hostname=127.0.0.1"/>
+	            <arg line="-l 127.0.0.1 -r 127.0.0.1 -server com.adesim.SimPioneerServer SimPioneerServer3"/>
+            	<classpath refid="ADE.classpath"/>
+	        </java>
+			
+		</parallel>	
+	</target>
+	
+	
+	
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="ADE.classpath">
+        <pathelement location="."/>
+    	<pathelement location="core/Action.jar"/>
+    	<pathelement location="jars/visionJNI.jar"/>
+    </path>
+
+	
+</project>

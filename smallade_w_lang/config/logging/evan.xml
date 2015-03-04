@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %m%n"/>
+        </Console>
+<!--        <File name="testFile" fileName="logs/test.log" bufferedIO="false" advertiseURI="file://${sys:user.dir}/logs/test.log" advertise="true">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %m%n"/>
+        </File>-->
+    </appenders>
+    <loggers>
+        <root level="INFO">
+            <appender-ref ref="Console"/>
+<!--            <appender-ref ref="testFile"/>-->
+        </root>
+        
+    <logger name="com.action.ActionInterpreter" level="DEBUG"/>
+<!--
+    <logger name="com.action.GoalManagerImpl" level="TRACE"/>
+    <logger name="com.vision.detector" level="DEBUG"/>
+    <logger name="com.vision.imgproc" level="TRACE"/>
+    <logger name="com.vision.tracker" level="TRACE"/>
+    <logger name="com.vision.detector" level="TRACE"/>
+    <logger name="com.vision.VisionComponentImpl" level="TRACE"/>
+    <logger name="com.vision.stm.ShortTermMemoryInterface" level="TRACE"/>
+    <logger name="com.vision.visionproc.VisionProcess" level="TRACE"/>
+-->
+    </loggers>
+</configuration>

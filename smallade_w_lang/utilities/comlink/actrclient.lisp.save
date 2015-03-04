@@ -1,0 +1,396 @@
+;;;*******************************************************************
+;;;
+;;; SWAGES
+;;; Version 1.1
+;;;
+;;; (c) by Matthias Scheutz
+;;;
+;;; Rudimentary ACT-R Client (alpha)
+;;;
+;;; Last modified: 03-29-07
+;;;
+;;;******************************************************************* 
+
+;;; for debugging: print out lots of comments
+(defconstant verbose t)
+
+;;; for logging standard output is connected to logger file, otherwise to /dev/null
+(defconstant logging t)
+
+;;; get the name of the standard error stream
+#+:cmu
+(defvar *standard-error* *error-output*)
+
+#|
+;;; either activate logging or redirect the output to /dev/null
+(if logging
+    (setq *standard-output* (open "/tmp/clientout" :direction :output :if-exists :overwrite :if-does-not-exist :create))
+    ;;;(setq *standard-output* (open "/hafs2/kers7754/clientout" :direction :output :if-exists :overwrite :if-does-not-exist :create))
+  (setq *standard-output* (open "/dev/null" :direction :output :if-exists :append)))
+
+(if logging
+    (setq *standard-error* (open "/tmp/clienterr" :direction :output :if-exists :overwrite :if-does-not-exist :create))
+      ;;;(setq *standard-error* (open "/hafs2/kers7754/clienterr" :direction :output :if-exists :overwrite :if-does-not-exist :create))
+  (setq *standard-error* (open "/dev/null" :direction :output :if-exists :append)))
+|#
+
+;;; load utility files for socket communication
+(load "/home/mscheutz/palm/actr6/support/uni-files.lisp")
+
+;;; USE these one for the cluster
+;;;(load "/hafs2/kers7754/palm/actr6/support/uni-files.lisp")
+
+;;; support for different lisp versions
+;;; additional functions for sending items through a socket and flushing it
+#+(or :openmcl :allegro)
+(defun sendone (item socket)
+   (prin1 item socket)
+   (force-output socket))
+
+#+:lispworks
+(defun sendone (item socket)
+  (prin1 item socket)
+  #+:win32 (sleep .05)
+  (finish-output socket))
+
+#+:cmu
+(defun sendone (item socket)
+  (prin1 item socket)
+  (finish-output socket))
+
+#+:openmcl
+(defun quitlisp ()
+  (quit))
+
+;;; the no-unwind statement is important, as the process will otherwise not quit
+;;; STILL DOES NOT QUIT...
+#+:allegro
+(defun quitlisp ()
+  (force-output *standard-output*)
+  (close *standard-output*)
+  (force-output *standard-error*)
+  (close *standard-error*)
+  (exit 0 :no-unwind t))
+
+#+:lispworks
+(defun quitlisp ()
+  (quit))
+
+#+:cmu
+(defun quitlisp ()
+  (quit))
+
+
+;;; ------------------- globals for client stuff  --------------------------
+(defvar comm_sock nil "Socket used for communication with server")
+
+;;; by default the program runs in client mode, to stop this, pass
+;;; either a command line argument, or call the simulation with a
+;;; particular function
+(defvar clientID  nil "The client ID")
+
+(defvar connection_attempts 50 "Number of attempts to connect to the server before giving up")
+
+(defvar waitforconnection 10 "Waiting before a connection is attempted in sec.")
+
+(defvar receive_attempts 3 "Number of attempts to receive a message")
+
+;;; default for communciation with the server
+;;; this will be overwritten by experiment setup file
+(defvar servername  "127.0.0.1" "The name of the experiment server, the local host by default")
+
+;;; ONLY CHANGE THIS IN ACCORDANCE WITH SWAGES
+(defvar serverport 10010 "The port on the server used for LISP connections by SWAGES")
+
+;;; for non-cluster mode:
+;;; used to check whether there is a user on the console
+(defvar checkMIGRATION nil "Whether we should perform checks on the host")
+
+(defvar maxtimeconsoleuser 24000 "Max. runtime if use is on console in sec.")
+
+;;; this will save the state of the simulation: saveSTATE * checkINTERVAL = frequency at which simstate is saved
+(defvar saveSTATE nil "When to save the simulation state")
+(defvar imagename nil "The name of the LISP image if state is saved")
+
+(defvar timercount 0 "number of times the migration check has been performed")
+
+(defvar IDLETIME  30 "idle time of console user before we start a job on his machine")
+
+;;; various bookkeeping variables
+(defvar KEEPOUTPUT  nil)
+(defvar proxyLOW nil)
+(defvar proxyHIGH nil)
+(defvar PARALLEL nil)
+
+;;; this will hold the filename of the stats file
+(defvar saveSTATSFILE nil)
+
+;;; the file handel for the stats file
+(defvar statsout nil)
+
+;;; this will hold the values to be recorded at the beginning and the end
+(defvar *beginningrecordings* nil)
+(defvar *finalrecordings* nil)
+
+;;; this will hold the seed for this simulation
+(defvar ranseed nil)
+
+;;; simulation parameters
+(defvar sim_terminate 0)   ;;; for now this is only number, could be a procedure
+
+;;; this is for VM reuse
+(defvar firstload t)
+
+;;; holds the current simulation cycle -- needs to be connected to ACTR
+;;; (defvar current_cycle 0)
+;;; USE: (mp-time) instead
+
+;;; message types
+(defconstant PREQ 0)
+(defconstant SINT 1)
+(defconstant SCNT 2)
+(defconstant SPAR 3)
+(defconstant CPAR 4)
+(defconstant DONE 5)
+(defconstant SSAV 6)
+(defconstant CCYC 7)
+(defconstant PCYC 8)
+(defconstant PSAV 9)
+(defconstant SPLT 10)
+(defconstant ALLD 11)
+(defconstant UCID 12)
+
+;;; acknowledgements
+(defconstant OK 1)
+(defconstant NOTOK 2)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;; the next two functions need to be provided by the user in init files...
+;;; the model-run function, needs to be overwritten with code during simulation setup
+(defun run-simulation (params)
+  (print "These are the parameters passed to 'run-simulation': ")
+  (print params)
+)
+
+;;; the model-reset function, needs to be overwritten with code during simulation setup
+(defun reset-simulation ()
+  (print "Reset-simulation")
+)
+
+;;; sends a message to the server
+(defun send_message (senderID mtype data)
+  (if (uni-stream-closed comm_sock)
+      nil
+    (progn
+      (uni-send-string comm_sock (write-to-string (list senderID mtype data)))
+      (let ((message (read comm_sock)))
+	(cond ((not message)
+	       (close comm_sock)
+	       nil)
+	      ((eq message OK)
+	       t)
+	      (t nil))))))
+
+;;; receives a message and returns it, returns false if there is an unrecoverable problem
+(defun receive_message ()
+ ;;; wait for input or return if the device is closed
+ (let ((message (read comm_sock)))
+   (cond ((not message)
+	  (close comm_sock)
+	  nil)
+	 (t ;;;(uni-send-string comm_sock OK)
+            (sendone OK comm_sock)
+	    message))))
+
+;;; waits for a message of a particular kind, if a message of another kind is received instead
+;;; it writes a packet with the specific packet request
+(defun wait_for_message (typeofmessage)
+  ;;; wait for input or return if the device is closed
+  (let ((message 
+	 (do ((m (receive_message)))
+	     ((and (not (null m)) (eq (cadr m) typeofmessage)) m)
+	   (sendone NOTOK comm_sock))))
+    ;;;(uni-send-string comm_sock OK)
+    message))
+
+;;; this will try to send a message and if it does not succeed, it
+;;; will reopen a new socket uses the globals: comm_sock, servername,
+;;; and serverport
+(defun keep_sending_message (mID mtype mdata) 
+  (dotimes (n connection_attempts nil)
+    (when (send_message mID mtype mdata) 
+      (return t))
+    	;;; close socket and reestablish connection to server and send
+    	;;; ID, so the server
+    (close comm_sock)
+    (setq comm_sock (uni-make-socket servername serverport))
+    (sleep (* 100 waitforconnection))))
+
+;;; this function will perform the necessary setup, including
+;;; setting globals, the setting up variable recording, etc. and 
+;;; running the simulation at the end...
+;;; HIGHLY INCOMPLETE...
+(defun parseparameters (params)
+  (block parse
+    (unless (null params)
+      (let* ((p (car params))
+	     (key (car p))
+	     (val (cadr p)))     
+	(cond ((equal key 'initfile)
+	       (load val))
+	      ;;; this will load the initfile only the first time
+	      ((equal key 'initfileonce) 
+	       (if firstload
+		   (load val)))
+	      ((equal key 'compilehere)
+	       (eval val))
+	      ((equal key 'statsfile)
+	       (setf saveSTATSFILE val))	      
+	      ((equal key 'ranseed)
+	       (setf ranseed val)) ;;; store the seed, will be seeded before the model starts
+	      ((equal key 'quitif)
+               ;;; for now assume its always the cycle number...	     
+               ;;;	     (if (numberp key)
+	       (setf sim_terminate val))
+	      ;;; set global variable
+              ((equal key 'setglobal)
+	       (eval `(setf ,val ,(eval (caddr p)))))
+	      ;;; set global act variable
+              ((equal key 'setglobalact)
+	       (eval `(sgp ,val ,(eval (caddr p)))))
+	      ;;; TODO: implement saving state... 
+              ((equal key 'savestate)
+	       (setf saveSTATE val)
+	       (setf imagename (caddr p)))
+	      ;;; for recording variables... only hook in once 
+	      ((equal key 'record-as)
+	       (if firstload
+	           ;;;  get the car which has the time...
+		   (let* ((vars (cdr p))
+			  (which (cadr vars))
+			  (whenwhat (car (cddr vars)))
+			  (final (cadr (cddr vars)))
+			  (fargs (cddr (cddr vars))) ;;; potentially args to a function, nil otherwise
+                          ;;; first check the different final types...
+			  (expr (handler-case
+				    (cond ((functionp final) ;;; this does not work right yet...
+					   (lambda () (apply final fargs)))
+					  ((or (symbolp final) (listp final))
+					   (lambda () (eval final)))
+					  (t (lambda () "ERROR: unknown expression type for recording.")))
+				  (undefined-symbol (v) (print v))
+				  (undefined-function (v) (print v)))))
+                     ;;; now parse the four types
+                     ;;; (record-as <name> in <function-name> {variable|expression|function args})
+                     ;;; (record-as <name> at {start|end|<cycle>} {variable|expression|function args})
+                     ;;; (record-as <name> every <interval> {variable|expression|function args})
+		     (cond ((equal which 'in)
+                            ;;; get the function, add the record statement at the end, and 
+			    (let ((oldfunc (symbol-function whenwhat)))
+                              ;;; set the old function symbol to the new wrapper
+			      (setf (symbol-function whenwhat) 
+                                #'(lambda (&rest args) (apply oldfunc args)
+                                                       ;;; this prints the variable name, the time slot, and the value to the statsfile
+                                                       ;;; TODO: PUT THIS INTO A HASHTABLE AND PRINT AT END...
+					  (format statsout "~A ~A ~A~%" val (mp-time) (funcall expr))))))
+                           ;;; get the "at" parameters
+			   ((equal which 'at)
+			    (cond ((equal whenwhat 'start)
+				   (setf *beginningrecordings* (cons (cons val expr) *beginningrecordings*)))
+				  ((equal whenwhat 'end)
+				   (setf *finalrecordings* (cons (cons val expr) *finalrecordings*)))
+				  ((numberp whenwhat)
+				   "TODO: deal with in-between recording") ;;; this needs to be scheduled through ACT-R...
+				  ((t (print "Problem with 'record' value...")))))
+                           ;;; get the "every" parameters
+			   ((equal which 'every)
+			    "TODO: deal with cyclic recording")	;;; this needs to be scheduled through ACT-R
+			   (t (print "Unknown recording time/place"))))))	      
+              ;;;           
+	      (t (print "Unknown key...")
+		 (print key)
+		 (return-from parse))))
+      (parseparameters (cdr params)))))
+
+
+;;; this function is the main entry point for the client
+;;; it gets all the simulation parameters from the host
+(defun runclient (params)
+  ;;; make yourself independent of the calling shell
+  ;;; the father returns immediately, only the child continues
+  ;;; do we need to do this???
+  ;;; if sys_fork(true) then 
+  ;;;	return;	
+  ;;;  endif;
+  ;;; if verbose then npr('runclient executing') endif;
+  
+  ;;; get server, port, clientID
+  (setq servername (car params))
+  (setq serverport (cadr params))
+
+  ;;; create the socket
+  (setq comm_sock (uni-make-socket servername serverport))
+
+  ;;; loop for VM reuse, get the clientID from the inital parameters
+  (do ((clientID (caddr params)))
+      ;;; call the respective exit function if we have no clientID
+      ((not (stringp clientID)) (quitlisp))
+
+    ;;; reset the global recording lists
+    (setf *beginningrecordings* nil)
+    (setf *finalrecordings* nil)
+
+    ;;; request the parameters and parse them
+    (do ((simparammessage nil))
+        ;;; evaluate the first part and parse the simulation parameters
+	((not (null simparammessage))
+          ;;; and then parse the parameters
+	 (parseparameters (car (caddr simparammessage))))
+      ;;; request parameters for client "clientID"
+      (keep_sending_message clientID PREQ nil)  
+      (if verbose (print "Sent PREQ"))
+      (setq simparammessage (wait_for_message SPAR))
+      (if verbose (print "Got SPAR"))
+      (force-output *standard-output*)
+
+    (if verbose (print ""))
+    (print (symbol-function 'run-simulation))
+
+    
+    ;;; set first load to false in case we're reusing the
+    (setq firstload nil)
+    
+    ;;; open the stats file, create if it does not exist yet
+    (setq statsout (open saveSTATSFILE :direction :output :if-exists :overwrite :if-does-not-exist :create))
+    
+    ;;; here the model must be already loaded, so seed the random number generator
+    (eval (list 'sgp ':seed (list ranseed 0)))
+    
+    (when *beginningrecordings*
+      (mapcar #'(lambda (___x) (format statsout "~A ~A ~A~%" (car ___x) (mp-time) (funcall (cdr ___x)))) *beginningrecordings*))
+    
+    ;;; run simulation on the simparam entry in the message
+    (if verbose (print "Simulation started"))
+    (print (symbol-function 'run-simulation))
+    (force-output *standard-output*)
+    (run-simulation sim_terminate)
+    (if verbose (print "Simulation finished"))
+    
+    ;;; record the final values
+    (when *finalrecordings*
+      (mapcar #'(lambda (___x) (format statsout "~A ~A ~A~%" (car ___x) (mp-time) (funcall (cdr ___x)))) *finalrecordings*))
+    (close statsout)
+
+    ;;; tell the server that the client has finished, include the final cycle number
+    (setq statsout (open saveSTATSFILE :direction :input))
+    (keep_sending_message clientID DONE (list (mp-time) (file-length statsout)))
+    (close statsout)
+    
+    ;;; wait for another clientID if reuseVM or quit
+    (setq clientID (caddr (wait_for_message UCID)))
+    ;;; if we got a new ID, the VM will be re-used, so reset the simulation
+    (if (stringp clientID) 
+	;;; reset the simulation
+	(reset-simulation)))
+)

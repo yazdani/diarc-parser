@@ -1,0 +1,219 @@
+<?xml version='1.0'?>
+<project>
+	<!-- TODO: put a better token example here for people to reference if they want to extend build.xml -->
+  <target name='helloWorld' description='A simple target to test that everything is working so far.'>
+    <echo>${os.version}</echo>
+  </target>
+
+  <target name='run-local-registry' depends='core' unless='registry.running' description='Just what it sounds like, it starts a registry.'>
+		<!-- TODO: check to see if there is already a registry running and if so populate registry.running -->
+    <java fork='true' classname='ade.ADEComponentImpl' classpathref='base.classpath' spawn='${registry.spawn}'>
+      <jvmarg value='-Dcomponent=ade.ADERegistry'/>
+      <jvmarg value='-Djava.net.preferIPv4Stack'/>
+      <jvmarg value='-Djava.rmi.server.hostname=127.0.0.1'/>
+			<!-- HACK: using "<arg line=..." here is against best practices, but it's the only option given the way
+			the registry parses arguments.  If you have some spare bandwidth go into the registry and add support
+			for single arguments that contain the flag, a space, and the value.  Then come back here and replace
+			line= with value= below (and in the macrodefs above).  KTHXBAI -->
+      <arg line='-l 127.0.0.1'/>
+      <arg line=''/>
+    </java>
+  </target>
+
+  <target name='run-local-mdssimserver' depends='mds' description='Launch an MDS simulator'>
+    <run-component component='com.mds.simulator.MdsSimComponent'
+                   classpath='jreality.classpath'
+                   args='-g -callScratchpad'
+                   local.ip='127.0.0.1'
+                   registry.ip='127.0.0.1'>
+        <java-elements>
+            <env key='LD_LIBRARY_PATH' value='${build.lib.dir}/jreality/jogl:${env.LD_LIBRARY_PATH}'/>
+        </java-elements>
+    </run-component>
+  </target>
+
+  <target name='run-local-mdsheadserver' depends='mds' description='Launch an MDS simulator'>
+    <run-component server='com.mds.MDSHeadComponent'
+                args=''
+                local.ip='127.0.0.1'
+                registry.ip='127.0.0.1'
+		/>
+  </target>
+
+  <target name='run-calibrationRemote' depends='mds' description='Lauch a remote UI for the calibration server.'>
+    <run-component server='com.robotsim.calibration.leng.CalibrationComponentRemote'
+                args='-g'
+                local.ip='${macbook.ip}'
+                registry.ip='${mds.laptop.ip}'
+                spawn='false'
+		/>
+  </target>
+	<!--
+								local.ip='127.0.0.1'
+								registry.ip='127.0.0.1'
+	-->
+
+  <target name='run-gladosDemo-mds' depends='mds' description='Run the GLaDOS demo of MDS facial expressions'>
+    <run-component server='com.mds.simulator.MdsSimComponent'
+                args='-gladosDemo'
+                local.ip='127.0.0.1'
+                registry.ip='127.0.0.1'
+		/>
+		<!-- 								spawn='false'-->
+  </target>
+  <target name='run-gladosDemo-head' depends='mds' description='Run the GLaDOS demo of MDS facial expressions'>
+    <run-component server='com.mds.MDSHeadComponent'
+                args=''
+                local.ip='${workstation.ip}'
+                registry.ip='${mds.wireless.ip}'
+                spawn='false'
+		/>
+  </target>
+
+  <target name='run-hwprod' depends='examples' description='Runs the hello world producer.'>
+    <run-component component='com.examples.connecting.HelloWorldProducer'/>
+  </target>
+
+  <target name='run-hwcons' depends='examples' description='Runs the hello world consumer.'>
+    <run-component component='com.examples.connecting.HelloWorldConsumer'/>
+  </target>
+
+  <target name='run-bidia' depends='examples' description='Runs the hello world consumer.'>
+    <run-component component='com.examples.bidi.BidiComponentA'/>
+  </target>
+
+  <target name='run-bidib' depends='examples' description='Runs the hello world consumer.'>
+    <run-component component='com.examples.bidi.BidiComponentB'/>
+  </target>
+
+  <target name='run-mdsdialog' depends='mds' description='Runs my 150NLD HW3 code.'>
+    <run-component component='com.mds.dialog.MdsDialogComponent' args='-g'/>
+  </target>
+
+  <target name='run-remote-test'>
+    <run-remote-target adehome='/home/hrilab/ade' target='run-local-mdssimserver' sshkeyfile='../../.ssh/test_id'/>
+  </target>
+
+  <target name='run-poseviewer' depends='mds' description='stuff'>
+    <java classname='com.mds.PoseErrorViewer' classpathref='mds.classpath' fork='true'/>
+  </target>
+
+  <target name='run-rrtdemo' depends='algorithms' description='Runs the RRT example code.'>
+    <run-component component='com.algorithms.planning.samplingBased.demo.RrtDemoComponent' args='-g'/>
+  </target>
+
+	<!-- ========================== -->
+	<!-- Netbeans Debugging Targets -->
+	<!-- ========================== -->
+  <target name='nb-variabledebugtarget' depends='nb-mdssimserver'/>
+
+  <target name='nb-dialogHomework' depends='mds' if='netbeans.home'>
+    <netbeans-debug-launcher component.name='com.mds.dialog.MdsDialogComponent'
+                             project.name='ade_mds'
+                             local.ip='127.0.0.1'
+                             registry.ip='127.0.0.1'
+                             args='-g'
+    />
+  </target>
+
+  <target name='nb-liftdemo' depends='mds' if='netbeans.home'>
+    <netbeans-debug-launcher component.name='com.mds.simulator.LiftDemoComponent'
+                             classpath='jreality.classpath'
+                             project.name='ade_mds'
+                             local.ip='127.0.0.1'
+                             registry.ip='127.0.0.1'
+                             args='-test -goodui'
+    >
+      <java-elements>
+        <env key='LD_LIBRARY_PATH' value='${build.lib.dir}/jreality/jogl:${env.LD_LIBRARY_PATH}'/>
+      </java-elements>
+    </netbeans-debug-launcher>
+  </target>
+
+  <target name='nb-mdssimserver' depends='mds' if='netbeans.home'>
+    <netbeans-debug-launcher component.name='com.mds.simulator.MdsSimComponent'
+                             classpath='jreality.classpath'
+                             project.name='ade_mds'
+                             local.ip='127.0.0.1'
+                             registry.ip='127.0.0.1'
+                             args='-goodui -callScratchpad'
+    >
+      <java-elements>
+        <env key='LD_LIBRARY_PATH' value='${build.lib.dir}/jreality/jogl:${env.LD_LIBRARY_PATH}'/>
+      </java-elements>
+    </netbeans-debug-launcher>
+  </target>
+	<!--
+                             local.ip='${workstation.ip}'
+														 registry.ip='${mds.laptop.ip}'
+														 args='-g -listenToMds -useDynamicRanges'
+														 args='-g -listenToMds -commandMds -listenToVision'
+
+														 local.ip='192.168.0.151'
+														 registry.ip='${mds.laptop.ip}'
+                             args='-g -callScratchpad -listenToMds -commandMds'
+														 args='-g -listenToMds -commandMds -listenToVision'
+
+                             local.ip='${workstation.ip}'
+														 registry.ip='${mds.laptop.ip}'
+														 args='-g -callScratchpad -listenToMds -commandMds'
+
+														 args='-g -prettyHead -listenToMds -useDynamicRanges'
+														 args='-g -prettyHead'
+
+														 local.ip='127.0.0.1'
+														 registry.ip='127.0.0.1'
+														 args='-g -callScratchpad'
+	-->
+
+  <target name='nb-registry' depends='core' if='netbeans.home'>
+    <sequential>
+      <nbjpdastart name='ade_mds' addressproperty="jpda.address" transport='dt_socket'>
+        <classpath refid='prolog.classpath'/>
+      </nbjpdastart>
+      <java fork='true' classname='ade.ADEComponentImpl' classpathref='prolog.classpath'>
+        <jvmarg value='-Dcomponent=ade.ADERegistry'/>
+        <jvmarg value='-Djava.net.preferIPv4Stack'/>
+        <jvmarg value='-Djava.rmi.server.hostname=127.0.0.1'/>
+        <jvmarg value='-Xdebug'/>
+        <jvmarg value='-Xrunjdwp:transport=dt_socket,address=${jpda.address}'/>
+        <arg line='-l 127.0.0.1'/>
+        <arg line='-f config/wheelchair-isa.config'/>
+      </java>
+    </sequential>
+  </target>
+
+  <target name='nb-ttsserver' depends='tts' if='netbeans.home'>
+    <netbeans-debug-launcher server.name='com.tts.MaryTTSComponent' args='' project.name='ade_mds' classpath="marytts.classpath">
+      <java-elements>
+        <jvmarg value='-Dmary.base=${build.lib.dir}'/>
+      </java-elements>
+    </netbeans-debug-launcher>
+  </target>
+
+  <target name='nb-calibrationserver' depends='robotsim' if='netbeans.home'>
+    <netbeans-debug-launcher server.name='com.robotsim.calibration.leng.CalibrationComponent'
+                             project.name='ade_mds'
+                             local.ip='${workstation.ip}'
+                             registry.ip='${mds.laptop.ip}'
+                             args='-config=com/robotsim/calibration/leng/configurations/mds_everything.json -g'
+		/>
+		<!--
+		<netbeans-debug-launcher server.name='com.mds.simulator.MdsCalibrationComponent'
+														 args='-noencoders -noswissranger -showrobot -infile=/home/matt/files/calibrationData.dat'
+														 local.ip='${workstation.ip}'
+														 registry.ip='${mds.laptop.ip}'
+														 args='-showrobot -outfile=/home/matt/files/calibrationData.dat'
+		args='-noencoders -noswissranger -showrobot'
+		-->
+  </target>
+  <target name='nb-calibrationserverremote' depends='robotsim' if='netbeans.home'>
+    <netbeans-debug-launcher server.name='com.robotsim.calibration.leng.CalibrationComponentRemote'
+                             project.name='ade_mds'
+                             local.ip='${workstation.ip}'
+                             registry.ip='${mds.laptop.ip}'
+                             args='-g'
+		/>
+  </target>
+</project>
+

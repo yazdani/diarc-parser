@@ -1,0 +1,47 @@
+#!/bin/bash
+# The idea here is to sleep a half second less than the length of the file.
+# We get the time from sox and use dc to calculate the number of usecs to
+# sleep (because bash only has integer arithmetic).
+echo -n `date` >> /tmp/adeplay.log
+echo ": adeplay is now executing..." >> /tmp/adeplay.log
+# PWS: Replacing the copy with a volume-increasing call to sox
+cp $1 /tmp/adeplay.wav
+tmpname=/tmp/adeplay`date +%y%m%d%S%N`.wav
+cp $1 $tmpname
+echo "playing $tmpname" >> /tmp/adeplay.log
+#sox -v 5.0 $1 /tmp/adeplay.wav
+early=0.25
+# PWS: sox changed its syntax, the line below works on Debian
+#len=`sox $1 /tmp/adetmp.wav stat 2>&1 | grep seconds | awk '{ print $3 }'`
+len=`sox $1 -e stat 2>&1 | grep seconds | awk '{ print $3 }'`
+let len=`/usr/bin/dc -e "$len d [0pq]sa $early >a $early - 1000000 * d p" | cut -f 1 -d .`
+if [ ! -e /bin/usleep ] ; then
+	len=`/usr/bin/dc -e "4 k $len 1000000 / p"`
+fi
+# the clever "come back early" trick doesn't always work...
+let shortsleep=0
+# PWS: Adding this lock keep spoken text from overlapping, but I don't know if
+# flock enforces the order of play...
+#flock /tmp/adeplay.log /usr/bin/aplay /tmp/adeplay.wav >> /tmp/adeplay.log 2>&1 &
+if [ $shortsleep -eq 0 ] ; then
+    flock /tmp/adeplay.log /usr/bin/aplay $tmpname >> /tmp/adeplay.log 2>&1
+else
+    flock /tmp/adeplay.log /usr/bin/aplay $tmpname >> /tmp/adeplay.log 2>&1 &
+    let PID=$!
+    echo $PID > /tmp/fdonePID
+    if [ -e /bin/usleep ] ; then
+            echo "will sleep for $len usec" >> /tmp/adeplay.log
+            usleep $len
+    else
+            echo "will sleep for $len sec" >> /tmp/adeplay.log
+            sleep $len
+    fi
+fi
+rm /tmp/fdonePID
+#scp $1 172.30.1.95:$1
+#ssh 172.30.1.95 "aplay -D hw:1,0 $1"
+rm /tmp/fdone
+touch /tmp/fdone
+echo -n `date` >> /tmp/adeplay.log
+echo ": adeplay is now done..." >> /tmp/adeplay.log
+#PWS: should be removing those tempfiles...

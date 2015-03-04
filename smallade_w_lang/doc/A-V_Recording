@@ -1,0 +1,37 @@
+To record from a firewire camera and USB mic:
+
+ffmpeg -y -pix_fmt uyvy422 -r 15 -s vga -f libdc1394 -i /dev/video1394/0 \
+	-f oss -i /dev/dsp1 /tmp/test.avi
+
+Make sure the permissions are correct on /dev/dsp1 and /dev/video1394/0.
+
+Need an older version of ffmpeg, since the libdc1394 format has vanished
+recently.  Rev 10857 is one example of a working version.  Also, need to make
+sure an appropriate version of libdc1394 is installed.  Version 1.1 works with
+that revision of ffmpeg.
+
+To make a video like above and output to the local sound card in parellel:
+
+ffmpeg -y -pix_fmt uyvy422 -r 15 -s qvga -f libdc1394 -i /dev/video1394/0 \
+	-f oss -i /dev/dsp1 /tmp/test.avi -f wav - | sox -q -t raw -r 44100 \
+	-c 1 -w -s - -t alsa default
+
+Alternative (not very good) procedure to record from a firewire camera and USB
+mic that might work in a pinch:
+
+This is a procedure for recording audio and video from mic in and an IIDC
+firewire camera piped through a video4linux loopback device.
+
+1. Download and compile vloopback kernel module.  Insert that into the kernel,
+   possibly doing 'modprobe videodev' first if needed.
+
+2. Use corander to start the firewire camera: in the 'Services' tab, set the 
+   format to 640x480 RBG 24bpp, then click 'Receive' and 'V4L' to send the
+   firewire input through the v4l loopback device.
+
+3. Record using ffmpeg: 
+
+   ffmpeg -pix_fmt bgr24 -r 15 -s 640x480 -f rawvideo \
+   	-i /dev/video1 -f audio_device -i /dev/dsp /tmp/test.avi
+
+I'm sure there are dozens of ways to improve this procedure...

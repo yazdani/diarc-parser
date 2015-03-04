@@ -1,0 +1,9 @@
+According to Linux Certified tech support, the backlight not coming back on after the lid
+is closed and reopened is due to a corruption of the BIOS. To "fix" the BIOS, shutdown
+the computer, remove the AC power and battery, and let the laptop sit for 10-15 seconds.
+Upon powering on, press the F2 key to bring up the BIOS. Select the "Load Optimal
+Configuration" from the exit menu screen, then save changes. That should fix the problem.
+
+If there are any problems or other issues, Linux Certified can be reached at:
+email: support@linuxcertified.com
+phone: (877) 800-6873

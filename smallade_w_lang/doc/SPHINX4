@@ -1,0 +1,48 @@
+README for Sphinx4 (updated 06/05/2007)
+=======================================
+
+Needed in your classpath are jsapi.jar (for the Java Speech Grammar Format),
+sphinx4.jar, and WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar (these should all
+be in the main directory of the ADE repository).
+
+In addition, other problems starting sphinx might be caused by the settings
+in the (sphinx4) configuration file (default is "example.gram.config.xml"--PWS:
+this is a change in the default that breaks grammar switching (present in most
+Action scripts); you now need to manually select the correct config by adding
+"-s4conf ../sphinx4/config/jsgf.config.xml" to the serverargs for
+com.sphinx4.Sphinx4ServerImpl in the ADE startup file).
+
+Some notable things to check:
+- in the "microphone" component, make sure the "selectMixer" setting is
+  correct. According to the sphinx4 documentation, using "last" as the value
+  *should* find an acceptable mixer. However, on at least one machine, the
+  value had to be set explicitly to an appropriate mixer. Use sphinx4's
+  "AudioTool" utility with the "-dumpMixers" to display the available mixers
+  on the local machine.
+- make sure the "path" property in the "wordListGrammar" section is set
+  properly
+- make sure the "dictionaryPath" and "fillerPath" properties in the
+  "dictionary" section are set properly
+
+During startup you need to pass the flag "-mx256m" to increase the Java heap
+space for Sphinx 4 so it doesn't crash during startup (and/or take a very long
+time to load). For example:
+
+java -Djava.rmi.server.hostname=172.30.1.10 -mx256m \
+      com/sphinx4/Sphinx4ServerImpl -l 172.30.1.10 -r 172.30.1.10
+
+If the ADE Sphinx4Server is being used with the ADE FestivalServer, make sure
+to also read the doc/FESTIVAL readme if there are other issues.
+
+================================
+Sound Settings -- airolablaptop1
+================================
+
+To use the Shure wireless mic plugged into the onboard mic jack, mute mic capture and disable mic boost in playback settings, select mic capture and set capture level to 7 in capture settings.  The volume on the mic receiver should be turned all the way up.  In the sphinx4 config file (see above) "selectMixer" should be set to 0.
+
+To use a mic plugged into the Acoustic Magic USB dongle, "selectMixer" should
+be set to 5 (note that this varies from machine to machine depending on what
+other hardware is installed).  The mic settings can be modified using alsamixer
+("alsamixer -c 2"); not sure about reasonable settings--please update when you
+find out (probably specific to which mic is plugged in, normally the mic
+array).

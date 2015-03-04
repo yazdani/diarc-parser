@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<!-- Build file for our first application -->
+<project name="ADE" basedir=".">
+  <property environment="env"/>
+  <target name="ade" >
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no" includes="ade/** utilities/**"/>
+    <jar destfile="${env.TARGET}/core/ADEcore.jar" basedir="." includes="ade/**/*.class ade/gui/icons/**/*.png ade/gui/sysview/dialogs/*.txt utilities/**.class" />
+  </target>
+  <target name="com" >
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/**" excludes="com/action/gui/**"/>
+  </target>
+  <target name="adesim" >
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/adesim/** com/engine3D/**" />
+  </target>
+  <target name="ardrone" >
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/ardrone/**" />
+  </target>
+	<target name="adegrid" >
+    <javac  srcdir="." destdir="." debug="true" debuglevel="lines,vars,source" classpath="${env.CP}:com/grid/simulations/simworld/dist/lib/beansbinding-1.2.1.jar:com/grid/simulations/simworld/dist/lib/swing-layout-1.0.4.jar" includeantruntime="no"
+      includes="com/grid/simulations/simworld/**"  />  
+    <javac  srcdir="." destdir="." debug="true" debuglevel="lines,vars,source" classpath="${env.CP}:com/grid/simulations/nn/nnsim.jar" includeantruntime="no"
+      includes="com/grid/simulations/nn/**"  />  
+    <javac  srcdir="." destdir="." debug="true" debuglevel="lines,vars,source" classpath="${env.CP}:com/grid/visualizer/ext_j3d/j3dcore.jar:com/grid/visualizer/ext_j3d/vecmath.jar:com/grid/visualizer/ext_j3d/j3dutils.jar:com/grid/visualizer/freehep-java3d-2.0-20070206.232550-2.jar" includeantruntime="no"
+      includes="com/grid/visualizer/**"  />
+    <javac  srcdir="." destdir="." debug="true" debuglevel="lines,vars,source" classpath="${env.CPgridanalyzer}" includeantruntime="no"
+      includes="com/grid/analyzer/**"  />
+    <javac  srcdir="." destdir="." debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/grid/**" excludes="com/grid/tmp-resources/** com/grid/analyzer/** com/grid/simulations/nn/** com/grid/simulations/simworld/** com/grid/visualizer/**" />
+  </target>
+  <target name="actioncore.check">
+    <uptodate targetfile="com/action/db/actioncore" srcfile="com/action/db/actioncore.xml" property="actioncore.updated"/>
+  </target>
+  <target name="actioncore" unless="actioncore.updated">
+    <java classname="com.action.ActionDBEncrypt" fork="true"/>
+  </target> 
+  <target name="action" depends="actioncompile, actioncore.check">
+    <jar destfile="${env.TARGET}/core/Action.jar" basedir="." includes="com/action/**/*.class com/action/db/actioncore" excludes="com/action/ActionDBEncrypt.class"/>
+  </target>
+  <target name="actioncodenote">
+    <javac srcdir="." destdir="${env.TARGET}" debug="yes" classpath="${env.CP}" includeantruntime="no"
+      includes="com/action/ActionCode*.java">
+    </javac>
+  </target>
+  <target name="actioncompile" depends="actioncodenote">
+    <!--
+    <echo message="Compiling Action"/>
+    -->
+    <javac srcdir="." destdir="${env.TARGET}" debug="yes" classpath="${env.CP}" includeantruntime="no"
+      includes="com/action/Goal*.java com/action/Action*.java com/action/Local*.java com/action/Plan*.java com/action/Dumb*.java" excludes="com/action/gui/** com/action/db/**">
+      <compilerarg line="-implicit:class"/>
+      <compilerarg line="-processor com.action.ActionCodeNoteProcessor"/>
+    </javac>
+  </target>
+  <target name="scriptify" >
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" nowarn="on" classpath="${env.CP}" includeantruntime="no"
+      includes="com/action/db/Scriptify.java"/>
+  </target>
+  <target name="comlink" >
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="utilities/comlink/*.java"/>
+  </target>
+  <target name="actr" depends="comlink">
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/action/ACTAction*.java"/>
+  </target>
+  <target name="jactr">
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}"
+      includes="com/action/JAction*.java edu/indiana/hri/cogs/ade/jactr/extension/ADE*.java">
+    </javac>
+  </target>
+  <target name="icarus" depends="comlink">
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no" 
+      includes="com/action/IcarusAction*.java"/>
+  </target>
+  <target name="runade">
+    <jar destfile="RunADE.jar" index="true" duplicate="preserve" filesetmanifest="merge">
+      <zipgroupfileset dir="." includes="core/*.jar jars/*.jar" />
+      <fileset dir="." includesfile="runade.includes"/>
+      <manifest>
+        <attribute name="Main-Class" value="ade.RunADE"/>
+      </manifest>
+    </jar>
+  </target>
+  <target name="repair">
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/discourse/repair/Repairs.java"/>
+  </target>
+  <target name="weka">
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/discourse/weka/*.java"/>
+  </target>
+  <target name="units">
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/discourse/unit/*.java"/>
+  </target>
+  <target name="lambda">
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/discourse/parsers/lambda/*.java"/>
+  </target>
+  <target name="tagger">
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/discourse/tagger/*.java"/>
+  </target>
+  <target name="world">
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/discourse/world/*.java"/>
+  </target>
+  <target name="predicate">
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/discourse/predicate/*.java"/>
+  </target>
+  <target name="mink" depends="repair,weka,units,lambda,tagger,world,predicate">
+    <javac  srcdir="." destdir="${env.TARGET}" debug="true" debuglevel="lines,vars,source" classpath="${env.CP}" includeantruntime="no"
+      includes="com/discourse/NLPServerImpl.java com/discourse/MinkDiscourseServerImpl.java com/discourse/UtteranceType.java"/>
+  </target>
+</project>

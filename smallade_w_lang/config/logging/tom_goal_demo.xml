@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %m%n"/>
+    </Console>
+    <!--        <File name="testFile" fileName="logs/test.log" bufferedIO="false" advertiseURI="file://${sys:user.dir}/logs/test.log" advertise="true">
+         <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %m%n"/>
+         </File>-->
+  </appenders>
+  <loggers>
+    <root level="INFO">
+      <appender-ref ref="Console"/>            
+    </root>
+    <logger name="com.action.GoalManagerImpl" level="INFO">
+      <appender-ref ref="Console"/>
+    </logger>
+    <logger name="com.action.ActionInterpreter" level="INFO">
+      <appender-ref ref="Console"/>
+    </logger>
+    <logger name="com.slug.nlp.NLPComponentImpl" level="TRACE">
+      <appender-ref ref="Console"/>
+    </logger>
+  </loggers>
+</configuration>

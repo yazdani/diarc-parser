@@ -1,0 +1,68 @@
+#!/bin/bash
+if [ $# -lt 1 ] ; then
+    echo "Usage: $0 <ID>"
+    exit
+fi
+REDHOST=192.168.0.167
+#REDHOST=192.168.0.2
+BLUEHOST=192.168.0.148
+# show 2D environment: "yes" or "no"
+ENV2D="no"
+# obstacle avoidance: "yes" or "no"
+OBST="yes"
+# stop button: "yes" or "no"
+STOP="no"
+# environment
+if [ $ENV2D == "yes" ] ; then
+    ENV2D="-g"
+else
+    ENV2D=""
+fi
+
+environment_sim() {
+    kill -9 `ps -ef | grep Dcomponent | grep ade.ADEServerImpl | awk '{ print $2 }'` > /dev/null 2>&1
+    rm -f /tmp/adepipe
+    mkfifo /tmp/adepipe
+    sleep 2
+    (sleep 4 ; ./runadeserver com.adesim.ADESimEnvironmentServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -cfg com/adesim/config/fnirs_map.xml $ENV2D --calllogging) &
+    # robot
+    (sleep 7 ; ./runadeserver com.adesim.SimEraServer -cp jars/vecmath.jar -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -g Camera -initpose 3.75 -5.75 0.79 --persistentGUI --calllogging) &
+    # navigation
+    if [ $OBST == "no" ] ; then
+        OBST="-noobst"
+    else
+        OBST=""
+    fi
+    (sleep 10 ; ./runadeserver com.motion.MotionServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -tol 0.275 -critical 0.75 -deftv 0.35 -defrv 0.2 -slowtv 0.25 -slowrv 0.2 $OBST --calllogging) &
+    # signal/field
+    (sleep 13 ; ./runadeserver com.mopo.FldServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -mopoversion com.adesim.SimEraServer --calllogging) &
+    # fnirs
+    (sleep 16 ; ./runadeserver com.fnir.FNIRServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -g -forward ${BLUEHOST} 10002 --calllogging) &
+    # speech production
+    (sleep 16 ; ./runadeserver com.simspeech.SimSpeechProductionServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -textred -geom 660 150 -g --calllogging) &
+    (sleep 16 ; ./runadeserver com.simspeech.SimSpeechProductionServer -l ${REDHOST} 1098 Blue -r ${BLUEHOST} 1098 Blue -textblue -geom 660 630 -g --calllogging) &
+    # survey
+    (sleep 16 ; ./runadeserver com.survey.SurveyServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -nologging -textred -geom 200 150 -g --calllogging) &
+    # speech processing
+    (sleep 19 ; ./runadeserver com.discourse.TLDLDiscourseServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -actor Red -action -dict com/discourse/TL_DL_parser/newautonomy.dict --calllogging) &
+    # speech input
+    if [ $STOP == "no" ] ; then
+        STOP="com/simspeech/config/newautonomy2"
+    else
+        STOP="com/simspeech/config/newautonomy"
+    fi
+    (sleep 22 ; ./runadeserver com.simspeech.SimSpeechRecognitionServer -l ${REDHOST} 1099 Red -r ${REDHOST} 1099 Red -config $STOP -textred -nocommand -g --calllogging) &
+    (sleep 22 ; ./runadeserver com.simspeech.SimSpeechRecognitionServer -l ${REDHOST} 1098 Blue -r ${BLUEHOST} 1098 Blue -config $STOP -textblue -nocommand -g --calllogging) &
+    
+    ./runaderegistry -l ${REDHOST} 1099 Red -k config/fnirs.hosts
+    if [ -e logs$1 ] ; then
+        echo logs$1 already exists, copy by hand!
+    else
+        mkdir logs$1
+        mv logs/* logs$1
+    fi
+    echo Done.
+}
+
+environment_sim 2>&1 | tee /tmp/environment_sim.out
+# vi:tw=0

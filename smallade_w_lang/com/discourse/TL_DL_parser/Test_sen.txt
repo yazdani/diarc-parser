@@ -1,0 +1,10 @@
+Go to the breakroom.
+Go to the breakroom and report the location of the blue-box.
+Go to the breakroom and report the location of any blue-box.
+Go to the breakroom and report the location of some blue-boxes.
+Go to the breakroom and report the location of a blue-box.
+Go to the breakroom and report the location of all blue-boxes.
+Go to Room7 and wait.
+Turn around and go to the end of the hallway.
+You have seven minutes.
+You have two minutes.

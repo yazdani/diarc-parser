@@ -1,0 +1,840 @@
+% Technical report: ICARUS-DIARC integration
+% Authors: Matthias Scheutz and Paul Schermerhorn
+
+\documentclass{article}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\setlength{\textwidth}{6.0in}
+\setlength{\oddsidemargin}{0.00in}
+\setlength{\evensidemargin}{0.00in}
+\setlength{\textheight}{9.00in}
+\setlength{\topmargin}{0.00in}
+\addtolength{\topmargin}{-\headheight}
+\addtolength{\topmargin}{-\headsep}
+
+\special{papersize=8.5in,11in}
+\begin{document}
+\title{IU TECHNICAL REPORT\\ICARUS-DIARC Action Integration\\Version 5}
+\author{Matthias Scheutz and Paul Schermerhorn}
+
+\maketitle
+
+\section*{Introduction}
+
+This technical report describes the integration of the cognitive
+ICARUS architecture within the robotic DIARC architecture.  The idea
+underlying the employed integration is that ICARUS figures as a {\em
+  more complex component} in DIARC, which (1) uses explicit goal and
+skill representations, (2) follows and pursues goals sequentially, (3)
+focuses attention on percepts and internal states, (4) uses
+problem-solving to cope with novel situations, and (5) learns new
+hierarchical skills.  The integration is achieved via implementing a
+special ``wrapper component'' -- the {\tt ICARUSActionInterpeter}
+server -- which extends the standard DIARC action interpreter (in
+conjunction with an extended ActionManager called {\tt
+  ICARUSActionManager}) and provides and a special purpose interface
+to ICARUS as described below.
+
+DIARC can interact with ICARUS in four ways: (1) through ICARUS'
+perceptual buffer by placing percepts into the buffer, (2) through a
+novel goal placement mechanism where DIARC can place new goals
+expressed in the CTL$^{*}$ formalism directly into ICARUS' goal
+buffer, (3) via action requests from ICARUS called ``primitive
+intentions'' (PI) that will generate goals in DIARC and will be
+executed along side all other actions in DIARC, and (4) through an
+introspective goal reflection mechanism (via special beliefs) that
+allows ICARUS to check which of its primitive intentions are currently
+being carried out and which were successful or failed.\footnote{Note
+  that this is different from Version 1, where primitive actions in
+  ICARUS were directly mapped onto actions scripts in DIARC via the
+  special ICARUS action interpreter, and where action script failures
+  could not be communicated back to ICARUS.}
+
+The perceptual integration mechanism implements both implicit and
+explicit attentional mechanisms that, on the one hand, allow ICARUS to
+``focus its attention'' on particular percepts (e.g., ones that are of
+relevance to its current task) by explicitly requesting them from
+DIARC, while DIARC can ``re-direct'' ICARUS' attention implicitly by
+placing unrequested percepts into the buffer that might be of
+importance from its perspective (e.g., percepts relating to obstacle
+avoidance when a new obstacle appeared in the front of the robot).
+Moreover, the novel goal-passing mechanism allows DIARC to deposit
+explicit goals into ICARUS' goal buffer on every cycle and thus
+implements another, higher-level attention mechanism.  That way other
+components in DIARC (e.g., the NLP component) can generate explicit
+goal representations that ICARUS itself might not be able to generate
+(e.g., goals generated from natural language commands).  Finally, the
+revised action processing mechanism via {\em primitive intentions}
+that now maps ICARUS action primitives directly onto DIARC goals
+allows for a cycle-based issuing of DIARC goals that ICARUS wants
+DIARC to pursue.  The associated reflection mechanism provides
+information about the execution status of primitive intentions in the
+form of beliefs that can be used by ICARUS to avoid reissuing ongoing
+intentions (different from Version 1 where ICARUS caused DIARC actions
+in the service of then ``primitive actions'' to be repeated).
+
+Note that DIARC still manages all its other goals (through its
+standard goal manager) and carries out all its other actions in
+parallel to ICARUS.  It does, however, have a special {\em permanent
+  goal} when the ICARUS server is instantiated, that of running
+ICARUS.  Currently, both ICARUS and DIARC can have goals that are not
+accessible within the other system, but DIARC goals not issued by
+ICARUS could be made available to ICARUS through the same goal
+feedback mechanism as used for primitive intentions.
+
+
+\section*{ICARUS-DIARC Interface}
+
+The LISP and JAVA interfaces between ICARUS and DIARC are defined in
+the code repository in the files
+
+\vspace{2mm}
+\centerline{com/action/icarus/ICARUSadeclient.lisp}
+\vspace{2mm}
+
+\noindent on the LISP side and in
+
+\vspace{2mm}
+\centerline{com/action/IcarusActionInterpreter.java}
+\vspace{2mm}
+
+\noindent on the JAVA side.  The interface is based on a simple
+message passing protocol that allows DIARC first to initialize ICARUS
+based on start-up parameters (such as the ICARUS knowledge file that
+needs to be loaded) and then to pass control to ICARUS which can run
+its cycle-based updates in its own LISP sub-process polling and pushing
+data from and to its associated {\tt ICARUSActionInterpeter} (i.e.,
+the {\tt ICARUSActionInterpeter} takes care of invoking Lisp, loading
+ICARUS, setting up the communication socket, etc.).  The functions
+{\tt initialize-world} and {\tt update-world} are defined, but are not
+currently used.
+
+Percepts are given to ICARUS via the {\tt preattend} mechanism.  The 
+types of percepts to which the ICARUS client wants to attend can be 
+specified (see below), and the percepts are returned to {\tt 
+preattend} as ordered lists of objects in the format:
+
+\begin{verbatim}
+    <object type> <object token> <slot> <value> <slot> <value> ...
+\end{verbatim}
+
+Figure~\ref{integration} shows ICARUS as running in the special
+purpose DIARC {\tt ICARUSActionInterpeter} component, where primitive
+intentions issued by ICARUS are instantiated as DIARC goals that cause
+the executing of associated action scripts that interpreted in the
+standard way for DIARC scripts.
+
+\begin{figure}[t]
+  \includegraphics[width=6in]{icarus-diarc2}
+  \caption{Schematic of the ICARUS-DIARC integration via the special
+    purpose {\tt ICARUSActionInterpeter} component in DIARC.}
+  \label{integration}
+\end{figure}
+
+
+\subsection*{ICARUS Percepts}
+
+A special ``attend'' DIARC primitive has been defined to allow ICARUS 
+to specify which percepts are of interest:
+
+\begin{verbatim}
+  (ICARUS-intention (attend percept-type-1 percept-type-2...))
+\end{verbatim}
+
+\noindent This will focus attention on those types of percepts, which 
+will then be subsequently sent to ICARUS through its {\tt preattend} 
+call.  Several percepts are defined in the ICARUS 
+interface:\footnote{Note that, for the sake of backward compatibility, 
+many of the percepts below will include x-y coordinates as well, and 
+many of the primitive intentions defined later will still accept x-y 
+coordinates as parameters.  However, these are deprecated and could be 
+removed in future versions of the interface.}
+
+%  (obstacle ?name direction ?dir distance ?dist)
+%     ; an obstacle in the given direction
+%     ; ("left", "right", "infront") at the given distance
+
+\begin{verbatim}
+  (robot ?name orientation ?h velocity ?vel location ?l)
+     ; the name, orientation, and velocity of the robot and its
+     ; location, which is the name of the closest perceivable object
+
+  (landmark ?name type ?t heading ?dir distance ?dist) 
+     ; a perceived landmark of type t in relative direction to the 
+     ; robot's heading in degrees at the distance in meters -- this
+     ; will be a substitute for any type of landmark in the task as used
+     ; in the director's map (e.g., a doorway, wall, chair, table, etc.),
+     ; NOTE: landmarks are not movable or not pickupable, different from
+     ; boxes and blocks
+
+  (box ?name color ?value open? ?o filled? ?f heading ?dir distance ?dist)
+     ; a perceived box with a color, a boolean indicating whether it
+     ; is open or not, a boolean indicating whether it is empty or not
+     ; (only if it is open), a direction relative to the robot's
+     ; heading in degrees, and the distance in meters
+
+  (block ?name color ?color inside ?box) 
+     ; a perceived block with a color inside a particular box
+
+\end{verbatim}
+
+So, if ICARUS needs to get information about boxes, then it would
+first attend to boxes---``(attend box)''---and then process any box
+percepts returned in response.  The attend mechanism is persistent, so 
+once a percept type has been attended to, DIARC will continue to send 
+percepts of that type to ICARUS until that attend is cancelled by 
+another attend.  Subsequent attends replace previous attend lists, so, 
+for example, to attend also to blocks, it would be necessary to send 
+``(attend box block)'' to DIARC.
+
+\subsection*{ICARUS Goals}
+
+DIARC can also explicitly place new goals in the goal buffer in
+ICARUS.  This is intended to allow for future goals expressed in LTL
+to be sent to ICARUS from other components of the system (e.g., the
+NLP components).  For example, the natural language command ``go to
+the break room and then report your location'' would be translated
+into the LTL goal ``$\diamond$(at(breakroom) \&
+`$\diamond$report(location,self))''.  This goal could then be placed
+into the goal buffer in an appropriate LISP representation.
+
+Note that while such goal representations could index skills directly
+(e.g., if a skill was associated with the goal description in LTL), it
+will in general be non-trivial to determine what skills to select to
+achieve an LTL goal.  This, however, is a problem that needs to be
+resolved within ICARUS.  DIARC here is only a mediator between an
+external producer of a goal representation and ICARUS which has to
+achieve the goal through the execution of skills.
+
+\subsection*{ICARUS Intentions}
+
+Actions to be performed by DIARC (i.e., outside the ICARUS
+architecture) are requested by virtue of ``primitive intentions'' sent
+by ICARUS to the {\tt ICARUSActionInterpeter} via the {\tt
+  ICARUS-intention} function as:
+
+\begin{verbatim}
+    (ICARUS-intention (intention-type-name arg1 arg2 ...)
+                      (intention-type-name arg1 arg2 ...))
+\end{verbatim}
+
+\noindent Note that the type names of primitive intentions are not
+bound directly to Lisp functions, but are mapped onto DIARC goals
+that, in turn, trigger associated action scripts that will be executed
+(in parallel) outside of ICARUS.  The intention primitives (i.e.,
+DIARC goals) available to all instances of the action manager are
+defined in the file {\sc com/action/db/action.xml}.  For the purposes
+of the {\tt ICARUS-intention} function call, the most important
+components of the specification of a primitive intention are its name
+and possible arguments.  Several primitive intentions have been
+defined to allow ICARUS to re-create the different types of skills
+(and strategies) exhibited by humans in the Search\&Rescue Task:
+
+\begin{verbatim}
+  (look-for ?type)
+    ; looks around 360 degrees in current location without moving
+    ; placing percepts of ?type into the perceptual buffer (NOTE: this
+    ; is not equivalent to pre-attend) success: if 360 turn succeeds
+    ; (even if no object is perceived), failure otherwise
+
+  (move-to ?object)
+    ; moves from current location to the location of the perceivable
+    ; object (box, doorway, or other landmark); success if robot reaches
+    ; the location of the object, failure otherwise (including if
+    ; ?object does not refer to a currently perceivable object)
+
+  (move)
+    ; move forward until an object is detected in in front, while at
+    ; the same time keeping away from objects on the left and right;
+    ; success when robot is stopped by an obstacle in front (useful for
+    ; moving across a room or down a hallway)
+
+  (move-through ?doorway)
+    ; moves through a perceivable doorway and stops right after it has
+    ; passed the doorway
+
+  (turn ?object)
+    ; turns in place to face ?object, if known success if robot
+    ; completes turn, failure otherwise
+
+  (turn ?distance)
+    ; turns in place ?distance degrees; success if robot completes
+    ; turn, failure otherwise ("turn -90" == "turn right", "turn 180" ==
+    ; "turn around", and "turn 90" == "turn left")
+
+  (open ?box)
+    ; opens a box; success if open, failure otherwise
+
+  (close ?box)
+    ; closes a box; success if closed, failure otherwise
+             
+  (get-from ?box ?block)
+    ; picks up the block from the box; success if the robot holds the
+    ; block, failure otherwise NOTE: robot can only hold one block at a
+    ; time
+
+  (put-into ?box ?block)
+    ; puts the block in the container; success if block is in box,
+    ; failure otherwise
+ 
+  (pick-up ?box)
+    ; picks up the box; success if robot holds the box, failure
+    ; otherwise; NOTE: the robot can only hold one box at a time
+
+  (put-down ?box)
+    ; puts down the box in robot's current location; success if the box
+    ; is down, failure otherwise
+
+  (report ?object ?slot1 ?slot2 ...)
+    ; reports for a given percept a list of slot values for the given
+    ; slot names
+
+\end{verbatim}
+
+Additional actions related to NL interactions (e.g., with the human
+director) can be added at a later point.
+
+\subsection*{ICARUS Beliefs about Intentions}
+
+Any action in DIARC can be in one of three states at any given time:
+{\tt success} (i.e., successful completion of the action), {\tt
+  failure} (i.e., action could not complete for whatever reason --
+depending on the action there might be failure conditions that can be
+reflected on), or {\tt ongoing} (i.e., the action is still ongoing and
+has not completed yet).  Whenever a primitive intention is scheduled,
+DIARC creates a new intention name and using this name it informs
+ICARUS on subsequent cycles about the status of the intention as long
+as the intention is ongoing (the last update is performed when the
+intention succeeds or fails).  The updates about the status of
+intentions are placed directly into ICARUS' belief buffer on each
+cycle in the form:
+
+\begin{verbatim}
+  (primitive-intention (<intention-name> <status>)
+                       (<intention-name> <status>)
+                       ...)
+\end{verbatim}
+
+More specifically, when a PI has been issued for the first time, DIARC
+assigns it a new token identifier (via a gensym call), which it
+subsequently uses to refer to that very intention.  So, if one cycle
+$t$ ICARUS issued the PI
+
+\begin{verbatim}
+  (look-for "box" color "green")
+\end{verbatim}
+
+then DIARC assigns this a unique identifier ``look-for17'' which it 
+will subsequently report to ICARUS' belief memory:
+
+\begin{verbatim}
+  (primitive-intention ("look-for17" "ongoing"))
+\end{verbatim}
+
+This way ICARUS can determine that it previously had that intention
+and branch on its state (e.g., ``ongoing'') accordingly.  Note that
+this mechanisms can be used to prevent ICARUS from issuing the same
+intention over and over again (e.g., the intention to move forward if
+the robot is already moving forward).
+
+\subsection*{Reference Implementation}
+
+Included below (and as {\tt com/action/icarus/test3.lisp} in the 
+repository) is a Lisp implementation of an agent that solves the 
+``report green boxes'' and ``gather yellow blocks'' goals of the task 
+using the ICARUS-DIARC interface.  It first goes all the way through 
+the environment to the cardboard box, gets that, then moves back 
+through the environment, visiting the blue boxes and removing the 
+yellow blocks from them and placing them into the cardboard box.  It 
+concurrently monitors for green boxes, reporting them as they are 
+found.  After identifying all the green boxes and removing all the 
+yellow blocks from blue boxes, it returns to the starting position.
+
+Each step of the code represents a spoken language instruction (e.g., 
+"go through the nearest doorway"), without requiring  knowledge ahead 
+of time of any names of objects, instead getting them from the 
+environment as they're encountered.  Hence, the solution could 
+represent a sequence of instructions from the director, based on the 
+map.
+
+\begin{verbatim}
+
+;;; Overwrites ICARUS's run function so we can test the interface
+(defvar action-status* nil)
+(defvar reported-boxes nil)
+(defvar action nil)
+(defvar actstate nil)
+(defvar target nil)
+(defvar oldtarget nil)
+(defvar mybox nil)
+(defvar myblock nil)
+(defvar checkval nil)
+(defvar tdist -91)
+(ICARUS-intention (list (list "attend" "box" "block" "landmark")))
+(defun run (runcycles)
+  (preattend)
+  ;;; go through the door
+  (loop for perc in percepts do
+        (if (equal (getslot perc 'type) 'doorway)
+          (setq action (car (ICARUS-intention (list (list "move-through" (cadr perc))))))))
+  (monitor action 'checkaction)
+  ;;; go down the hallway to the steps
+  (loop for perc in percepts do
+        (if (equal (getslot perc 'type) 'steps)
+          (setq action (car (ICARUS-intention (list (list "move-to" (cadr perc))))))))
+  (monitor action 'checkaction)
+  ;;; turn right
+  (setq action (car (ICARUS-intention (list (list "turn" -90)))))
+  (monitor action 'checkaction)
+  ;;; go through the leftmost doorway
+  (loop for perc in percepts do
+        (if (and (equal (getslot perc 'type) 'doorway)
+                 (> (getslot perc 'heading) tdist))
+          (progn (setq target (cadr perc))
+                 (setq tdist (getslot perc 'heading)))))
+  (setq action (car (ICARUS-intention (list (list "move-through" target)))))
+  (monitor action 'checkaction)
+  ;;; move to the cart
+  (loop for perc in percepts do
+        (if (equal (getslot perc 'type) 'cart)
+          (progn (setq target (cadr perc)))))
+  (setq action (car (ICARUS-intention (list (list "move-to" target)))))
+  (monitor action 'checkaction)
+  ;;; turn to the doorway
+  (loop for perc in percepts do
+        (if (equal (getslot perc 'type) 'doorway)
+          (setq target (cadr perc))))
+  (setq action (car (ICARUS-intention (list (list "turn" target)))))
+  (monitor action 'checkaction)
+  ;;; go through the doorway
+  (setq action (car (ICARUS-intention (list (list "move-through" target)))))
+  (monitor action 'checkaction)
+  ;;; turn right
+  (setq action (car (ICARUS-intention (list (list "turn" -90)))))
+  (monitor action 'checkaction)
+  ;;; go down the hall...
+  (setq action (car (ICARUS-intention (list (list "move")))))
+  ;;; ...until you see the box (landmark of type box--a little confusing)
+  (monitor action (lambda (actname)
+                    (loop for perc in percepts do
+                          (if (equal (getslot perc 'type) 'box)
+                            (progn (setq target (cadr perc))
+                                   (return t))))))
+  ;;; then go past the box (to the box)...
+  (setq action (car (ICARUS-intention (list (list "move-to" target)))))
+  (monitor action 'checkaction)
+  ;;; ...and on to the end of the hall
+  (setq action (car (ICARUS-intention (list (list "move")))))
+  (print (list 'action action-status*))
+  (monitor action 'checkaction)
+  ;;; when you get to the end of the hall, turn left
+  (setq action (car (ICARUS-intention (list (list "turn" 90)))))
+  (monitor action 'checkaction)
+  ;;; go to the brown box
+  (loop for perc in percepts do
+        (if (and (equal (car perc) 'box)
+                 (equal (getslot perc 'color) 'brown))
+          (progn (setq target (cadr perc))
+                 (setq action (car (ICARUS-intention (list (list "move-to" target))))))))
+  (monitor action 'checkaction)
+  ;;; face the box
+  (setq action (car (ICARUS-intention (list (list "turn" target)))))
+  (monitor action 'checkaction)
+  ;;; and pick it up
+  (setq mybox target)
+  (setq action (car (ICARUS-intention (list (list "pick-up" target)))))
+  (monitor action 'checkaction)
+  ;;; open the box
+  (setq action (car (ICARUS-intention (list (list "open" target)))))
+  (monitor action 'checkaction)
+  ;;; turn around
+  (setq action (car (ICARUS-intention (list (list "turn" 180)))))
+  (monitor action 'checkaction)
+  ;;; move to the end of the hall
+  (setq action (car (ICARUS-intention (list (list "move")))))
+  (monitor action 'checkaction)
+  ;;; when you get to the end of the hall, turn right
+  (setq action (car (ICARUS-intention (list (list "turn" -90)))))
+  (monitor action 'checkaction)
+  ;;; move down the hall...
+  (setq action (car (ICARUS-intention (list (list "move")))))
+  ;;; ...until you see a blue box
+  (monitor action (lambda (actname)
+                    (loop for perc in percepts do
+                          (if (and (equal (car perc) 'box)
+                                   (equal (getslot perc 'color) 'blue))
+                            (progn (setq target (cadr perc))
+                                   (return t))))))
+  ;;; then go to it
+  (setq action (car (ICARUS-intention (list (list "move-to" target)))))
+  (monitor action 'checkaction)
+  ;;; get the yellow block
+  (setq action (get-block target))
+  (monitor action 'checkaction)
+  ;;; turn left
+  (setq action (car (ICARUS-intention (list (list "turn" 90)))))
+  (monitor action 'checkaction)
+  ;;; move down the hall...
+  (setq action (car (ICARUS-intention (list (list "move")))))
+  ;;; ...until you see a blue box
+  (monitor action (lambda (actname)
+                    (loop for perc in percepts do
+                          (if (and (equal (car perc) 'box)
+                                   (equal (getslot perc 'color) 'blue))
+                            (progn (setq target (cadr perc))
+                                   (return t))))))
+  ;;; then go to it
+  (setq tdist 500)
+  (loop for perc in percepts do
+        (if (and (equal (car perc) 'box)
+                 (equal (getslot perc 'color) 'blue)
+                 (< (getslot perc 'distance) tdist))
+          (progn (setq target (cadr perc))
+                 (setq tdist (getslot perc 'distance)))))
+  (setq action (car (ICARUS-intention (list (list "move-to" target)))))
+  (monitor action 'checkaction)
+  ;;; get the yellow block
+  (setq action (get-block target))
+  (monitor action 'checkaction)
+  ;;; turn left
+  (setq action (car (ICARUS-intention (list (list "turn" 90)))))
+  (monitor action 'checkaction)
+  ;;; go through the door
+  (loop for perc in percepts do
+        (if (equal (getslot perc 'type) 'doorway)
+          (setq action (car (ICARUS-intention (list (list "move-through" (cadr perc))))))))
+  (monitor action 'checkaction)
+  ;;; turn right
+  (setq action (car (ICARUS-intention (list (list "turn" -90)))))
+  (monitor action 'checkaction)
+  ;;; go to the blue box
+  (loop for perc in percepts do
+        (if (and (equal (car perc) 'box)
+                 (equal (getslot perc 'color) 'blue))
+          (progn (setq target (cadr perc))
+                 (setq action (car (ICARUS-intention (list (list "move-to" target))))))))
+  (monitor action 'checkaction)
+  ;;; get the yellow block
+  (setq action (get-block target))
+  (monitor action 'checkaction)
+  ;;; turn left
+  (setq action (car (ICARUS-intention (list (list "turn" 90)))))
+  (monitor action 'checkaction)
+  ;;; go through the closest door
+  (setq tdist 500)
+  (loop for perc in percepts do
+        (if (and (equal (getslot perc 'type) 'doorway)
+                 (< (getslot perc 'distance) tdist))
+          (progn (setq target (cadr perc))
+                 (setq tdist (getslot perc 'distance)))))
+  (setq action (car (ICARUS-intention (list (list "move-through" target)))))
+  (monitor action 'checkaction)
+  ;;; turn left...
+  (setq action (car (ICARUS-intention (list (list "turn" 180)))))
+  ;;; ...until you see a blue box
+  (monitor action (lambda (actname)
+                    (loop for perc in percepts do
+                          (if (and (equal (car perc) 'box)
+                                   (equal (getslot perc 'color) 'blue))
+                            (progn (setq target (cadr perc))
+                                   (return t))))))
+  ;;; get the yellow block
+  (setq action (get-block nil))
+  (monitor action 'checkaction)
+  ;;; turn left
+  (setq action (car (ICARUS-intention (list (list "turn" 90)))))
+  (monitor action 'checkaction)
+  ;;; go through the door
+  (loop for perc in percepts do
+        (if (equal (getslot perc 'type) 'doorway)
+          (progn (setq target (cadr perc))
+                 (setq action (car (ICARUS-intention (list (list "move-through" target))))))))
+  (monitor action 'checkaction)
+  ;;; turn left
+  (setq action (car (ICARUS-intention (list (list "turn" 90)))))
+  (monitor action 'checkaction)
+  ;;; go through the next-closest door on the left
+  (setq tdist 500)
+  (setq oldtarget target)
+  (loop for perc in percepts do
+        (if (and (equal (getslot perc 'type) 'doorway)
+                 (< (getslot perc 'distance) tdist)
+                 (not (equal (cadr perc) oldtarget)))
+          (progn (setq target (cadr perc))
+                 (setq tdist (getslot perc 'distance)))))
+  (setq action (car (ICARUS-intention (list (list "move-through" target)))))
+  (monitor action 'checkaction)
+  ;;; go to the blue box
+  (loop for perc in percepts do
+        (if (and (equal (car perc) 'box)
+                 (equal (getslot perc 'color) 'blue))
+          (progn (setq target (cadr perc))
+                 (setq action (car (ICARUS-intention (list (list "move-to" target))))))))
+  (monitor action 'checkaction)
+  ;;; get the yellow block
+  (setq action (get-block target))
+  (monitor action 'checkaction)
+  ;;; turn right
+  (setq action (car (ICARUS-intention (list (list "turn" -90)))))
+  (monitor action 'checkaction)
+  ;;; go through the closest door
+  (setq tdist 500)
+  (loop for perc in percepts do
+        (if (and (equal (getslot perc 'type) 'doorway)
+                 (< (getslot perc 'distance) tdist))
+          (progn (setq target (cadr perc))
+                 (setq tdist (getslot perc 'distance)))))
+  (setq action (car (ICARUS-intention (list (list "move-through" target)))))
+  (monitor action 'checkaction)
+  ;;; go to the blue box on the left
+  (loop for perc in percepts do
+        (if (and (equal (car perc) 'box)
+                 (equal (getslot perc 'color) 'blue)
+                 (> (getslot perc 'heading) 0))
+          (progn (setq target (cadr perc))
+                 (setq action (car (ICARUS-intention (list (list "move-to" target))))))))
+  (monitor action 'checkaction)
+  ;;; get the yellow block
+  (setq action (get-block target))
+  (monitor action 'checkaction)
+  ;;; turn around
+  (setq action (car (ICARUS-intention (list (list "turn" 180)))))
+  (monitor action 'checkaction)
+  ;;; go to the blue box
+  (loop for perc in percepts do
+        (if (and (equal (car perc) 'box)
+                 (equal (getslot perc 'color) 'blue))
+          (progn (setq target (cadr perc))
+                 (setq action (car (ICARUS-intention (list (list "move-to" target))))))))
+  (monitor action 'checkaction)
+  ;;; get the yellow block
+  (setq action (get-block target))
+  (monitor action 'checkaction)
+  ;;; turn left...
+  (setq action (car (ICARUS-intention (list (list "turn" 180)))))
+  ;;; ...until you see a doorway
+  (monitor action (lambda (actname)
+                    (loop for perc in percepts do
+                          (if (equal (getslot perc 'type) 'doorway)
+                            (progn (setq target (cadr perc))
+                                   (return t))))))
+  ;;; go through the doorway
+  (setq tdist 500)
+  (loop for perc in percepts do
+        (if (and (equal (getslot perc 'type) 'doorway)
+                 (< (getslot perc 'distance) tdist))
+          (progn (setq target (cadr perc))
+                 (setq tdist (getslot perc 'distance)))))
+  (setq action (car (ICARUS-intention (list (list "move-through" target)))))
+  (monitor action 'checkaction)
+  ;;; and go through the next doorway
+  (setq tdist 500)
+  (loop for perc in percepts do
+        (if (and (equal (getslot perc 'type) 'doorway)
+                 (< (getslot perc 'distance) tdist))
+          (progn (setq target (cadr perc))
+                 (setq tdist (getslot perc 'distance)))))
+  (setq action (car (ICARUS-intention (list (list "move-through" target)))))
+  (monitor action 'checkaction)
+  ;;; turn right
+  (setq action (car (ICARUS-intention (list (list "turn" -90)))))
+  (monitor action 'checkaction)
+  ;;; get the yellow block
+  (setq action (get-block nil))
+  (monitor action 'checkaction)
+  ;;; turn right
+  (setq action (car (ICARUS-intention (list (list "turn" -90)))))
+  (monitor action 'checkaction)
+  ;;; go through the doorway
+  (setq tdist 500)
+  (loop for perc in percepts do
+        (if (and (equal (getslot perc 'type) 'doorway)
+                 (< (getslot perc 'distance) tdist))
+          (progn (setq target (cadr perc))
+                 (setq tdist (getslot perc 'distance)))))
+  (setq action (car (ICARUS-intention (list (list "move-through" target)))))
+  (monitor action 'checkaction)
+  ;;; turn left
+  (setq action (car (ICARUS-intention (list (list "turn" 90)))))
+  (monitor action 'checkaction)
+  ;;; go to the end of the hall
+  (setq action (car (ICARUS-intention (list (list "move")))))
+  (monitor action 'checkaction)
+  ;;; turn left
+  (setq action (car (ICARUS-intention (list (list "turn" 90)))))
+  (monitor action 'checkaction)
+  ;;; go through the doorway
+  (setq tdist 500)
+  (loop for perc in percepts do
+        (if (and (equal (getslot perc 'type) 'doorway)
+                 (< (getslot perc 'distance) tdist))
+          (progn (setq target (cadr perc))
+                 (setq tdist (getslot perc 'distance)))))
+  (setq action (car (ICARUS-intention (list (list "move-through" target)))))
+  (monitor action 'checkaction)
+  ;;; and move to the end of the hall
+  (setq action (car (ICARUS-intention (list (list "move")))))
+  (monitor action 'checkaction)
+  (quit)
+  ) ;;; end run
+
+;;; check for green boxes in percept list, report if found, add to list
+(defun monitor (actname checkfunc)
+  (loop until actstate do
+    (ICARUS-intention (list (list "sleep" 50)))
+    (preattend)
+    (print percepts)
+    (print action-status*)
+    (loop for perc in percepts do
+          (if (and (equal (car perc) 'box) 
+                   (equal (getslot (cddr perc) 'color) 'green))
+            (report (cadr perc))))
+    (setq actstate (funcall checkfunc actname))
+    (force-output *standard-output*))
+  (setq actstate nil))
+
+(defun checkaction (actname)
+  (loop for act in (cdr action-status*) do
+        ;;;(print (list "checking" act "for" actname))
+        (if (equal (car act) action)
+          (if (equal (cadr act) 'success)
+            (return-from checkaction t)
+            (return-from checkaction nil))))
+  nil)
+
+(defun getslot (perc sname)
+  ;;; scan the list for slot of sname, return its value or nil if unfound
+  (cond ((equal (car perc) sname)
+         (cadr perc))
+        ((null (cddr perc))
+         nil)
+        (t (getslot (cddr perc) sname))))
+
+(defun report (name)
+  (loop for box in reported-boxes do
+        (if (equal name box)
+          (return-from report nil)))
+  (setq reported-boxes (cons name reported-boxes))
+  (ICARUS-intention (list (list 'report name "color" "heading" "distance"))))
+
+(defun get-block (target)
+  (if (null target)
+    ;;; get the closest blue box
+    (progn (setq tdist 500)
+           (loop for perc in percepts do
+                 (if (and (equal (car perc) 'box)
+                          (equal (getslot perc 'color) 'blue)
+                          (< (getslot perc 'distance) tdist))
+                   (progn (setq tdist (getslot perc 'distance))
+                          (setq target (cadr perc)))))))
+  ;;; face the box
+  (setq action (car (ICARUS-intention (list (list "turn" target)))))
+  (monitor action 'checkaction)
+  ;;; open the box
+  (setq action (car (ICARUS-intention (list (list "open" target)))))
+  (monitor action 'checkaction)
+  ;;; grab the yellow block
+  (loop for perc in percepts do
+        (if (and (equal (car perc) 'block)
+                 (equal (getslot perc 'color) 'yellow))
+          (progn (setq myblock (cadr perc))
+                 (setq action (car (ICARUS-intention (list (list "get-from" target myblock))))))))
+  (monitor action 'checkaction)
+  ;;; put it into the cardboard box
+  (setq action (car (ICARUS-intention (list (list "put-into" mybox myblock)))))
+  (monitor action 'checkaction)
+  (car (ICARUS-intention (list (list "close" target)))))
+\end{verbatim}
+
+\end{document}
+
+
+
+boxes
+
+blocks
+
+robot <name> location <>
+
+
+==> (container <name> color <value> location <location>) ; allocentric location of container
+
+(container blue-box-1 color blue location location-17)
+
+==> when that percepts is created, we add an assocation between location-17 and the location in the map
+
+
+  -- only one container can be picked up at any time
+  -- 
+
+
+
+
+
+
+LET'S assume that we have landmarks annotated before hand (this is
+only to deal with the perceptual problems); e.g., we might have doors
+indicated in the map, and hallways, but only as types...
+
+SO: DIARC CAN SEE ``DOORS'' from the MAP
+
+
+
+  (pick-up cardboard-box1)
+
+  (open ?blue-box1) ; afterwards you can see the content
+
+  (inspect-content ?blue-box1)
+
+
+  
+
+
+  (report ?property ?object) - reports the ?property of the ?object
+
+   (ICARUS-intention '("startmove" "icarus"))
+   (ICARUS-intention '("pick-up" "icarus"))
+
+
+    <!-- Stop -->
+    <name>stop</name>
+    <desc>?mover stops</desc>
+    <dbkind>action</dbkind>
+    <role>
+      <rolename>mover</rolename>
+      <roletype>actor</roletype>
+    </role>
+    <locks>motionLock</locks>
+    <postcond>not(moving(mover))</postcond>
+    <postcond>not(turning(mover))</postcond>
+    <taskname>Stop</taskname>
+  </type>
+\end{verbatim}
+
+In this case, the name of the action is {\tt stop}, and it has one 
+role (i.e., argument), {\tt mover}.  This should be {\tt icarus} in 
+this case, as the name of the ICARUS agent is ``icarus'' by fiat.  The 
+remaining components of the primitive definition are not of interest 
+to {\tt ICARUS-intention}.  Note that some roles are optional (e.g., the 
+{\tt extent} and {\tt units} roles of {\tt startmove} do not need to 
+be specified, in which case the robot will just start moving and keep 
+moving until told to stop, or until obstacle avoidance is engaged.
+
+
+
+
+
+ (move-to ?location)
+[13:31:56] … (move-to 'location1)
+[13:32:20] … (look-for "box" 'color "blue")
+[13:33:54] … (report 'location blue-box1)
+[13:34:15] … (the location of blue box 1 is 19,19)
+[13:34:29] … (report 'color blue-box1)
+[13:34:36] … (the color of blue-box1 is blue)
+[13:34:49] … (report 'size icarus)
+[13:34:57] … (sorry, icarus does not have a size)
+[13:35:12] … (sorry, robot percepts don't have size slots)
+
+
+--> look for all blue boxes (implicitly "in all rooms")?
+

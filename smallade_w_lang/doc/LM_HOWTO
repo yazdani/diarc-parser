@@ -1,0 +1,44 @@
+NOTE: We typically just use the tool at http://fife.speech.cs.cmu.edu/tools/lm.html to generate the .lm file.  Then you can encode it using lm_encode:
+
+	../../bin/i686-Linux/lm_encode stop.lm stop.bin
+
+Then copy one of the config_* files and modify it to point to the files for the new language, and add a condition to the Sonic server's change model method for the new language.  Also, add it to server_config/server.cfg and DON'T FORGET to set the size of the vocabulary or Sonic will crash.
+
+********************************************************************************
+
+Locate the CMU QuickLM tool in /path-to-svn/sonic/2.0-beta5/server_config/words/quick_lm.pl   or alternatively, download it from http://fife.speech.cs.cmu.edu/tools/factory.html (at the bottom of the page under "Downloads")
+
+Prepare a list of sentences/words (for example, see pleasework.txt in the same path as quick_lm.pl)
+
+The sentences must be one per line, no punctuation, all in CAPS, and surrounded by <s> </s> (i.e. "<s> HELLO THERE </s>", and don't forget the spaces before and after the sentence, between the tags).
+
+In the same directory as the quick_lm.pl tool, there is an addsentencemarkers.c program that will take as input a file called "sentences.txt" and outputs "newsentences.txt" (assuming both files exist) and put the <s> and </s> markers on (the way it is written now, the sentences must have " " before and after the first/last words, respectively, but this can easily be changed; also don't forget to use g++ to compile the program)
+
+Now use "quick_lm.pl -s yourfile.txt" which will then create "yourfile.txt.arpabo", the finished language model.  After you do that, you will have to compress it into a binary-encoded language model, using the lm_encode tool, which can be found in the path-to-svn/sonic/2.0-beta5/bin/ directory -- use it like this: "lm_encode yourfile.txt.arpabo yourfile.bin"
+
+Now you will have a binary-encoded language model that can be used by Sonic.  To use it, add an entry to the path-to-svn/sonic/2.0-beta5/server_config/server.cfg like the following:
+
+<CONFIG>
+<TAG>                mytag
+<TYPE>               myconfiguration
+<NAME>               My LM
+<DESCRIPTION>        Description of the LM
+<FILE>               ../sonic/2.0-beta5/server_config/my_config
+<LANGUAGE>           American English
+<SAMPRATE>           16000
+<VOCABSIZE>          X
+</CONFIG>
+
+
+(The X for <VOCABSIZE> is the size of the vocabulary, which should be output while the quick_lm.pl tool is being run.  If not, then put in an arbitrary number, start Sonic, and it will display the number during startup and you can edit the field)
+
+Now, you need to create the "my_config" file you pointed to above, just model it after the default "config" file in the specified directory, and change the -langmod_file argument to point to your binary-encoded language model.  After that you should be set, but if you add words to the language model that are not in our dictionary, Sonic will give warnings during initialization.  In this case, you should go to http://www.speech.cs.cmu.edu/tools/lmtool.html and using that tool, feed into it a simple file containing the words that Sonic does not have pronunciations for.  This will create a dictionary for you, from which you can simply add to the main dictionary file (make sure it is in alphabetical order).  The online tool will also create a language model for you, as well as (if I remember correctly) a vocabulary file, and a list of your sentences (these last two we don't use).  This tool however is slower since it is being run remotely, and times out for larger language models.
+
+METHOD FOR SPHINX4 (and presumably 3):
+First do:
+cat words.txt | text2idngram -n 2 -vocab words.vocab | idngram2lm -absolute -n 2 -vocab words.vocab -idngram - -arpa large.bigram.arpa
+
+where "words.txt" is a list of transcriptions and "words.vocab" is all the words in the list of transcriptions
+
+then do:
+lm3g2dmp large.bigram.arpa .

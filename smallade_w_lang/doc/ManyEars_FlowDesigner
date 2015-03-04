@@ -1,0 +1,9 @@
+ManyEars & FlowDesigner:
+
+You should be in the manyears/config folder when starting FlowDesigner.  Make sure the file that has the microphone coordinates is there, i.e., cube_mic_pos.mat. 
+	For example using using Hrilab@hrilablaptop4:.....  
+
+	(hrilab@hrilablaptop4:~/manyears/config$ flowdesigner /home/hrilab/manyears/n-files/LocalizeSeparAndSaveTCP.n) 
+
+	or substitiute batchflow for flowdesigner,...to run in consule mode.
+

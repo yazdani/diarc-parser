@@ -1,0 +1,36 @@
+come: S / NP : # x. move(?actor`x) : # x. move(?actor`x)
+back: NP, N : # x. x @ back : # x. x @ back
+go: S / NP : # x. move(?actor`x) : # x. move(?actor`x)
+go: S / PP : # x. move(?actor`x) : # x. move(?actor`x)
+to: PP / NP : # x. x : # x. x
+left: NP, N : # x. x @ left : # x. x @ left
+take: S / NP : # x. make(?actor`x) : # x. make(?actor`x)
+right: NP, N : # x. x @ right : # x. x @ right
+there: NP, N : # x. x @ pointed_direction : # x. x @ pointed_direction
+this: NP / N : # x. x @ pointed_direction : # x. x @ pointed_direction 
+further: NP, N : # x. x @ further : # x. x @ further
+up: NP, N: # x. x @ up : # x. x @ up
+down: NP, N: # x. x @ down : # x. x @ down
+tree:  N: # x. x @ tree : # x. x @ tree
+victim:  N: # x. x @ victim : # x. x @ victim
+a: NP / N : # x. x : # x. x
+picture: N : # x. x @ picture : # x. x @ picture
+turn: S / NP : # x.turn(?actor`x) : # x.turn(?actor`x)
+around: NP, N: # x. x @ around : # x. x @ around
+search: S / PP : # x. detect(?actor`x) : # x. detect(?actor`x)
+look: S / PP : # x. detect(?actor`x) : # x. detect(?actor`x)
+look: S / NP : # x. detect(?actor`x) : # x. detect(?actor`x)	
+for: PP / NP : # x. x : # x. x
+where: S / PP : # x. location_of(x) : # x. location_of(x)
+what: S / PP : # x. report(?actor`x) : # x. report(?actor`x)
+Do: S / NP: # x. report(?actor`x) : # x. report(?actor`x)
+do: PP / NP : # x. x : # x. x
+does:  PP / NP : # x. x : # x. x
+you: NP / VP : # x. x : # x. x
+you: NP, N : # x. x @ robot : # x. x @ robot
+see: VP / NP : # x. x  : # x. x  
+see: VP, V : # x. x @ see : # x. x @ see 
+have: PP / NP : # x. x : # x. x
+seen: N : # x. x : # x. x
+victims: NP,  N: # x. x @ victims : # x. x @ victims
+are: PP / NP : # x. x : # x. x

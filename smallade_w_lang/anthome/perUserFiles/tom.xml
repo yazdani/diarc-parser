@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<project>
+
+<target name='remoteJoystick' depends='joystick'>
+  <run-component component='com.joystick.KeyboardJoystickComponent'
+	      args=''
+	      local.ip='192.168.0.159'
+	      registry.ip='192.168.0.175'/>
+</target>
+<!--|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||-->
+
+
+
+
+
+</project>

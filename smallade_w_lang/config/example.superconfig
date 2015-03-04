@@ -1,0 +1,14 @@
+object example extends ConfigFile {
+COMPONENT com.mds.simulator.MdsSimComponent
+// localhost is also the default, so these two lines don't do anything...
+host 127.0.0.1
+registry 127.0.0.1
+args -goodui
+/*
+oooh, multiline
+comments...
+ */
+
+COMPONENT com.examples.bidi.BidiComponentA
+COMPONENT com.examples.bidi.BidiComponentB
+}

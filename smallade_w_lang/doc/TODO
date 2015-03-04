@@ -1,0 +1,211 @@
+ADE TODO list (updated 06/25/06)
+Jim Kramer
+
+- fix interface matching; too often, there's been an issue where the type
+  has been set to an interface, while a heartbeat (or some other thing)
+  has tried to string match on the actual type (class name) and fails,
+  causing NO END of PROBLEMS! Add something like "getTrueName" to the
+  ADERegistry or ADEServer and use that!
+- (from Tim) permission error does not make it's way back to requester (fixed?)
+
+This is a very disorganized list of items I want to make note of so as to
+not forget them (before I lose the various scraps of paper laying around on
+my desk that I've been using for this purpose). Included are bugs, future
+features, or anything else that I think might be worth putting down; since
+it's just a hastily thrown together list, it's not meant to be proper
+documentation (and may not be comprehensible by anyone but me):
+
+High priority (duplicated below):
+- move reflection interfaces from registry to server (need another method
+  in the ADEServer interface "getInterfaces") to avoid registry bombing if
+  classpath is not set (or files are not found on registry host)
+- add non-timeout method call to ADEServerImpl (needs testing...)
+- superclass "example/testX" program
+- general server panel that shows console output, allows logging toggle
+
+Subversion repository:
+- make two repositories? one for release, one for rudy?
+- remove junk files (various logs, configs, etc.)
+
+ADE as a whole (external to system):
+- update/beautify the sourceforge web pages
+- update installer
+
+ADE as a whole (internal to system):
+- use System.getProperty for java path, etc. (fixed?)
+- add javadoc documentation where missing (done?)
+- general server panel that shows console output, allows logging toggle
+- figure out a standard way to signal that a process has completely started
+  in ADELocalProcessStarter, rather than the ad hoc sleeps in there now
+- standardize units and data types; always use m/rads/milliseconds and
+  ints/doubles
+- create and use local variables rather than defaults in ADEPreferences.java
+- might it be useful to establish a generic "robot" class (or interface?) that
+  encompasses the basic interfaces (e.g., velocity, sonar, etc.)?
+- initial documentation (install, faq, description):
+  - write quick-start guide, including:
+    - minimum OS capabilities
+    - RMI limitations
+    - initial steps (java installation, hosts file, .config file)
+    - "templates" for ADEServers, interfaces, GUI components, etc.
+  - need rxtx documentation
+  - integrate documentation with GUI
+- more example programs:
+  - festival echo program (user types words, festival echoes; already somewhat
+    complete in com/festival/testFestivalServer.java)
+  - sphinx/festival echo program (user speaks, sphinx recognizes and sends to
+    festival to speak)
+  - sphinx/stage program (expansion of example/testStageSimulator.java that
+    accepts input both from the keyboard and from microphone)
+  - ADEGui demo program; perhaps start registry and gui, then go into a
+    sleep/load cycle to startup other servers
+- create lightweight and ultra-lightweight components
+- it would be nice if we had an ADERepeaterServer that bridged NICs
+  on a single host
+- implement various Player/Stage functionality as ADEServers
+- improve socket handling to non-java processes (see ADELocalProcessStarter,
+  SocketHandler, and InterProlog code)
+- rsynch code on all known hosts
+
+ADE security:
+- fix userlist export/import
+- finalize user access (privilege) levels
+- add authentication string back (randomly generated string for each
+  message sent; should be toggleable)
+
+ADE com/interfaces:
+- more clearly separate some of them (e.g., laser and leglaser)
+- need to figure out how to add devices (i.e., configuration data)
+
+ADERegistry:
+- add method to specify a set of interfaces when requesting a connection
+  (see IMPORTANT note below in ADEServer)
+- create AdminTool gui
+- fix type; now hard-coded to be "ADERegistry", but we want to allow
+  arbitrary names
+- gather server info at startup/registration; relies on modifications
+  to ADEServer (e.g., recording startup time, CPU load required, etc.)
+- streamline SimpleReasoner
+
+ADEServer:
+- add non-timeout method call to ADEServerImpl (needs testing...)
+- make the config file option and parsing universal (right now, only
+  used by ADERegistry and is private)
+- modify debug and verbose to be ints rather than booleans that signify
+  level of output (0 being none, x being everything). Make the variables
+  static protected so that setting them at the ADEServer level will
+  affect all subclasses; may be overridden in any particular subclass.
+- figure out a comparable mechanism for logging
+- IMPORTANT: mechanism to specify user-defined constraints when requesting
+  an ADEServer (should be similar to those used by the automatic reasoner);
+  this is especially important for logging capability (if >1 logger is
+  running and names are not manually specified)
+- add generic mechanism that will return an internal error (i.e., supply
+  hooks so that internal monitoring is accessible outside the server;
+  incorporate other state types?)
+- define user access levels (started in a haphazard way; enum of VIEW,
+  READ, WRITE, EDIT, ADMIN (MIGRATE? GUI? other?)
+- make use of Permissions.java; I'm not sure of the original intent
+- profile MenuSystem; right now, uses static enums with reflection to
+  build the submenus. Is the performance better than manually coding
+  each? That is, do the reflective mechanisms get called at run-time
+  whenever an item is accessed?
+- if MenuSystem is good, need to add a hash table for access to an
+  arbitrary item (in addition to enable/disable mechanisms)
+- separate APOC and GUI stuff; ADE should not need to include either
+- if using a non-java process, get the PID (see ADELocalProcessStarter);
+  this may have been resolved with inclusion of a "destroy()" call
+- create generic error reporting mechanism that will only print X number
+  of times (or every Y seconds)
+- I'd like to handle auto-generation of names properly when multiple
+  registries are in use, which could lead to situations in which there
+  are two ADEServers with the same type$name, which might be especially
+  bad during failure recovery.
+
+ADERemoteCallTimer:
+- need to reduce entries in the "remoteCalls" hashmap; two ways:
+  1. Use the same entry for repeated calls
+  2. Periodically remove them after a given time period (10 seconds?)
+
+ADEGuiServer:
+- put links between ADEServers
+- Update popup menu:
+  start, stop, suspend, shutdown
+  add privelege levels
+- separate GUI from ADEServer
+- fix the APOC and older ADE stuff (e.g., I know that ADEEdit, ADEPlot, and
+  others are broken; I also know that some of the context switching between
+  ADE and APOC is broken; I also know that some of the menu system control
+  is broken, such as removal of menu items when entering certain system
+  states)
+- look into open source software for a graph drawing algorithm, in particular:
+  http://www.research.att.com/~john/Grappa/ (from http://www.graphviz.org/)
+  http://cytoscape.org/
+
+SickLaserImpl:
+- implement methods found in LaserConfigServer interface
+- create leg tracking, motion, etc. interfaces and correctly extend
+  LaserSensorServer interface
+- reexamine data read loop to make sure it's clear/efficient; in particular,
+  I think searching for the packet beginning may be improved
+- give "bad checksum" message a non-zero debug level
+
+PioneerServer:
+- create and implement various *ConfigServer.java interfaces
+- separate Pioneer from Peoplebot? (see com/interfaces about devices)
+- revisit alarm functions; make them toggleable?
+- convert floats to doubles and standardize units as meters/radians
+- check bumper stopping motion
+- add "pseudo-joystick" GUI
+
+MAMServer:
+- fix it (too much to cover)
+
+SonicServer:
+- incorporate the ADELocalProcessStarter?
+- monitor socket to detect and remedy broken connections
+- separate basic recognition functionality from our advanced stuff
+- add sonic parameters to interface
+
+FestivalServer:
+- separate basic functionality from advanced stuff (e.g., remove Bot from
+  basic server)
+- add festival parameters (settors/accessors) to interface
+- confirm Paul's timing mechanism (determines how long it will take for a
+  sentence to play) is included
+
+VisionServer:
+- include JNI libraries, polish loading
+
+LoggerServer:
+- add overwrite/append toggle
+- confirm the queueing is properly writing *all* contents
+- add renaming already existant log file mechanism
+- default to generic log directory (instead of ADEHOME)
+
+Sphinx2Server:
+- finish it; important because people are likely to have (or be able to
+  get) sphinx, but not sonic
+
+Player interface:
+- finish MapProxy
+- define more proxies and their related messages
+- test/debug all PlayerClient functionality:
+  - SetFrequency
+  - SetDataMode
+  - Authenticate
+  - LookupPort
+
+StageSimulatorServer:
+- add switch to testStageSimulator that allows a client program to connect
+  rather than presenting the keyboard control options
+
+CARMEN interface:
+- create an IPCADEServer (use their java interface)
+
+MapServer:
+- finish it, conversion from Player maps
+
+HostMonitorServer:
+- finish it, host information gathering (universal)
+

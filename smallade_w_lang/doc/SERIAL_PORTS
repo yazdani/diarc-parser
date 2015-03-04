@@ -1,0 +1,64 @@
+Serial port permissions:
+Debian:
+In the /etc/udev/permissions.rules file, the following line should be added,
+below the KERNEL=="tty[0-9]*", GROUP="root" line:
+KERNEL=="ttyS[0-3]", MODE="0666"
+
+Possibly (not sure yet), in the /etc/udev/permissions.d/udev.permissions file,
+change the following line:
+tty[BCDEFHILMPRSTUVWX][0-9]*:root:dialout:0660
+  to:
+tty[BCDEFHILMPRTUVWX][0-9]*:root:dialout:0660
+  (that is, remove the "S"), then add:
+tty[S][4-9]*:root:dialout:0660
+tty[S][0-3]*:root:dialout:0666
+
+Additionally, make sure the requisite users are part of the "dialout" group.
+
+Fedora/RedHat:
+???
+
+Sick Laser serial port setup:
+
+Miro changes the baud_base to 1000000, which screws the whole thing up.  Fix it using setserial (see below).
+
+Here's a working setup:
+
+# stty < /dev/ttyS2 -a
+speed 38400 baud; rows 0; columns 0; line = 0;
+intr = ^C; quit = ^\; erase = ^?; kill = ^U; eof = ^D; eol = <undef>;
+eol2 = <undef>; swtch = <undef>; start = ^Q; stop = ^S; susp = ^Z; rprnt = ^R;
+werase = ^W; lnext = ^V; flush = ^O; min = 0; time = 0;
+-parenb -parodd cs8 -hupcl -cstopb cread clocal -crtscts
+-ignbrk -brkint -ignpar -parmrk inpck -istrip -inlcr -igncr -icrnl -ixon -ixoff
+-iuclc -ixany -imaxbel -iutf8
+-opost -olcuc -ocrnl -onlcr -onocr -onlret -ofill -ofdel nl0 cr0 tab0 bs0 vt0 ff0
+-isig -icanon -iexten -echo -echoe -echok -echonl -noflsh -xcase -tostop -echoprt
+-echoctl -echoke
+
+# setserial -gav /dev/ttyS2
+/dev/ttyS2, Line 2, UART: 16550A, Port: 0x03e8, IRQ: 7
+        Baud_base: 115200, close_delay: 50, divisor: 0
+        closing_wait: 3000
+        Flags: spd_normal skip_test low_latency
+
+To change settings:
+
+(set speed to 38400, disable hardware handshaking)
+# stty 38400 -crtscts < /dev/ttyS2
+
+(set baud base to 115200)
+# setserial /dev/ttyS2 baud_base 115200
+
+Here's a CL to set stty params such that the PTU works:
+
+stty 38400 min 0 time 0 -parenb -parodd cs8 -hupcl -cstopb cread clocal -crtscts -ignbrk -brkint -ignpar -parmrk inpck -istrip -inlcr -igncr -icrnl -ixon -ixoff -iuclc -ixany -imaxbel -iutf8 -opost -olcuc -ocrnl -onlcr -onocr -onlret -ofill -ofdel nl0 cr0 tab0 bs0 vt0 ff0 -isig -icanon -iexten -echo -echoe -echok -echonl -noflsh -xcase -tostop -echoprt -echoctl -echoke < /dev/ttyUSB0
+
+Note that the PTU may (sometimes does) need baud 9600 to work correctly, at least in minicom.
+
+Note that the setserial commands appear to fail on the USB dongles...
+
+To do a serial loopback test in minicom, connect pins 2 and 3 (second and third from top left on male connector, second and third from top right on female) and make sure hardware handshaking is disabled in minicom.
+
+You can run minicom on the port for the PTU and control it directly (R=reset,PP-500=pan right 500, etc.), and see its feedback, as well.  See the PTU manual for more details.  This is a good way to debug/ensure the serial ports are working.
+
