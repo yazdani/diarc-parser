@@ -1,0 +1,63 @@
+a: NP / N : # x. x : # x. x
+any: NP / N : # x. x : # x. x
+are: PP / NP : # x. x : # x. x
+are: VP / PP : # x. x : # x. x
+are: VP / NP : # x. x : # x. x
+around: PP / NP : # x. around(x) : # x. around(x)
+around: NP, N: # x. x @ around : # x. x @ around
+back: NP, N : # x. x @ back : # x. x @ back
+come: S / NP : # x. move(?actor`x) : # x. move(?actor`x)
+conditions : NP / N : # x. x  : # x. x
+conditions : N / PP : # x. conditions(x)  : # x. conditions(x)
+do: S / NP: # x. report(?actor`x) : # x. report(?actor`x)
+do: PP / NP : # x. x : # x. x
+does:  PP / NP : # x. x : # x. x
+down: NP, N: # x. x @ down : # x. x @ down
+for: PP / NP : # x. x : # x. x
+further: NP, N : # x. x @ further : # x. x @ further
+go: S / NP : # x. move(?actor`x) : # x. move(?actor`x)
+go: S / PP : # x. move(?actor`x) : # x. move(?actor`x)
+go: S / N : # x. move(?actor`x) : # x. move(?actor`x)
+have: PP / NP : # x. x : # x. x
+have: S / NP :  # x. x : # x. x
+how: S / NP :  # x. report(x) : # x. report(x)
+how: S / VP :  # x. report(x) : # x. report(x)
+is: PP / NP : # x. x : # x. x
+left: NP, N : # x. x @ left : # x. x @ left
+located: VP, V : # x. x : # x. x
+location: NP, N : # x. location : # x. location
+look: S / PP : # x. detect(?actor`x) : # x. detect(?actor`x)
+look: S / NP : # x. detect(?actor`x) : # x. detect(?actor`x)
+me: PP / NP : # x. x : # x. x
+of: PP / NP : # x. x : # x. x
+picture: N : # x. x @ picture : # x. x @ picture
+report: S / PP : # x. report(x) : # x. report(x)
+right: N / PP : # x. right(x) : # x. right(x)
+right: NP, N : # x. x @ right : # x. x @ right
+search: S / PP : # x. detect(?actor`x) : # x. detect(?actor`x)
+see: VP / NP : # x. x  : # x. x  
+see: VP, V : # x. x @ see : # x. x @ see 
+seen: N : # x. x : # x. x
+seen: VP / NP : # x. report(x) : # x. report(x)
+survivor: N : # x. survivor : # x. survivor
+this: NP / N : # x. pointed_at(x) : # x. pointed_at(x)
+take: S / NP : # x. make(?actor`x) : # x. make(?actor`x)
+the:  NP / N : # x. x @ : # x. x 
+the:  PP / NP : # x. x @ : # x. x 
+there: NP, N : # x. x @ pointed_direction : # x. x @ pointed_direction
+there: N : # x. x @ pointed_direction : # x. x @ pointed_direction
+this: NP / N : # x. x @ pointed_at : # x. x @ pointed_at 
+to: PP / NP : # x. x : # x. x
+tree: N : # x. x @ tree : # x. x @ tree
+turn: S / NP : # x.turn(?actor`x) : # x.turn(?actor`x)
+up: NP, N: # x. x @ up : # x. x @ up
+you: NP / VP : # x. x : # x. x
+you: NP, N : # x. x @ robot : # x. x @ robot
+victim:  N : # x. x @ victim : # x. x @ victim
+victim:  N / VP : # x. x @ victim : # x. x @ victim
+victims: NP,  N: # x. x @ victims : # x. x @ victims
+video:  N: # x. x @ video : # x. x @ video
+weather: NP / N : # x. weather_condition(x) :# x. weather_condition(x)
+weather: N / NP : # x. weather_condition(x) :# x. weather_condition(x)
+where: S / PP : # x. location_of(x) : # x. location_of(x)
+what: S / PP : # x. report(?actor`x) : # x. report(?actor`x)
