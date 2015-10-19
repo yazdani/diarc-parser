@@ -1,6 +1,5 @@
 a: NP / N : # x. x : # x. x
 a: NP / PP : # x. x : # x. x
-ahead: N : # x. x @ ahead : # x. x @ ahead
 any: NP / N : # x. x : # x. x
 are: VP / NP : # x. x : # x. x
 around: PP / NP : # x. around(x) : # x. around(x)
@@ -23,17 +22,14 @@ is: VP / NP : # x. x : # x. x
 jacket: N : # x. x @ jacket : # x. x @ jacket
 jacket: NP, N : # x. x @ jacket : # x. x @ jacket
 left: N / PP : # x. left_of(x) : # x. left_of(x)
-left: N : # x. x @ left : # x. x @ left
 located: VP, V : # x. x : # x. x
 location: N : # x. x @ location : # x. x @ location
 look: S / PP : # x. detect(x) : # x. detect(x)
 me: N / NP : # x. x : # x. x
 of: PP / NP : # x. x : # x. x
-off: N : # x. x @ down : # x. x @ down
 picture: N : # x. x @ picture : # x. x @ picture
 red: PP / NP : # x. red(x) : # x. red(x)
 report: S / N : # x. report(x) : # x. report(x)
-right: N : # x. x @ right : # x. x @ right
 right: N / PP : # x. right_of(x) : # x. right_of(x)
 search: S / PP : # x. detect(x) : # x. detect(x)
 see: VP / NP : # x. x  : # x. x  
@@ -44,11 +40,10 @@ some: NP / N : # x. x : # x. x
 survivor: N : # x. x @ survivor : # x. x @ survivor
 survivors: N : # x. x @ survivors : # x. x @ survivors
 take: S / NP : # x. make(x) : # x. make(x)
-take: S / N : # x. move(x) : # x. move(x)
 tell:  S / N : # x. report(x) : # x. report(x)
 the:  NP / N : # x. x : # x. x  
 there: NP, N : # x. x @ pointed_direction : # x. x @ pointed_direction
-there: PP, P : # x. x @ pointed_at : # x. x @ pointed_at
+there: PP, P : # x. x @ pointed_direction : # x. x @ pointed_direction
 this: NP / N : # x. pointed_at(x) : # x. pointed_at(x)
 tree: N : # x. x @ tree : # x. x @ tree
 victim:  N : # x. x @ victim : # x. x @ victim
