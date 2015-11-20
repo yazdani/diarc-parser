@@ -583,7 +583,7 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 
 	try
 	    {
-		socket = new Socket("yazdani", 1234);
+		socket = new Socket("", 1234);
 		out = new PrintWriter(socket.getOutputStream(), true);
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		// System.out.println("VERBUNDEN");
