@@ -148,7 +148,7 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
                     ss = ss.replaceAll("`", ",");
 		    System.out.println("Sending through socket");
 		    System.out.println("what is s: " + s);
-		    out.println(s);
+		    out.println(ss);
 		    // out1.println(s);
                     if (DEBUG >= 5) System.out.println("TL: " + s + " DL: " + ss);
                     System.out.println("TL: " + s + " DL: " + ss);
