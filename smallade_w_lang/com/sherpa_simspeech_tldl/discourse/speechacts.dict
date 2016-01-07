@@ -1,6 +1,10 @@
 a: NP / N : # x. x : # x. x
+above: S / PP : # x. inside(above`x) : # x. inside(above`x)
+above: NP, N : # x. x @ above : # x. x @ above
 and: (S / S) | S : # x # y. <> (x & <> y),# x # y. <> x & <> y : # x # y. x ; y , # x # y. x || y 
+around: S / PP : # x. inside(around`x) : # x. inside(around`x)
 around: NP, N : # x. x @ around : # x. x @ around
+behind: S / PP : # x. inside(behind`x) : # x. inside(behind`x)
 behind: NP, N : # x. x @ behind : # x. x @ behind
 for: PP / NP : # x. x : # x. x
 front: PP / PP : # x. x @ in-front : # x. x @ in-front
@@ -9,21 +13,30 @@ house: N : # x. x @ house : # x. x @ house
 image: N : # x. x @ image : # x. x @ image
 in: PP / PP : # x. x : # x. x
 jacket: NP, N :  # x. x @ jacket  : # x. x @ jacket 
+left: S / PP : # x. =(left`x) : # x.=(left`x)
 left: NP, N : # x. x @ left : # x. x @ left
 look: (S / NP) / PP : # x # y.  detect(x`y) : # x # y. detect(x`y) 
+next: S / PP : # x. inside(next`x) : # x. inside(next`x)
+next: NP, N :  # x. x @ next  : # x. x @ next
 off: NP, N : # x. x @ up : # x. x @ up
 of: PP / NP : # x. x : # x. x
 picture: N : # x. x @ picture : # x. x @ picture
-red: NP, N : # x. x @ red  : # x. x @ red
+pullover: NP, N :  # x. x @ pullover : # x. x @ pullover
+red: N : # x. x @ red  : # x. x @ red
+right: S / PP : # x. inside(right`x) : # x. inside(right`x)
 right: NP, N : # x. x @ right : # x. x @ right
 rock: N : # x. x @ rock : # x. x @ rock
 search: S / PP : # x. detect(x) : # x. detect(x)
+sequ: (S / S) | S : # x # y. <= (x & <= y),# x # y. <= x & <= y : # x # y. x <= y , # x # y. x <= y 
 stop: S : # x. x @ stop : # x. x @ stop
 take: S / NP : # x. take(x) : # x. take(x)
 this: NP / N : # x. pointed_at(x) : # x. pointed_at(x)
-to: NP / NP : # x. x : # x. x
+the: NP / N : # x. x : # x. x
 to: PP / NP : # x. x : # x. x
+tree: N / PP : # x. x @ tree : # x. x @ tree
 tree: N : # x. x @ tree : # x. x @ tree
+under: S / PP : # x. inside(under`x) : # x. inside(under`x)
+under: NP, N : # x. x @ under : # x. x @ under
 victim: N : # x. x @ victim : # x. x @ victim
 wait: S : # x. x @ wait : # x. x @ wait
 
