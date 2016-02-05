@@ -268,7 +268,6 @@ public class Parser {
     }
 
     private Tree rec_assign(Tree t, List<Node> n, String s, Dictionary d, String sen){
-
         if(s.length() < 2){
             //All categories have been assigned, try parsing it
             return rec_parse(t,n,d,sen);
@@ -359,14 +358,14 @@ public class Parser {
 
     //Try parsing the provided sentence
     public List<Tree> ParseLine(String current_line, Dictionary d){
-        try{
+	//   try{
             List<Tree> trees = new ArrayList<Tree>();
-
+	    System.out.println("ParseLine");
             //Remove end period, we assume there are no other periods given
             String sen = current_line.replace(".", "");
             current_line = sen;
             Tree t = new Tree(current_line);
-
+	    System.out.println("ParseLine2");
             List<Node> nodes = new ArrayList<Node>();
 
             //For each word create a node
@@ -374,7 +373,7 @@ public class Parser {
             //This is done recursively
 
             t = rec_assign(t, nodes, sen + " ", d, sen);
-
+	    System.out.println("ParseLine3");
             // CC: added for testing
             if(current_line.equalsIgnoreCase("test")){
                 Node n = new Node("test");
@@ -388,10 +387,10 @@ public class Parser {
             return trees;
 
 
-        }catch(Exception e){
-            e.printStackTrace();
-            return null;
-        }
+	    //   }catch(Exception e){
+	    //  e.printStackTrace();
+	    //  return null;
+	    // }
     }
 
     /**

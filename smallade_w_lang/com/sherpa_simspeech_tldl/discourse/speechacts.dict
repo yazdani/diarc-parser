@@ -31,6 +31,7 @@ sequ: (S / S) | S : # x # y. <= (x & <= y),# x # y. <= x & <= y : # x # y. x <= 
 stop: S : # x. x @ stop : # x. x @ stop
 take: S / NP : # x. take(x) : # x. take(x)
 this: NP / N : # x. pointed_at(x) : # x. pointed_at(x)
+that: NP / N : # x. pointed_at(x) : # x. pointed_at(x)
 the: NP / N : # x. x : # x. x
 to: PP / NP : # x. x : # x. x
 tree: N / PP : # x. x @ tree : # x. x @ tree
@@ -39,4 +40,5 @@ under: S / PP : # x. inside(under`x) : # x. inside(under`x)
 under: NP, N : # x. x @ under : # x. x @ under
 victim: N : # x. x @ victim : # x. x @ victim
 wait: S : # x. x @ wait : # x. x @ wait
+wood: N : # x. x @ wood : # x. x @ wood
 

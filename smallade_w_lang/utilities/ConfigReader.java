@@ -288,7 +288,7 @@ public class ConfigReader {
 		String[] kv = new String[2];
 		String[] spaceSeps = line.split("\\s");
 		int eqix = spaceSeps[0].indexOf('=');
-		
+		System.out.print("parseLine func");
 		if (eqix > 1) {
 			// in "key=value" or "key= value" form
 			kv[0] = spaceSeps[0].substring(0, eqix);
@@ -311,6 +311,8 @@ public class ConfigReader {
 			kv[1] = spaceSeps[1];
 		}
 		if (debug) System.out.println("\tGot "+ kv[0] +"-"+ kv[1]);
+
+		System.out.print("parseLine func with "+kv);
 		return kv;
 	}
 	
