@@ -1,4 +1,4 @@
-a: NP / N : # x. x : # x. x
+a: NP/ N : # x. x : # x. x
 above: S / PP : # x. inside(above`x) : # x. inside(above`x)
 above: NP, N : # x. x @ above : # x. x @ above
 and: (S / S) | S : # x # y. <> (x & <> y),# x # y. <> x & <> y : # x # y. x ; y , # x # y. x || y 
@@ -16,6 +16,7 @@ jacket: NP, N :  # x. x @ jacket  : # x. x @ jacket
 left: S / PP : # x. =(left`x) : # x.=(left`x)
 left: NP, N : # x. x @ left : # x. x @ left
 look: (S / NP) / PP : # x # y.  detect(x`y) : # x # y. detect(x`y) 
+look: (S / PP) : # x.  detect(x) : # x. detect(x)
 next: S / PP : # x. inside(next`x) : # x. inside(next`x)
 next: NP, N :  # x. x @ next  : # x. x @ next
 off: NP, N : # x. x @ up : # x. x @ up
