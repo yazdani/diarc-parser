@@ -360,12 +360,12 @@ public class Parser {
     public List<Tree> ParseLine(String current_line, Dictionary d){
 	//   try{
             List<Tree> trees = new ArrayList<Tree>();
-	    System.out.println("ParseLine");
+	    //System.out.println("ParseLine");
             //Remove end period, we assume there are no other periods given
             String sen = current_line.replace(".", "");
             current_line = sen;
             Tree t = new Tree(current_line);
-	    System.out.println("ParseLine2");
+	    //System.out.println("ParseLine2");
             List<Node> nodes = new ArrayList<Node>();
 
             //For each word create a node
@@ -373,7 +373,7 @@ public class Parser {
             //This is done recursively
 
             t = rec_assign(t, nodes, sen + " ", d, sen);
-	    System.out.println("ParseLine3");
+	    //System.out.println("ParseLine3");
             // CC: added for testing
             if(current_line.equalsIgnoreCase("test")){
                 Node n = new Node("test");

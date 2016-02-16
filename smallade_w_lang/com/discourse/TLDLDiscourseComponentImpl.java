@@ -85,7 +85,7 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
      *  @return true if sentence is understood. */
     @Override
     public boolean addWords(ArrayList<String> incoming) throws RemoteException {
-	System.out.println("addWords Methods");
+	//System.out.println("addWords Methods");
         boolean matched = false;
         String word, inString, unnumbered;
         int i = 0;
@@ -129,7 +129,7 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
             String incoming = input;
 
             List<Tree> trees = parser.ParseLine(input, dictionary);
-	    System.out.println("We are asasashere2");
+	    //System.out.println("We are asasashere2");
             if (trees.size() < 1) {
 	
                 return false;
@@ -150,8 +150,8 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
                     s = s.replaceAll("[?]actor",actorName);
                     String ss = Conversions.update(t.getRoot().getPar_lambda());
                     ss = ss.replaceAll("`", ",");
-		    System.out.println("Sending through socket");
-		    System.out.println("what is ss: " + ss);
+		    //System.out.println("Sending through socket");
+		    //System.out.println("what is ss: " + ss);
 		    out.println(ss);
 		    // out1.println(s);
                     if (DEBUG >= 5) System.out.println("TL: " + s + " DL: " + ss);
@@ -604,7 +604,8 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 		
 			 message = in.readLine();
 			 
-			 if(message != null)
+			 
+			 if(message != null && message.trim().length() != 0)
 			     { //true
 				 splitSentence(message);
 			     }
@@ -745,12 +746,13 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 	    }
                        
 	}
-        System.out.println("Show me the new String " + sbf.toString());
+	// System.out.println("Show me the new String " + sbf.toString());
         return sbf.toString();
       }
 
     public void splitSentence(String sentence) throws RemoteException
     {
+	//System.out.println("splitSentence function");
 	ArrayList<String> cpArray = new ArrayList<String>();
 	String lastElem = sentence.substring(sentence.length()-1);// length()-1;
 	if(lastElem.equals(".")|| lastElem.equals("!") || lastElem.equals("?"))
@@ -759,11 +761,11 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 		// System.out.println(" What is the sentence: " + sentence);
 	    }
 	//	 System.out.println("Sentence is: " + sentence);
-	 sentence = startMyPhrase(sentence);
-	System.out.println("New Sentence is: " + sentence);
+	sentence = startMyPhrase(sentence);
+	//System.out.println("New Sentence is: " + sentence);
 	//ADD A ZERO TO THE END OF THE OLD SENTENCE
 	sentence = sentence + " 0";
-	System.out.println("New Sentence is2: " + sentence);
+	//System.out.println("New Sentence is2: " + sentence);
 	String[] inArray = sentence.split(" ");
 	int index = 0;
 	while(inArray.length-1 >= index)
