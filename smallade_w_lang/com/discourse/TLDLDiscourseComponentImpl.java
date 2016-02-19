@@ -14,7 +14,7 @@ package com.discourse;
 
 import java.io.*;
 import java.net.*;
-
+import java.net.InetAddress;
 import ade.ADEException;
 import ade.*;
 import com.discourse.repair.Repairs;
@@ -179,7 +179,7 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
                     }
                 } else {
                     int j = i + 1;
-                    System.out.println("Cannot parse sentence number " + j + "!");
+                    System.out.println("HaHa-Cannot parse sentence number " + j + "!");
                 }
             }
             return true;
@@ -584,14 +584,19 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
         dictionary = new Dictionary();
         dictionary.parse(dictFile, this);
         parser = new Parser();
-
-
+	boolean[] num = new boolean[50];
+	int index = 0;
 	try
 	    {
+		
 		socket = new Socket("", 1234);
 		out = new PrintWriter(socket.getOutputStream(), true);
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		// System.out.println("VERBUNDEN");
+
+		//	out = new PrintWriter(socket.getOutputStream(), true);
+		//in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+		//System.out.println("VERBUNDEN");
 		// socket2 = new ServerSocket(1234, 10);
 		// con = socket2.accept();
 		// in2 = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -599,27 +604,44 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 	        // stdIn =new BufferedReader(new InputStreamReader(System.in));
 		// out2 = new PrintWriter(con.getOutputStream(), true);
 	
-		while(true)
-		     {
-		
-			 message = in.readLine();
-			 
-			 
-			 if(message != null && message.trim().length() != 0)
-			     { //true
-				 splitSentence(message);
+		while(true && (num.length > index) )
+		     {		 
+			 if(in.ready() == false)
+			     {
+				 num[index] = in.ready();
+				 index++;
+				 if(num.length == index)
+				     {
+					
+					 break;
+				     }
 			     }
+			
+			 //	 System.out.println("VERBUNDEN1234");
+			 
+			     message = in.readLine();
+					
+			     if(message != null && message.trim().length() != 0)
+				 { //true
+				     splitSentence(message);
+				 }
+			 
 		     }
 			 // socket.close(); //socket1
 		 	 // socket = null;
+		//System.out.println("close the socket connection\n");
+		socket.close();
+		return;
+    
 		     
 	    }
 	catch (Exception e) 
 	    {
-		// socket.close(); //socket1
+		 //socket1
 		// socket = null;
+
 	     	System.out.println("Read failed2");
-		//	System.exit(-1);
+        	System.exit(-1);
 	    }  
 	
 	
