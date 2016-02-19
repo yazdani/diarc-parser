@@ -17,7 +17,7 @@ house: N : # x. x @ house : # x. x @ house
 image: N : # x. x @ image : # x. x @ image
 in: PP / PP : # x. x : # x. x
 jacket: NP, N :  # x. x @ jacket  : # x. x @ jacket 
-left: S / PP : # x. =(left`x) : # x.=(left`x)
+left: S / PP : # x. inside(left`x) : # x. inside(left`x)
 left: NP, N : # x. x @ left : # x. x @ left
 look: (S / NP) / PP : # x # y.  detect(x`y) : # x # y. detect(x`y) 
 look: (S / PP) : # x.  detect(x) : # x. detect(x)
@@ -43,7 +43,7 @@ stop: S : # x. x @ stop : # x. x @ stop
 take: S / NP : # x. take(x) : # x. take(x)
 this: NP / N : # x. pointed_at(x) : # x. pointed_at(x)
 that: NP / N : # x. pointed_at(x) : # x. pointed_at(x)
-the: NP / N : # x. fin(x) : # x. fin(x)
+the: NP / N : # x. x : # x. x
 to: PP / NP : # x. x : # x. x
 tree: N / PP : # x. x @ tree : # x. x @ tree
 tree: N : # x. x @ tree : # x. x @ tree
