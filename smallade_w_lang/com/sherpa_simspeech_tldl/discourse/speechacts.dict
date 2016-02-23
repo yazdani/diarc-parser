@@ -5,11 +5,13 @@ and: (S / S) | S : # x # y. <> (x & <> y),# x # y. <> x & <> y : # x # y. x ; y 
 area: NP, N : # x. x @ area : # x. x @ area
 around: S / PP : # x. inside(around`x) : # x. inside(around`x)
 around: NP, N : # x. x @ around : # x. x @ around
+back: NP, N : # x. x @ back : # x. x @ back
 behind: S / PP : # x. inside(behind`x) : # x. inside(behind`x)
 behind: NP, N : # x. x @ behind : # x. x @ behind
 close: NP, N : # x. x @ close : # x. x @ close
+come: S / NP : # x. come(x) : # x. come(x)
 for: PP / NP : # x. x : # x. x
-front: PP / PP : # x. x @ in-front : # x. x @ in-front
+front: PP / PP : # x. x @ in-front-of : # x. x @ in-front-of
 go: (S / PP) / NP : # x # y.  move(x`y) : # x # y. move(x`y)
 go: (S / NP) / NP : # x # y.  move(x`y) : # x # y. move(x`y)
 go: S / PP : # x. move(x) : # x. move(x)
