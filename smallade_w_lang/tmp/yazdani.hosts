@@ -3,6 +3,6 @@ STARTHOST
 ip 127.0.0.1
 os Linux
 javadir /usr/lib/jvm/java-7-openjdk-amd64/jre
-adehome /home/yazdani/work/diarc_ws/smallade_w_lang
+adehome /home/yazdani/work/diarc_ws/diarc_parser/smallade_w_lang
 sshlogin yazdani
 ENDHOST

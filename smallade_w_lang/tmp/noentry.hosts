@@ -1,8 +1,0 @@
-# auto-generated hosts file
-STARTHOST
-ip 127.0.0.1
-os Linux
-javadir /usr/lib/jvm/java-7-openjdk-amd64/jre
-adehome /home/noentry/work/diarc_ws/smallade_w_lang
-sshlogin noentry
-ENDHOST
