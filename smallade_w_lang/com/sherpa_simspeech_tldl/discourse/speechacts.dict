@@ -1,6 +1,7 @@
 a: NP/ N : # x. x : # x. x
 above: S / PP : # x. inside(above`x) : # x. inside(above`x)
 above: NP, N : # x. x @ above : # x. x @ above
+across: NP, N : # x. x @ across : # x. x @ across
 and: (S / S) | S : # x # y. <> (x & <> y),# x # y. <> x & <> y : # x # y. x ; y , # x # y. x || y 
 area: NP, N : # x. x @ area : # x. x @ area
 around: S / PP : # x. inside(around`x) : # x. inside(around`x)

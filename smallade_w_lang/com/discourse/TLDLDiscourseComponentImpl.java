@@ -132,6 +132,7 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 	    //System.out.println("We are asasashere2");
             if (trees.size() < 1) {
 	
+		System.out.println("it is smaller");
                 return false;
             }
 	     
@@ -180,6 +181,8 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
                 } else {
                     int j = i + 1;
                     System.out.println("HaHa-Cannot parse sentence number " + j + "!");
+		    out.println("Parsing not possible");
+		    
                 }
             }
             return true;
@@ -713,6 +716,8 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 		       inArray[i].equals("tree") ||
 		       inArray[i].equals("river")||
 		       inArray[i].equals("hill") ||
+		       inArray[i].equals("wood") ||
+		       inArray[i].equals("house") ||
 		       inArray[i].equals("mountain"))
 			{
 			    int test = i +1;
@@ -723,7 +728,8 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 			       inArray[i+1].equals("in") ||
 			       inArray[i+1].equals("behind")||
 			       inArray[i+1].equals("right")||
-			       inArray[i+1].equals("around")||	
+			       inArray[i+1].equals("around")||
+			       inArray[i+1].equals("across")||
 			       inArray[i+1].equals("under")||
 			       inArray[i+1].equals("above")||
 			       inArray[i+1].equals("left"))
