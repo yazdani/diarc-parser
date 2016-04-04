@@ -51,6 +51,7 @@ take: (S / PP) / NP : # x # y.  take(x`y) : # x # y. take(x`y)
 this: NP / N : # x. pointed_at(x) : # x. pointed_at(x)
 that: NP / N : # x. pointed_at(x) : # x. pointed_at(x)
 the: NP / N : # x. x : # x. x
+to: S / NP : # x. inside(next`x) : # x. inside(next`x)
 to: PP / NP : # x. x : # x. x
 tree: N / PP : # x. x @ tree : # x. x @ tree
 tree: N : # x. x @ tree : # x. x @ tree

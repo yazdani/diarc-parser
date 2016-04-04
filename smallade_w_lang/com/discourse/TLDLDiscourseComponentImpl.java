@@ -724,7 +724,8 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 			    if(test == (inArray.length - 1))
 		  		break;
 			    if(inArray[i+1].equals("next") ||
-			       inArray[i+1].equals("close") ||	
+			       inArray[i+1].equals("close") ||
+			       inArray[i+1].equals("to") ||
 			       inArray[i+1].equals("in") ||
 			       inArray[i+1].equals("behind")||
 			       inArray[i+1].equals("right")||
