@@ -17,30 +17,30 @@ front: PP / PP : # x. x @ in-front-of : # x. x @ in-front-of
 go: (S / PP) / NP : # x # y.  move(x`y) : # x # y. move(x`y)
 go: (S / NP) / NP : # x # y.  move(x`y) : # x # y. move(x`y)
 go: S / PP : # x. move(x) : # x. move(x)
-house: N : # x. x @ house : # x. x @ house
-image: N : # x. x @ image : # x. x @ image
+house: NP, N : # x. x @ house : # x. x @ house
+image: NP, N : # x. x @ image : # x. x @ image
 in: PP / PP : # x. x : # x. x
 jacket: NP, N :  # x. x @ jacket  : # x. x @ jacket 
 left: S / PP : # x. inside(left`x) : # x. inside(left`x)
 left: NP, N : # x. x @ left : # x. x @ left
 look: (S / NP) / PP : # x # y.  detect(x`y) : # x # y. detect(x`y) 
 look: (S / PP) : # x.  detect(x) : # x. detect(x)
-mountains: N : # x. x @ mountains : # x. x @ mountains
-mountain: N : # x. x @ mountain : # x. x @ mountain
+mountains: NP, N : # x. x @ mountains : # x. x @ mountains
+mountain: NP, N : # x. x @ mountain : # x. x @ mountain
 next: S / PP : # x. inside(next`x) : # x. inside(next`x)
 next: NP, N :  # x. x @ next  : # x. x @ next
 off: NP, N : # x. x @ up : # x. x @ up
 of: PP / NP : # x. x : # x. x
 over: NP, N : # x. x @ across : # x. x @ across
-picture: N : # x. x @ picture : # x. x @ picture
-photo: N : # x. x @ photo : # x. x @ photo
+picture: NP, N : # x. x @ picture : # x. x @ picture
+photo: NP, N : # x. x @ photo : # x. x @ photo
 pullover: NP, N :  # x. x @ pullover : # x. x @ pullover
 reach: VP / NP : # x. x : # x. x
 red: N : # x. x @ red  : # x. x @ red
 right: S / PP : # x. inside(right`x) : # x. inside(right`x)
 right: NP, N : # x. x @ right : # x. x @ right
 river: NP, N : # x. x @ river : # x. x @ river
-rock: N : # x. x @ rock : # x. x @ rock
+rock: NP, N : # x. x @ rock : # x. x @ rock
 scan: S / NP: # x. scan(x) : # x. scan(x)
 search: S / PP : # x. detect(x) : # x. detect(x)
 sequ: (S / S) | S : # x # y. <= (x & <= y),# x # y. <= x & <= y : # x # y. x <= y , # x # y. x <= y 
@@ -54,12 +54,12 @@ the: NP / N : # x. x : # x. x
 to: S / NP : # x. inside(next`x) : # x. inside(next`x)
 to: PP / NP : # x. x : # x. x
 tree: N / PP : # x. x @ tree : # x. x @ tree
-tree: N : # x. x @ tree : # x. x @ tree
+tree: NP, N : # x. x @ tree : # x. x @ tree
 under: S / PP : # x. inside(under`x) : # x. inside(under`x)
 under: NP, N : # x. x @ under : # x. x @ under
 until: PP / NP : # x. x : # x. x
-victim: N : # x. x @ victim : # x. x @ victim
+victim: NP,N : # x. x @ victim : # x. x @ victim
 wait: S : # x. x @ wait : # x. x @ wait
-wood: N : # x. x @ wood : # x. x @ wood
+wood: NP,N : # x. x @ wood : # x. x @ wood
 you: NP / VP : # x. x : # x. x
 
