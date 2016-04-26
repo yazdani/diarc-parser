@@ -10,6 +10,7 @@ around: NP, N : # x. x @ around : # x. x @ around
 back: NP, N : # x. x @ back : # x. x @ back
 behind: S / PP : # x. inside(behind`x) : # x. inside(behind`x)
 behind: NP, N : # x. x @ behind : # x. x @ behind
+biggest: NP / N: # x. big(x) : # x. big(x)
 big: NP / N: # x. big(x) : # x. big(x)
 broken: NP / N: # x. broken(x) : # x. broken(x)
 close: NP, N : # x. x @ close : # x. x @ close
@@ -53,6 +54,7 @@ scan: S / NP: # x. scan(x) : # x. scan(x)
 search: S / PP : # x. detect(x) : # x. detect(x)
 sequ: (S / S) | S : # x # y. <= (x & <= y),# x # y. <= x & <= y : # x # y. x <= y , # x # y. x <= y 
 small: NP / N : # x. small(x) : # x. small(x) 
+smallest: NP / N : # x. small(x) : # x. small(x) 
 south: NP, N : # x. x @ south : # x. x @ south
 straight: NP, N: # x. x @ straight : # x. x @ straight
 stop: S : # x. x @ stop : # x. x @ stop
