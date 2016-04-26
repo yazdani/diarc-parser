@@ -103,6 +103,8 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
         for (String aWord : incoming) {
             if (!(aWord.equals("0"))) {
                 inString += " " + aWord;
+		System.out.println("inString is: "+ inString);
+
             } else {
                 matched = addUtterance(inString.trim());
             }
@@ -140,13 +142,14 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
             for (int i = 0; i < trees.size(); i++) {
                 Tree t = trees.get(i);
                 if (t != null) {
-                    //System.out.println(t.getRoot().getLambda());
+                    System.out.println("t is "+t);
                     //System.out.println(t.getRoot().getCategory());
                     String s = Conversions.update(t.getRoot().getLambda());
                     String method;
                     // crude means of categorizing commands
                     boolean command = Pattern.matches("[?]actor", s);
                     command = true;
+		    System.out.println("s is "+s);
                     s = s.replaceAll("`", ",");
                     s = s.replaceAll("[?]actor",actorName);
                     String ss = Conversions.update(t.getRoot().getPar_lambda());
@@ -626,6 +629,7 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 					
 			     if(message != null && message.trim().length() != 0)
 				 { //true
+				     System.out.println("message is: "+message);
 				     splitSentence(message);
 				 }
 			 
@@ -712,28 +716,28 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 		    {
 			break;
 		    }else{
-		    if(inArray[i].equals("rock") ||
-		       inArray[i].equals("tree") ||
-		       inArray[i].equals("river")||
-		       inArray[i].equals("hill") ||
-		       inArray[i].equals("wood") ||
-		       inArray[i].equals("house") ||
-		       inArray[i].equals("mountain"))
-			{
+		    if(inArray[i].equals("rock") || inArray[i].equals("rocks") ||
+		       inArray[i].equals("tree") || inArray[i].equals("trees") ||
+		       inArray[i].equals("river")|| inArray[i].equals("rivers") ||
+		       inArray[i].equals("sea") || inArray[i].equals("seas") ||
+		       inArray[i].equals("hill") || inArray[i].equals("hills") ||
+		       inArray[i].equals("pylon") || inArray[i].equals("pylons") ||
+		       inArray[i].equals("wood") || inArray[i].equals("woods") ||
+		       inArray[i].equals("house") || inArray[i].equals("houses") ||
+		       inArray[i].equals("mountain") || inArray[i].equals("mountains") ||
+		       inArray[i].equals("picture") || inArray[i].equals("pictures"))
+  			{
+			    System.out.println("inArray[i] :"+inArray[i]);
 			    int test = i +1;
 			    if(test == (inArray.length - 1))
 		  		break;
-			    if(inArray[i+1].equals("next") ||
-			       inArray[i+1].equals("close") ||
-			       inArray[i+1].equals("to") ||
-			       inArray[i+1].equals("in") ||
-			       inArray[i+1].equals("behind")||
-			       inArray[i+1].equals("right")||
-			       inArray[i+1].equals("around")||
-			       inArray[i+1].equals("across")||
-			       inArray[i+1].equals("under")||
-			       inArray[i+1].equals("above")||
-			       inArray[i+1].equals("left"))
+			    if(inArray[i+1].equals("next") || inArray[i+1].equals("between") ||
+			       inArray[i+1].equals("inbetween") || inArray[i+1].equals("over") ||
+			       inArray[i+1].equals("close") || inArray[i+1].equals("to") ||
+			       inArray[i+1].equals("in") || inArray[i+1].equals("behind")||
+			       inArray[i+1].equals("right")|| inArray[i+1].equals("around")||
+			       inArray[i+1].equals("across")|| inArray[i+1].equals("under")||
+			       inArray[i+1].equals("above")|| inArray[i+1].equals("left"))
 				{
 				    int len = inArray.length + 1;
 				    String[] cpArray = new String[len];
@@ -756,7 +760,8 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 				    for(int z = 0; z < inArray.length; z++)
 				 	{
 					    inArray[z] = cpArray[z];
-					    
+					    System.out.println("inArray[z] :"+inArray[z]);
+									    
 				 	}
 				    i++;
 				}
@@ -791,7 +796,7 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 	    }
 	//	 System.out.println("Sentence is: " + sentence);
 	sentence = startMyPhrase(sentence);
-	//System.out.println("New Sentence is: " + sentence);
+	System.out.println("New Sentence is: " + sentence);
 	//ADD A ZERO TO THE END OF THE OLD SENTENCE
 	sentence = sentence + " 0";
 	//System.out.println("New Sentence is2: " + sentence);

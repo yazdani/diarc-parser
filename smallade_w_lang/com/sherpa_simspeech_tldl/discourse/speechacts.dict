@@ -10,8 +10,11 @@ around: NP, N : # x. x @ around : # x. x @ around
 back: NP, N : # x. x @ back : # x. x @ back
 behind: S / PP : # x. inside(behind`x) : # x. inside(behind`x)
 behind: NP, N : # x. x @ behind : # x. x @ behind
+big: NP / N: # x. big(x) : # x. big(x)
+broken: NP / N: # x. broken(x) : # x. broken(x)
 close: NP, N : # x. x @ close : # x. x @ close
 come: S / NP : # x. come(x) : # x. come(x)
+east: NP, N : # x. x @ east : # x. x @ east
 for: PP / NP : # x. x : # x. x
 front: PP / PP : # x. x @ in-front-of : # x. x @ in-front-of
 go: (S / PP) / NP : # x # y.  move(x`y) : # x # y. move(x`y)
@@ -27,10 +30,15 @@ look: (S / NP) / PP : # x # y.  detect(x`y) : # x # y. detect(x`y)
 look: (S / PP) : # x.  detect(x) : # x. detect(x)
 mountains: NP, N : # x. x @ mountains : # x. x @ mountains
 mountain: NP, N : # x. x @ mountain : # x. x @ mountain
+move: (S / PP) / NP : # x # y.  move(x`y) : # x # y. move(x`y)
+move: (S / NP) / NP : # x # y.  move(x`y) : # x # y. move(x`y)
+move: S / PP : # x. move(x) : # x. move(x)
 next: S / PP : # x. inside(next`x) : # x. inside(next`x)
 next: NP, N :  # x. x @ next  : # x. x @ next
-off: NP, N : # x. x @ up : # x. x @ up
+north: NP, N : # x. x @ north : # x. x @ north
+off: NP, N : # x. x @ off : # x. x @ off
 of: PP / NP : # x. x : # x. x
+over: S / NP : # x. inside(over`x) : # x. inside(over`x)
 over: NP, N : # x. x @ across : # x. x @ across
 picture: NP, N : # x. x @ picture : # x. x @ picture
 photo: NP, N : # x. x @ photo : # x. x @ photo
@@ -44,6 +52,8 @@ rock: NP, N : # x. x @ rock : # x. x @ rock
 scan: S / NP: # x. scan(x) : # x. scan(x)
 search: S / PP : # x. detect(x) : # x. detect(x)
 sequ: (S / S) | S : # x # y. <= (x & <= y),# x # y. <= x & <= y : # x # y. x <= y , # x # y. x <= y 
+small: NP / N : # x. small(x) : # x. small(x) 
+south: NP, N : # x. x @ south : # x. x @ south
 straight: NP, N: # x. x @ straight : # x. x @ straight
 stop: S : # x. x @ stop : # x. x @ stop
 take: S / NP : # x. take(x) : # x. take(x)
@@ -51,15 +61,19 @@ take: (S / PP) / NP : # x # y.  take(x`y) : # x # y. take(x`y)
 this: NP / N : # x. pointed_at(x) : # x. pointed_at(x)
 that: NP / N : # x. pointed_at(x) : # x. pointed_at(x)
 the: NP / N : # x. x : # x. x
+the: NP / NP : # x. x : # x. x
 to: S / NP : # x. inside(next`x) : # x. inside(next`x)
 to: PP / NP : # x. x : # x. x
+to: NP, N : # x. x @ to : # x. x @ to
 tree: N / PP : # x. x @ tree : # x. x @ tree
 tree: NP, N : # x. x @ tree : # x. x @ tree
+turn: S / NP : # x. turn(x) : # x. turn(x)
 under: S / PP : # x. inside(under`x) : # x. inside(under`x)
 under: NP, N : # x. x @ under : # x. x @ under
 until: PP / NP : # x. x : # x. x
 victim: NP,N : # x. x @ victim : # x. x @ victim
 wait: S : # x. x @ wait : # x. x @ wait
+west: NP, N : # x. x @ west : # x. x @ west
 wood: NP,N : # x. x @ wood : # x. x @ wood
 you: NP / VP : # x. x : # x. x
 
