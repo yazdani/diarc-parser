@@ -103,7 +103,7 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
         for (String aWord : incoming) {
             if (!(aWord.equals("0"))) {
                 inString += " " + aWord;
-		System.out.println("inString is: "+ inString);
+		//	System.out.println("inString is: "+ inString);
 
             } else {
                 matched = addUtterance(inString.trim());
@@ -142,14 +142,14 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
             for (int i = 0; i < trees.size(); i++) {
                 Tree t = trees.get(i);
                 if (t != null) {
-                    System.out.println("t is "+t);
+                    //System.out.println("t is "+t);
                     //System.out.println(t.getRoot().getCategory());
                     String s = Conversions.update(t.getRoot().getLambda());
                     String method;
                     // crude means of categorizing commands
                     boolean command = Pattern.matches("[?]actor", s);
                     command = true;
-		    System.out.println("s is "+s);
+		    //System.out.println("s is "+s);
                     s = s.replaceAll("`", ",");
                     s = s.replaceAll("[?]actor",actorName);
                     String ss = Conversions.update(t.getRoot().getPar_lambda());
@@ -625,11 +625,11 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 			
 			 //	 System.out.println("VERBUNDEN1234");
 			 
-			     message = in.readLine();
-					
+			 message = in.readLine();
+			 // System.out.println(message);
 			     if(message != null && message.trim().length() != 0)
 				 { //true
-				     System.out.println("message is: "+message);
+				     //	     System.out.println("message is: "+message);
 				     splitSentence(message);
 				 }
 			 
@@ -796,7 +796,7 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 	    }
 	//	 System.out.println("Sentence is: " + sentence);
 	sentence = startMyPhrase(sentence);
-	System.out.println("New Sentence is: " + sentence);
+	//System.out.println("New Sentence is: " + sentence);
 	//ADD A ZERO TO THE END OF THE OLD SENTENCE
 	sentence = sentence + " 0";
 	//System.out.println("New Sentence is2: " + sentence);
