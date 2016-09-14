@@ -3,6 +3,7 @@ above: S / PP : # x. inside(above`x) : # x. inside(above`x)
 above: NP, N : # x. x @ above : # x. x @ above
 across: NP, N : # x. x @ across : # x. x @ across
 ahead: NP, N: # x. x @ ahead : # x. x @ ahead
+an: NP/ N : # x. x : # x. x
 and: (S / S) | S : # x # y. <> (x & <> y),# x # y. <> x & <> y : # x # y. x ; y , # x # y. x || y 
 area: NP, N : # x. x @ area : # x. x @ area
 around: S / PP : # x. inside(around`x) : # x. inside(around`x)
@@ -24,6 +25,7 @@ go: S / PP : # x. move(x) : # x. move(x)
 house: NP, N : # x. x @ house : # x. x @ house
 image: NP, N : # x. x @ image : # x. x @ image
 in: PP / PP : # x. x : # x. x
+it: NP, N : # x. x @ image : # x. x @ image
 jacket: NP, N :  # x. x @ jacket  : # x. x @ jacket 
 left: S / PP : # x. inside(left`x) : # x. inside(left`x)
 left: NP, N : # x. x @ left : # x. x @ left
@@ -53,6 +55,7 @@ rock: NP, N : # x. x @ rock : # x. x @ rock
 scan: S / NP: # x. scan(x) : # x. scan(x)
 search: S / PP : # x. detect(x) : # x. detect(x)
 sequ: (S / S) | S : # x # y. <= (x & <= y),# x # y. <= x & <= y : # x # y. x <= y , # x # y. x <= y 
+show: S / NP :  # x. show(x) : # x. show(x)
 small: NP / N : # x. small(x) : # x. small(x) 
 smallest: NP / N : # x. small(x) : # x. small(x) 
 south: NP, N : # x. x @ south : # x. x @ south
