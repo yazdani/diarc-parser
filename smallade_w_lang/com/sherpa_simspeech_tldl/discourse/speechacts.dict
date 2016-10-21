@@ -50,7 +50,9 @@ reach: VP / NP : # x. x : # x. x
 red: N : # x. x @ red  : # x. x @ red
 right: S / PP : # x. inside(right`x) : # x. inside(right`x)
 right: NP, N : # x. x @ right : # x. x @ right
+river: N / PP : # x. x @ river : # x. x @ river
 river: NP, N : # x. x @ river : # x. x @ river
+rock: N / PP : # x. x @ rock : # x. x @ rock
 rock: NP, N : # x. x @ rock : # x. x @ rock
 scan: S / NP: # x. scan(x) : # x. scan(x)
 search: S / PP : # x. detect(x) : # x. detect(x)
@@ -68,6 +70,7 @@ that: NP / N : # x. pointed_at(x) : # x. pointed_at(x)
 the: NP / N : # x. x : # x. x
 the: NP / NP : # x. x : # x. x
 to: S / NP : # x. inside(next`x) : # x. inside(next`x)
+to: S / PP : # x. inside(next`x) : # x. inside(next`x)
 to: PP / NP : # x. x : # x. x
 to: NP, N : # x. x @ to : # x. x @ to
 tree: N / PP : # x. x @ tree : # x. x @ tree
@@ -76,9 +79,11 @@ turn: S / NP : # x. turn(x) : # x. turn(x)
 under: S / PP : # x. inside(under`x) : # x. inside(under`x)
 under: NP, N : # x. x @ under : # x. x @ under
 until: PP / NP : # x. x : # x. x
-victim: NP,N : # x. x @ victim : # x. x @ victim
+victim: N / PP : # x. x @ victim : # x. x @ victim
+victim: NP, N : # x. x @ victim : # x. x @ victim
 wait: S : # x. x @ wait : # x. x @ wait
 west: NP, N : # x. x @ west : # x. x @ west
+wood: N / PP : # x. x @ wood : # x. x @ wood
 wood: NP,N : # x. x @ wood : # x. x @ wood
 you: NP / VP : # x. x : # x. x
 

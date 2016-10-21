@@ -725,6 +725,7 @@ public class TLDLDiscourseComponentImpl extends ADEComponentImpl implements TLDL
 		       inArray[i].equals("wood") || inArray[i].equals("woods") ||
 		       inArray[i].equals("house") || inArray[i].equals("houses") ||
 		       inArray[i].equals("mountain") || inArray[i].equals("mountains") ||
+		       inArray[i].equals("victim") || inArray[i].equals("victims") ||
 		       inArray[i].equals("picture") || inArray[i].equals("pictures"))
   			{
 			    System.out.println("inArray[i] :"+inArray[i]);
