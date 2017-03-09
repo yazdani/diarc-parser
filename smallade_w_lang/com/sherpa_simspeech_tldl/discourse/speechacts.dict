@@ -23,6 +23,7 @@ close: NP, N : # x. x @ close : # x. x @ close
 come: S / NP : # x. come(x) : # x. come(x)
 east: NP, N : # x. x @ east : # x. x @ east
 first: NP / N: # x. one(x) : # x. one(x)
+fly: S / NP : # x. move(x) : # x. move(x)
 for: PP / NP : # x. x : # x. x
 front: PP / PP : # x. x @ in-front-of : # x. x @ in-front-of
 go: (S / PP) / NP : # x # y.  move(x`y) : # x # y. move(x`y)
@@ -51,6 +52,7 @@ move: S / PP : # x. move(x) : # x. move(x)
 next: S / PP : # x. inside(next`x) : # x. inside(next`x)
 next: NP, N :  # x. x @ next  : # x. x @ next
 north: NP, N : # x. x @ north : # x. x @ north
+nil: NP, N : # x. x @ nil : # x. x @ nil
 off: NP, N : # x. x @ off : # x. x @ off
 of: PP / NP : # x. x : # x. x
 over: S / NP : # x. inside(over`x) : # x. inside(over`x)
