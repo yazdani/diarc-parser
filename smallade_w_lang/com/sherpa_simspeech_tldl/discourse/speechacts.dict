@@ -71,7 +71,7 @@ river: NP, N : # x. x @ river : # x. x @ river
 rock: N / PP : # x. x @ rock : # x. x @ rock
 rock: NP, N : # x. x @ rock : # x. x @ rock
 scan: S / NP: # x. scan(x) : # x. scan(x)
-search: S / PP : # x. detect(x) : # x. detect(x)
+search: (S / PP) / NP : # x # y.  search(x`y) : # x # y. search(x`y)
 second: NP / N: # x. two(x) : # x. two(x)
 sequ: (S / S) | S : # x # y. <= (x & <= y),# x # y. <= x & <= y : # x # y. x <= y , # x # y. x <= y 
 show: S / NP :  # x. show(x) : # x. show(x)
